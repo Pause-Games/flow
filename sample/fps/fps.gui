@@ -1,0 +1,23 @@
+script: "/sample/fps/fps.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+nodes {
+  position {
+    x: 918.0
+    y: 600.0
+  }
+  size {
+    x: 100.0
+    y: 50.0
+  }
+  type: TYPE_TEXT
+  text: "FPS: 0"
+  font: "default"
+  id: "text_fps"
+  pivot: PIVOT_E
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

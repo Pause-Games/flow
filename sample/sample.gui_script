@@ -1,0 +1,57 @@
+local flow = require "flow/flow"
+
+local function animate_new_multipliers(self, dt, nav)
+	if not nav then return false end
+
+	local current_screen = nav.current()
+	local params = current_screen and current_screen.params or nil
+	local multipliers = params and params.multipliers or nil
+	if not multipliers then return false end
+
+	local dirty = false
+	for _, mult in ipairs(multipliers) do
+		if mult.is_new then
+			mult.anim_progress = (mult.anim_progress or 0) + dt / 0.3
+			if mult.anim_progress >= 1 then
+				mult.anim_progress = 1
+				mult.is_new = false
+			else
+				dirty = true
+			end
+		end
+	end
+
+	if dirty then
+		nav.mark_dirty()
+	end
+
+	return dirty
+end
+
+function init(self)
+	flow.init(self, {
+		on_update = animate_new_multipliers,
+	})
+end
+
+function final(self)
+	flow.final(self)
+end
+
+function update(self, dt)
+	flow.update(self, dt)
+end
+
+function on_message(self, message_id, message, sender)
+	return flow.on_message(self, message_id, message, sender)
+end
+
+function on_input(self, action_id, action)
+	return flow.on_input(self, action_id, action)
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

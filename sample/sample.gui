@@ -1,0 +1,19 @@
+script: "/sample/sample.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+textures {
+  name: "icons"
+  texture: "/sample/assets/icons/icons.atlas"
+}
+textures {
+  name: "guide"
+  texture: "/sample/assets/guide/guide.atlas"
+}
+textures {
+  name: "button_shapes"
+  texture: "/sample/assets/buttons/button_shapes.atlas"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

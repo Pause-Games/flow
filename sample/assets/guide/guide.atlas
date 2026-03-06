@@ -1,0 +1,18 @@
+images {
+  image: "/sample/assets/guide/autumn_forest_path_with_tall_trees.jpg"
+}
+images {
+  image: "/sample/assets/guide/castle_siege.jpg"
+}
+images {
+  image: "/sample/assets/guide/forest_path_sunset.jpg"
+}
+images {
+  image: "/sample/assets/guide/hokusai_dragon.jpg"
+}
+images {
+  image: "/sample/assets/guide/sword.jpg"
+}
+margin: 2
+extrude_borders: 2
+inner_padding: 0

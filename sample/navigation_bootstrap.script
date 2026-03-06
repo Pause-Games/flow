@@ -1,0 +1,226 @@
+local flow = require "flow/flow"
+local screens = require "sample/screens"
+
+local Box = flow.ui.cp.Box
+local Button = flow.ui.cp.Button
+local Text = flow.ui.cp.Text
+local navigation = flow.nav
+local navigation_runtime = flow.nav.runtime
+
+local RESULT_MESSAGE_ID = hash("non_gui_flow_result")
+local NON_GUI_FLOW_SCREEN = {}
+local BASE_SCREENS = {
+	hub = screens.hub,
+	buttons_demo = screens.buttons_demo,
+	layouts_demo = screens.layouts_demo,
+	alignment_demo = screens.alignment_demo,
+	scroll_demo = screens.scroll_demo,
+	counter_demo = screens.counter_demo,
+	game_guide = screens.game_guide,
+	horizontal_scroll_demo = screens.horizontal_scroll_demo,
+	popup_demo = screens.popup_demo,
+	bottom_sheet_demo = screens.bottom_sheet_demo,
+	settings = screens.settings,
+	history = screens.history,
+	history_detail = screens.history_detail,
+	history_filter = screens.history_filter,
+}
+
+local function result_summary(result)
+	if not result then
+		return "No result yet"
+	end
+
+	return string.format(
+		"%s | score %s | level %s",
+		tostring(result.status or "unknown"),
+		tostring(result.score or "-"),
+		tostring(result.entered_level or "-")
+	)
+end
+
+local function build_non_gui_flow_view(controller_url)
+	return function(params, nav)
+		params = params or {}
+
+		return Box({
+			key = "non_gui_flow_root",
+			style = { width = "100%", height = "100%", flex_direction = "column", gap = 16, padding = 20 },
+			color = vmath.vector4(0.08, 0.10, 0.15, 1),
+			children = {
+				Box({
+					key = "header",
+					style = { height = 52, justify_content = "center" },
+					color = vmath.vector4(0, 0, 0, 0),
+					children = {
+						Text({
+							key = "title",
+							text = "Non-GUI Navigation Flow",
+							style = { height = 30 },
+						}),
+					},
+				}),
+				Box({
+					key = "summary",
+					style = { height = 168, flex_direction = "column", gap = 8, padding = 16 },
+					color = vmath.vector4(0.13, 0.16, 0.24, 1),
+					children = {
+						Text({ key = "line_origin", text = "Opened from: " .. tostring(params.opened_from or "unknown"), style = { height = 24 } }),
+						Text({ key = "line_level", text = "Level param: " .. tostring(params.level or "-"), style = { height = 24 } }),
+						Text({ key = "line_note", text = "Controller note: " .. tostring(params.controller_note or "none"), style = { height = 24 } }),
+						Text({ key = "line_enter_count", text = "Enter count: " .. tostring(params.enter_count or 0), style = { height = 24 } }),
+						Text({ key = "line_status", text = "Previous result: " .. result_summary(params.previous_result), style = { height = 24 } }),
+					},
+				}),
+				Box({
+					key = "actions",
+					style = { height = 68, flex_direction = "row", gap = 12 },
+					color = vmath.vector4(0, 0, 0, 0),
+					children = {
+						Button({
+							key = "btn_complete",
+							style = { flex_grow = 1, height = 68 },
+							color = vmath.vector4(0.22, 0.58, 0.36, 1),
+							on_click = function()
+								msg.post(controller_url, hash("finish_non_gui_flow"), {
+									score = (params.level or 0) * 100 + (params.enter_count or 0),
+								})
+							end,
+							children = {
+								Text({ key = "btn_complete_label", text = "COMPLETE", style = { width = "100%", height = "100%" } }),
+							},
+						}),
+						Button({
+							key = "btn_cancel",
+							style = { flex_grow = 1, height = 68 },
+							color = vmath.vector4(0.62, 0.26, 0.24, 1),
+							on_click = function()
+								msg.post(controller_url, hash("cancel_non_gui_flow"))
+							end,
+							children = {
+								Text({ key = "btn_cancel_label", text = "CANCEL", style = { width = "100%", height = "100%" } }),
+							},
+						}),
+					},
+				}),
+				Box({
+					key = "footer",
+					style = { height = 56, justify_content = "center" },
+					color = vmath.vector4(0, 0, 0, 0),
+					children = {
+						Text({
+							key = "footer_text",
+							text = "This screen is registered and driven by a plain script, not the gui_script.",
+							style = { height = 24 },
+						}),
+					},
+				}),
+			},
+		})
+	end
+end
+
+local function build_screens(controller_url)
+	local out = {}
+	for id, def in pairs(BASE_SCREENS) do
+		out[id] = def
+	end
+
+	NON_GUI_FLOW_SCREEN.view = build_non_gui_flow_view(controller_url)
+	NON_GUI_FLOW_SCREEN.url = controller_url
+	NON_GUI_FLOW_SCREEN.focus_url = controller_url
+	out.non_gui_flow = NON_GUI_FLOW_SCREEN
+	return out
+end
+
+local function store_result_on_hub(result)
+	navigation.set_data("non_gui_result", result, { screen_id = "hub" })
+end
+
+local function clear_hub_result()
+	navigation.set_data("non_gui_result", nil, { screen_id = "hub" })
+end
+
+local function update_non_gui_flow_data()
+	local entry = navigation.current()
+	if not entry or entry.id ~= "non_gui_flow" then
+		return
+	end
+
+	local params = navigation.get_data() or {}
+	local previous_count = params.enter_count or 0
+	navigation.set_data("enter_count", previous_count + 1)
+	navigation.set_data("controller_note", "navigation_enter handled in navigation_bootstrap.script")
+end
+
+function init(self)
+	local controller_url = msg.url()
+	self.controller_url = controller_url
+
+	flow.log.set_level("debug")
+--  flow.log.set_context_level("nav", "debug")
+--  flow.log.set_context_level("ui.input", "debug")
+
+	navigation_runtime.init(self, {
+		screens = build_screens(controller_url),
+		initial_screen = "hub",
+		enable_proxy_runtime = false,
+	})
+end
+
+function final(self)
+	navigation_runtime.final(self)
+end
+
+function on_message(self, message_id, message, sender)
+	if navigation_runtime.on_message(self, message_id, message, sender) then
+		return true
+	end
+
+	if message_id == hash("open_non_gui_flow") then
+		clear_hub_result()
+		navigation.push("non_gui_flow", {
+			level = message.level or 7,
+			opened_from = message.opened_from or "hub",
+			controller_note = "Waiting for navigation_enter...",
+			previous_result = message.previous_result,
+		}, {
+			transition = "slide_left",
+			result_url = self.controller_url,
+			result_message_id = RESULT_MESSAGE_ID,
+		})
+		return true
+	end
+
+	if message_id == hash("navigation_enter") then
+		update_non_gui_flow_data()
+		return true
+	end
+
+	if message_id == hash("finish_non_gui_flow") then
+		local params = navigation.get_data() or {}
+		navigation.pop({
+			status = "completed",
+			score = message.score or ((params.level or 0) * 100 + (params.enter_count or 0)),
+			entered_level = params.level,
+			handled_by = "navigation_bootstrap.script",
+		}, "slide_right")
+		return true
+	end
+
+	if message_id == hash("cancel_non_gui_flow") then
+		local params = navigation.get_data() or {}
+		navigation.pop({
+			status = "cancelled",
+			score = 0,
+			entered_level = params.level,
+			handled_by = "navigation_bootstrap.script",
+		}, "slide_right")
+		return true
+	end
+
+	if message_id == RESULT_MESSAGE_ID then
+		store_result_on_hub(message.result)
+		return true
+	end
+end

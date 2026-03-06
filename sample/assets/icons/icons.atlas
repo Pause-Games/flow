@@ -1,0 +1,21 @@
+images {
+  image: "/sample/assets/icons/icon_star.png"
+}
+images {
+  image: "/sample/assets/icons/icon_plus.png"
+}
+images {
+  image: "/sample/assets/icons/icon_arrow.png"
+}
+images {
+  image: "/sample/assets/icons/icon_music.png"
+}
+images {
+  image: "/sample/assets/icons/icon_sound.png"
+}
+images {
+  image: "/sample/assets/icons/icon_favorite.png"
+}
+margin: 2
+extrude_borders: 2
+inner_padding: 0

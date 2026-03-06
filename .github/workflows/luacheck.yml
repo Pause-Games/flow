@@ -1,0 +1,41 @@
+name: Luacheck
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "flow/**"
+      - "sample/**"
+      - "tests/**"
+      - ".luacheckrc"
+      - ".github/workflows/luacheck.yml"
+  pull_request:
+    paths:
+      - "flow/**"
+      - "sample/**"
+      - "tests/**"
+      - ".luacheckrc"
+      - ".github/workflows/luacheck.yml"
+
+jobs:
+  luacheck:
+    name: Lint (luacheck)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install luacheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y luarocks
+          sudo luarocks install luacheck
+
+      - name: Run luacheck on flow/
+        run: luacheck flow/
+
+      - name: Run luacheck on sample/
+        run: luacheck sample/
+
+      - name: Run luacheck on tests/
+        run: luacheck tests/

@@ -1,0 +1,15 @@
+local FPS = require "sample/fps/fps"
+
+function init(self)
+    self.fps_instance = FPS.create(60, "FPS %.2f", "text_fps")
+    gui.set_render_order(10)
+
+end
+
+function update(self, dt)
+    self.fps_instance.update()
+    self.fps_instance.draw()
+end
+
+function on_message(self, message_id, message, sender)
+end
