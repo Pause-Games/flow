@@ -19,7 +19,7 @@ vmath = {}
 function vmath.vector3(x, y, z)
   return { x = x or 0, y = y or 0, z = z or 0 }
 end
-function rgba(x, y, z, w)
+local function rgba(x, y, z, w)
   return { r = x or 0, g = y or 0, b = z or 0, a = w == nil and 1 or w }
 end
 function vmath.vector4(x, y, z, w)
