@@ -102,6 +102,28 @@ Use `ButtonImage` when the image itself is the button. Use `Button` with `image`
 
 ---
 
+## Custom Text Fonts
+
+Any `Text` node inside a button or any other container can select a GUI font by name:
+
+```lua
+Button({
+  key      = "play_btn",
+  style    = { width = 180, height = 52 },
+  color    = vmath.vector4(0.2, 0.5, 0.9, 1),
+  on_click = function()
+    print("play")
+  end,
+  children = {
+    Text({ key = "lbl", text = "Play", font = "heading", style = { width = "100%", height = "100%" } })
+  }
+})
+```
+
+`font = "heading"` only works if the owning `.gui` has a registered font named `"heading"`. When `font` is omitted, Flow falls back to `"default"`.
+
+---
+
 ## Mutating State
 
 Each screen on the navigation stack has a persistent `params` table. This is where you store screen-local state.

@@ -61,6 +61,19 @@ Add a `.gui` file (e.g. `ui/main.gui`) in the Defold editor and attach a gui scr
 
 Flow creates its runtime GUI nodes itself, so you do not need to add a root box node such as `ui_root`. The `.gui` must only provide the fonts, textures, and material that your components need.
 
+If you want to use `Text({ font = "heading" })`, register that font name in the `.gui` first:
+
+```text
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+fonts {
+  name: "heading"
+  font: "/main/fonts/heading.font"
+}
+```
+
 ---
 
 ## 3. Wire Up the GUI Script
@@ -80,7 +93,8 @@ local SCREENS = {
         key   = "root",
         style = { width = "100%", height = "100%", padding = 32 },
         children = {
-          Text({ key = "hello", text = "Hello, Flow!", style = { height = 40 } }),
+          Text({ key = "hello", text = "Hello, Flow!", font = "heading", style = { height = 40 } }),
+          Text({ key = "body", text = "Registered GUI fonts can be selected per label.", style = { height = 28 } }),
         }
       })
     end,
@@ -112,6 +126,8 @@ end
 ```
 
 Attach this script to your GUI scene.
+
+`Text.font` is optional. When omitted, Flow uses the `.gui` font named `"default"`.
 
 ---
 

@@ -55,6 +55,7 @@ return Box({
 
 A few things to note:
 - `Text` always needs a `height` (Flow doesn't measure text intrinsically).
+- `Text` can also take `font = "name"` to use a font registered in the `.gui`.
 - Children stack **top-to-bottom** by default (`flex_direction = "column"`).
 - `width = "100%"` on a child stretches it to the parent's inner width.
 
@@ -76,11 +77,13 @@ return Box({
   color = DARK,
   style = { width = "100%", height = "100%", padding = 40 },
   children = {
-    Text({ key = "title", text = "Flow UI",    color = WHITE, style = { height = 48 } }),
+    Text({ key = "title", text = "Flow UI",    font = "heading", color = WHITE, style = { height = 48 } }),
     Text({ key = "sub",   text = "Tutorial 1", color = MUTED, style = { height = 28 } }),
   }
 })
 ```
+
+To make `font = "heading"` work, register a font with that name in your GUI scene. If you omit `font`, Flow uses `"default"`.
 
 ---
 
@@ -135,7 +138,7 @@ return Box({
         padding        = 24,
       },
       children = {
-        Text({ key = "title", text = "Flow UI",    color = WHITE, style = { height = 40 } }),
+        Text({ key = "title", text = "Flow UI",    font = "heading", color = WHITE, style = { height = 40 } }),
         Text({ key = "sub",   text = "Tutorial 1", color = MUTED, style = { height = 24 } }),
       }
     })
@@ -170,6 +173,7 @@ Run the project. You should see a centered dark card with title and subtitle on 
 |---------|--------|
 | `Box` | Generic container, maps to a Defold box node |
 | `Text` | Text label; always needs explicit `height` |
+| `font` | Optional `Text` field; selects a font registered in the `.gui` |
 | `key` | Required on every element; must be stable and unique |
 | `style` | Flex layout properties |
 | `color` | `vmath.vector4` fill color |

@@ -3,6 +3,10 @@ fonts {
   name: "default"
   font: "/builtins/fonts/default.font"
 }
+fonts {
+  name: "heading"
+  font: "/builtins/fonts/default.font"
+}
 textures {
   name: "icons"
   texture: "/sample/assets/icons/icons.atlas"

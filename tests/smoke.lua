@@ -143,6 +143,10 @@ function gui.set_text(node, text)
   node.text = text
 end
 
+function gui.set_font(node, font)
+  node.font = font
+end
+
 function gui.set_position(node, pos)
   node.position = deepcopy(pos)
 end
@@ -492,6 +496,48 @@ local function test_button_image_and_slice9()
     "button image: border should map to slice9 insets")
   check(image_button and image_button.texture == "guide", "button image: ButtonImage should set its texture")
   check(image_button and image_button.animation == "castle_siege", "button image: ButtonImage should play its image flipbook")
+end
+
+local function test_text_font_assignment_and_fallback()
+  local self = {}
+  ui.mount(self)
+
+  local label = Text({
+    key = "label",
+    text = "Hello",
+    font = "heading",
+    style = { width = 120, height = 24 },
+  })
+
+  local tree = Box({
+    key = "root",
+    style = { width = "100%", height = "100%" },
+    children = { label },
+  })
+
+  ui.render(self, tree, 200, 120)
+
+  local node = self.ui.nodes["label"]
+  check(node and node.font == "heading",
+    "text font: Text should apply the configured gui font name")
+
+  label.font = nil
+  ui.render(self, tree, 200, 120)
+
+  check(node and node.font == "default",
+    "text font: Text should fall back to the default gui font when font is cleared")
+end
+
+local function test_sample_hub_uses_registered_heading_font()
+  local self = {}
+  ui.mount(self)
+
+  local tree = screens.hub.view({}, navigation)
+  ui.render(self, tree, 960, 640)
+
+  local title = self.ui.nodes["hub_title"]
+  check(title and title.font == "heading",
+    "sample hub: title should demonstrate Text.font with the registered heading font")
 end
 
 local function test_markdown_style_isolation_and_blank_lines()
@@ -961,6 +1007,8 @@ local tests = {
   test_button_visual_prefix_lookup,
   test_button_hover_visual,
   test_button_image_and_slice9,
+  test_text_font_assignment_and_fallback,
+  test_sample_hub_uses_registered_heading_font,
   test_markdown_style_isolation_and_blank_lines,
   test_markdown_atlas_images,
   test_markdown_image_modifiers_and_scaling,

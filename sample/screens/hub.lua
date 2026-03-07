@@ -20,13 +20,20 @@ return {
 				-- Header with title at top left
 				Box({
 					key = "header",
-					style = { height=60, padding_left=20, align_items="start", justify_content="center" },
+					style = { height=88, padding_left=20, padding_top=10, padding_bottom=10, flex_direction="column", gap=4, align_items="start", justify_content="center" },
 					color = vmath.vector4(0, 0, 0, 0),
 					children = {
 						Text({
 							key = "hub_title",
 							text = "Flow UI Demo Hub",
+							font = "heading",
 							style = { height=30 }
+						}),
+						Text({
+							key = "hub_font_hint",
+							text = "Header uses Text.font = \"heading\" from sample.gui",
+							color = vmath.vector4(0.80, 0.86, 0.98, 1),
+							style = { height = 20 }
 						})
 					}
 				}),

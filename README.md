@@ -146,6 +146,7 @@ return Box({
   style = { width = "100%", height = "100%", padding = 20 },
   children = {
     Text({ key = "title", text = "Hello", style = { height = 32 } }),
+    Text({ key = "subtitle", text = "Brand", font = "heading", style = { height = 28 } }),
     Button({
       key = "cta",
       style = { width = 180, height = 56 },
@@ -184,6 +185,7 @@ return Box({
 
 - Primitive constructors live under `flow.ui.cp.*`.
 - `flow.ui.components.*` is also available as a longer alias for the same constructors.
+- `Text` accepts `font = "name"` for any font registered in the owning `.gui`; it falls back to `"default"`.
 - `Button` can use a texture/image background and slice-9 border via `image`, `texture`, and `border`.
 - `ButtonImage` is a convenience wrapper around `Button` for image-backed buttons.
 - Component behaviors are self-registered; simply requiring the component module is enough.

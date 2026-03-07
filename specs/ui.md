@@ -159,7 +159,7 @@ Generic container. Renders as a Defold box node.
 
 ### `text` primitive
 
-Text label. Renders as a Defold text node using the `"default"` font declared in the `.gui` file.
+Text label. Renders as a Defold text node using the `.gui` font named by `font`, or `"default"` when `font` is omitted.
 
 | Field   | Type    | Description                                              |
 |---------|---------|----------------------------------------------------------|
@@ -168,6 +168,7 @@ Text label. Renders as a Defold text node using the `"default"` font declared in
 | `style` | table   | `width`, `height`, `flex_grow`, etc.                    |
 | `color` | vector4 | Text colour                                              |
 | `align` | string  | `"left"` (default), `"center"`, `"right"`               |
+| `font`  | string  | GUI font name registered in the `.gui` file. Defaults to `"default"` |
 
 **Important**: Text nodes have 0 layout width unless you provide `width` or `flex_grow`. Center/end alignment on a text node only works when it is the sole child of an explicit-width parent, or when the text itself has a width.
 

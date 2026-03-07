@@ -52,6 +52,7 @@
 ---@field color? vector4
 ---@field text? string
 ---@field align? "left"|"center"|"right"
+---@field font? string
 ---@field image? string
 ---@field texture? string
 ---@field scale_mode? "stretch"|"fit"
@@ -108,6 +109,7 @@
 ---@class Flow.TextProps : Flow.Element
 ---@field text string
 ---@field align? "left"|"center"|"right"
+---@field font? string
 
 ---@class Flow.ButtonProps : Flow.Element
 ---@field pressed_color? vector4

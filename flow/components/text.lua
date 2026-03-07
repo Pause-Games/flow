@@ -24,26 +24,36 @@ local function apply_text_alignment(node, align)
 	end
 end
 
+--- Apply the configured Defold GUI font, falling back to the scene's default font.
+--- This is called on creation and every render so runtime font changes take effect.
+---@param node userdata            The Defold text GUI node to update
+---@param font string|nil          Registered GUI font name; falls back to "default"
+local function apply_text_font(node, font)
+	gui.set_font(node, font or "default")
+end
+
 --- Register the "text" element type with the renderer.
 ui.register("text", {
 	--- Create a new Defold text GUI node for a text element.
 	--- Initializes the node at origin with el.text as content (empty string fallback).
-	--- Sets pivot immediately so that the first render is correctly aligned.
-	---@param el Flow.TextProps  The text element; el.text and el.align are read
+	--- Sets pivot and font immediately so that the first render is correctly aligned.
+	---@param el Flow.TextProps  The text element; el.text, el.align, and el.font are read
 	---@return userdata        A new gui text node
 	create_node = function(el)
 		local node = gui.new_text_node(vmath.vector3(), el.text or "")
 		apply_text_alignment(node, el.align)
+		apply_text_font(node, el.font)
 		return node
 	end,
 
-	--- Update the text content and alignment of an existing node each frame.
+	--- Update the text content, alignment, and font of an existing node each frame.
 	--- Only called when the element is visible; the renderer skips invisible elements.
 	---@param _ table          The gui_script self table (unused)
-	---@param el Flow.TextProps  The text element providing new text and align values
+	---@param el Flow.TextProps  The text element providing new text, align, and font values
 	---@param node userdata    The existing Defold text node to update
 	apply = function(_, el, node)
 		apply_text_alignment(node, el.align)
+		apply_text_font(node, el.font)
 		gui.set_text(node, el.text or "")
 	end,
 
