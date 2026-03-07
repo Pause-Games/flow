@@ -631,6 +631,51 @@ local function test_sample_layouts_and_alignment_demos_render_expanded_examples(
     "sample alignment demo: text alignment examples should render")
 end
 
+local function test_sample_popup_demo_renders_responsive_variants()
+  local self = {}
+  ui.mount(self)
+
+  local tree = screens.popup_demo.view({}, navigation)
+  ui.render(self, tree, 960, 640)
+
+  check(self.ui.nodes["trigger_title"] and self.ui.nodes["trigger_title"].text == "Open A Popup",
+    "sample popup demo: trigger section should render")
+  check(self.ui.nodes["btn_form_label"] and self.ui.nodes["btn_form_label"].text == "Settings Form",
+    "sample popup demo: stacked trigger buttons should render")
+
+  local popup_tree = screens.popup_demo.view({
+    popup_visible = true,
+    popup_type = "alert",
+  }, navigation)
+  ui.render(self, popup_tree, 960, 640)
+
+  check(self.ui.nodes["popup_alert_title"] and self.ui.nodes["popup_alert_title"].text == "System Alert",
+    "sample popup demo: alert popup variant should render inside the overlay")
+end
+
+local function test_sample_popup_demo_supports_blocking_modal()
+  local self = {}
+  ui.mount(self)
+
+  local tree = screens.popup_demo.view({}, navigation)
+  ui.render(self, tree, 960, 640)
+
+  check(self.ui.nodes["btn_blocking_label"] and self.ui.nodes["btn_blocking_label"].text == "Blocking Modal",
+    "sample popup demo: blocking modal trigger should render")
+
+  local params = {
+    popup_visible = true,
+    popup_type = "blocking",
+  }
+  local blocking_tree = screens.popup_demo.view(params, navigation)
+  ui.render(self, blocking_tree, 960, 640)
+
+  check(self.ui.nodes["popup_blocking_title"] and self.ui.nodes["popup_blocking_title"].text == "Blocking Modal",
+    "sample popup demo: blocking modal variant should render in the popup overlay")
+  check(blocking_tree.children[3] and blocking_tree.children[3].on_backdrop_click == nil,
+    "sample popup demo: blocking modal should not define a backdrop dismiss handler")
+end
+
 local function test_markdown_style_isolation_and_blank_lines()
   local first = Markdown.viewer("alpha", "doc_one", { padding = 7 })
   local second = Markdown.viewer("alpha", "doc_two")
@@ -1103,6 +1148,8 @@ local tests = {
   test_sample_hub_uses_registered_heading_font,
   test_sample_screens_remove_redundant_settings_and_merge_options_sheet,
   test_sample_layouts_and_alignment_demos_render_expanded_examples,
+  test_sample_popup_demo_renders_responsive_variants,
+  test_sample_popup_demo_supports_blocking_modal,
   test_markdown_style_isolation_and_blank_lines,
   test_markdown_atlas_images,
   test_markdown_image_modifiers_and_scaling,
