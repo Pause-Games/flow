@@ -540,6 +540,40 @@ local function test_sample_hub_uses_registered_heading_font()
     "sample hub: title should demonstrate Text.font with the registered heading font")
 end
 
+local function test_sample_screens_remove_redundant_settings_and_merge_options_sheet()
+  check(screens.settings == nil,
+    "sample screens: redundant settings screen should be removed from the registry")
+
+  local self = {}
+  ui.mount(self)
+
+  local params = {
+    sheet_type = "menu",
+    sheet_size = "half",
+    sheet_visible = true,
+  }
+  local tree = screens.bottom_sheet_demo.view(params, navigation)
+  ui.render(self, tree, 960, 640)
+
+  local menu_settings = tree.children[3].children[1].children[4]
+  check(menu_settings and menu_settings.key == "menu_settings",
+    "sample bottom sheet demo: menu sheet should expose the merged settings action")
+
+  menu_settings.on_click()
+
+  local options_tree = screens.bottom_sheet_demo.view(params, navigation)
+  ui.render(self, options_tree, 960, 640)
+
+  local options_title = self.ui.nodes["sheet_options_title"]
+  check(options_title and options_title.text == "Quick Settings",
+    "sample bottom sheet demo: merged settings should open the options sheet from the menu action")
+
+  local hub_tree = screens.hub.view({}, navigation)
+  ui.render(self, hub_tree, 960, 640)
+  check(self.ui.nodes["btn_sheet_options"] == nil,
+    "sample hub: standalone options button should be removed")
+end
+
 local function test_markdown_style_isolation_and_blank_lines()
   local first = Markdown.viewer("alpha", "doc_one", { padding = 7 })
   local second = Markdown.viewer("alpha", "doc_two")
@@ -1009,6 +1043,7 @@ local tests = {
   test_button_image_and_slice9,
   test_text_font_assignment_and_fallback,
   test_sample_hub_uses_registered_heading_font,
+  test_sample_screens_remove_redundant_settings_and_merge_options_sheet,
   test_markdown_style_isolation_and_blank_lines,
   test_markdown_atlas_images,
   test_markdown_image_modifiers_and_scaling,

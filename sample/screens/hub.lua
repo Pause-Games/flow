@@ -142,22 +142,15 @@ return {
 									color = vmath.vector4(0, 0, 0, 0),
 									children = {
 										Button({
-											key = "btn_settings",
-											style = { width=140, height=70 },
-											color = vmath.vector4(0.7, 0.5, 0.2, 1),
-											on_click = function() navigation.push("settings", nil, "slide_left") end,
-											children = { Text({ key = "btn_settings_label", text = "SETTINGS", style = { width="100%", height="100%" } }) }
-										}),
-										Button({
 											key = "btn_history",
-											style = { width=140, height=70 },
+											style = { width=210, height=70 },
 											color = vmath.vector4(0.2, 0.45, 0.70, 1),
 											on_click = function() navigation.push("history", nil, "slide_left") end,
 											children = { Text({ key = "btn_history_label", text = "HISTORY", style = { width="100%", height="100%" } }) }
 										}),
 										Button({
 											key = "btn_non_gui_flow",
-											style = { width=140, height=70 },
+											style = { width=210, height=70 },
 											color = vmath.vector4(0.20, 0.58, 0.52, 1),
 											on_click = function()
 												msg.post("main:/navigation#navigation_bootstrap", hash("open_non_gui_flow"), {

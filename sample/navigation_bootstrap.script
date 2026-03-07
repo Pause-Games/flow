@@ -20,7 +20,6 @@ local BASE_SCREENS = {
 	horizontal_scroll_demo = screens.horizontal_scroll_demo,
 	popup_demo = screens.popup_demo,
 	bottom_sheet_demo = screens.bottom_sheet_demo,
-	settings = screens.settings,
 	history = screens.history,
 	history_detail = screens.history_detail,
 	history_filter = screens.history_filter,
