@@ -61,7 +61,7 @@ return {
 			})
 		end
 
-		-- Custom date row: indicator + "Data:" + [MM] / [YYYY]
+		-- Custom date row: indicator + "Date:" + [MM] / [YYYY]
 		local custom_selected = (params.filter_type == "custom")
 		local date_row = Box({
 			key   = "date_row",
@@ -79,7 +79,7 @@ return {
 						        color = custom_selected and C_radio_on or C_radio_bg })
 					}
 				}),
-				Text({ key = "data_lbl", text = "Data:", style = { width = 52, height = 28 }, color = C_orange }),
+				Text({ key = "data_lbl", text = "Date:", style = { width = 52, height = 28 }, color = C_orange }),
 				-- Month picker button
 				Button({
 					key   = "month_btn",
@@ -135,7 +135,7 @@ return {
 			          align_items = "center", gap = 10, padding = 16 },
 			color = C_popup_bg,
 			children = {
-				Text({ key = "mp_title", text = "Selecionar Mês",
+				Text({ key = "mp_title", text = "Select Month",
 				          style = { height = 28 }, align = "center", color = C_orange }),
 				Box({ key = "mr1", style = { height = 50, flex_direction = "row", gap = 10 }, color = C_transp,
 					children = { month_cell(1), month_cell(2), month_cell(3) } }),
@@ -174,7 +174,7 @@ return {
 			          align_items = "center", gap = 10, padding = 16 },
 			color = C_popup_bg,
 			children = {
-				Text({ key = "yp_title", text = "Selecionar Ano",
+				Text({ key = "yp_title", text = "Select Year",
 				          style = { height = 28 }, align = "center", color = C_orange }),
 				Box({ key = "yr1", style = { height = 50, flex_direction = "row", gap = 10 }, color = C_transp,
 					children = year_cells }),
@@ -204,9 +204,9 @@ return {
 						          align_items = "center", justify_content = "center" },
 						color = C_transp,
 						children = {
-							Text({ key = "flt_title",    text = "Filtrar Dados",
+							Text({ key = "flt_title",    text = "Filter Data",
 							          style = { height = 26 }, align = "center" }),
-							Text({ key = "flt_subtitle", text = "Selecionar Período",
+							Text({ key = "flt_subtitle", text = "Select Period",
 							          style = { height = 20 }, align = "center",
 							          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
 						}
@@ -215,12 +215,12 @@ return {
 				}
 			}),
 			-- Radio options
-			radio_row("today", "Hoje", "today"),
-			radio_row("last7", "Últimos 7 dias", "last7"),
+			radio_row("today", "Today", "today"),
+			radio_row("last7", "Last 7 days", "last7"),
 			date_row,
 			-- Spacer
 			Box({ key = "flt_spacer", style = { flex_grow = 1 }, color = C_transp }),
-			-- Filtrar button (with horizontal padding via wrapper)
+			-- Apply Filter button (with horizontal padding via wrapper)
 			Box({
 				key   = "filtrar_wrap",
 				style = { height = 72, flex_direction = "row", padding_left = 24, padding_right = 24,
@@ -235,7 +235,7 @@ return {
 							if params.on_apply then params.on_apply(params) end
 							navigation.pop("slide_right")
 					end,
-						children = { Text({ key = "filtrar_lbl", text = "Filtrar",
+						children = { Text({ key = "filtrar_lbl", text = "Apply Filter",
 						             style = { width = "100%", height = "100%" } }) }
 					}),
 				}

@@ -28,7 +28,7 @@ local HISTORY_DATA = (function()
 			balance    = 1000.00 - i * val + (won and val * 2 or 0),
 			lines      = (i % 5 + 1) * 2,
 			level      = 0.1 * (i % 5 + 1),
-			result     = won and "Combinação vencedora!" or "Sem combinação vencedora",
+			result     = won and "Winning combination!" or "No winning combination",
 			won        = won,
 		})
 	end
@@ -60,13 +60,13 @@ local function history_row(item, key_suffix, on_click)
 					Text({ key = "date_" .. key_suffix, text = item.date, style = { height = 20 } }),
 				}
 			}),
-			-- Aposta
+			-- Bet
 			Text({ key = "bet_" .. key_suffix, text = item.bet,
 			          style = { flex_grow = 1, height = 22 } }),
-			-- Valor
+			-- Value
 			Text({ key = "val_" .. key_suffix, text = fmt(item.value),
 			          style = { width = 90, height = 22 }, align = "center" }),
-			-- Retorno
+			-- Return
 			Text({ key = "ret_" .. key_suffix, text = fmt(item.return_val),
 			          style = { width = 90, height = 22 }, align = "center",
 			          color = item.won and C_green or C_white }),

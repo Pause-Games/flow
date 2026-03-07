@@ -26,17 +26,17 @@ return {
 			return ("R$ " .. string.format("%.2f", v)):gsub("%.", ",")
 		end
 
-		-- Column header (different columns from list: Aposta | Valor | Retorno | Saldo)
+		-- Column header (different columns from list: Bet | Value | Return | Balance)
 		local col_header = Box({
 			key   = "det_col_hdr",
 			style = { height = 36, flex_direction = "row", align_items = "center",
 			          padding_left = 12, padding_right = 12 },
 			color = C_transp,
 			children = {
-				Text({ key = "dch_aposta",  text = "Aposta",  style = { flex_grow = 1, height = 20 }, color = C_orange }),
-				Text({ key = "dch_valor",   text = "Valor",   style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
-				Text({ key = "dch_retorno", text = "Retorno", style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
-				Text({ key = "dch_saldo",   text = "Saldo",   style = { width = 95, height = 20 }, color = C_orange, align = "center" }),
+				Text({ key = "dch_aposta",  text = "Bet",     style = { flex_grow = 1, height = 20 }, color = C_orange }),
+				Text({ key = "dch_valor",   text = "Value",   style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
+				Text({ key = "dch_retorno", text = "Return",  style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
+				Text({ key = "dch_saldo",   text = "Balance", style = { width = 95, height = 20 }, color = C_orange, align = "center" }),
 			}
 		})
 
@@ -105,7 +105,7 @@ return {
 							          align_items = "center", justify_content = "center" },
 							color = C_transp,
 							children = {
-								Text({ key = "det_title",    text = "Aposta",
+								Text({ key = "det_title",    text = "Bet Details",
 								          style = { height = 26 }, align = "center" }),
 								Text({ key = "det_subtitle", text = item.time .. " " .. item.date,
 								          style = { height = 20 }, align = "center",
@@ -130,14 +130,14 @@ return {
 					children = {
 						Box({
 							key   = "bet_info_row",
-							style = { height = 28, flex_direction = "row", align_items = "center",
+							style = { width = 340, height = 28, flex_direction = "row", align_items = "center",
 							          justify_content = "center", gap = 20 },
 							color = C_transp,
 							children = {
-								Text({ key = "bet_lines", text = string.format("Aposta %d", item.lines),
-								          style = { height = 22 }, align = "center" }),
-								Text({ key = "bet_level", text = string.format("Nível de aposta %.1f", item.level),
-								          style = { height = 22 }, align = "center" }),
+								Text({ key = "bet_lines", text = string.format("Bet %d", item.lines),
+								          style = { width = 120, height = 22 }, align = "center" }),
+								Text({ key = "bet_level", text = string.format("Bet level %.1f", item.level),
+								          style = { width = 200, height = 22 }, align = "center" }),
 							}
 						}),
 						grid,

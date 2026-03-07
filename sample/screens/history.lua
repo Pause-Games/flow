@@ -39,6 +39,7 @@ return {
 		local C_dark_box = vmath.vector4(0.08, 0.10, 0.15, 1)
 		local C_cell_bg  = vmath.vector4(0.20, 0.23, 0.32, 1)
 		local C_panel    = vmath.vector4(0.13, 0.15, 0.22, 1)
+		local C_list_bg  = vmath.vector4(0.12, 0.14, 0.20, 1)
 
 		-- Column header
 		local col_header = Box({
@@ -47,10 +48,10 @@ return {
 			          padding_left = 12, padding_right = 12 },
 			color = C_transp,
 			children = {
-				Text({ key = "ch_data",    text = "Data",    style = { width = 120, height = 20 }, color = C_orange }),
-				Text({ key = "ch_aposta",  text = "Aposta",  style = { flex_grow = 1, height = 20 }, color = C_orange }),
-				Text({ key = "ch_valor",   text = "Valor",   style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
-				Text({ key = "ch_retorno", text = "Retorno", style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
+				Text({ key = "ch_data",    text = "Date",   style = { width = 120, height = 20 }, color = C_orange }),
+				Text({ key = "ch_aposta",  text = "Bet",    style = { flex_grow = 1, height = 20 }, color = C_orange }),
+				Text({ key = "ch_valor",   text = "Value",  style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
+				Text({ key = "ch_retorno", text = "Return", style = { width = 90, height = 20 }, color = C_orange, align = "center" }),
 				Box({ key = "ch_arr_pad", style = { width = 20, height = 20 }, color = C_transp }),
 			}
 		})
@@ -91,11 +92,11 @@ return {
 					on_click = function()
 						if can_prev then params.page = params.page - 1; navigation.invalidate() end
 					end,
-					children = { Text({ key = "prev_lbl", text = "< Ant", style = { width = "100%", height = "100%" } }) }
+					children = { Text({ key = "prev_lbl", text = "< Prev", style = { width = "100%", height = "100%" } }) }
 				}),
 				Text({
 					key   = "page_lbl",
-					text  = string.format("Página %d/%d", params.page, total_pages),
+					text  = string.format("Page %d/%d", params.page, total_pages),
 					style = { width = 130, height = 26 }, align = "center", color = C_orange,
 				}),
 				Button({
@@ -104,7 +105,7 @@ return {
 					on_click = function()
 						if can_next then params.page = params.page + 1; navigation.invalidate() end
 					end,
-					children = { Text({ key = "next_lbl", text = "Próx >", style = { width = "100%", height = "100%" } }) }
+					children = { Text({ key = "next_lbl", text = "Next >", style = { width = "100%", height = "100%" } }) }
 				}),
 			}
 		})
@@ -153,7 +154,7 @@ return {
 						        color = custom_sel and C_radio_on or C_radio_bg })
 					}
 				}),
-				Text({ key = "flt_data_lbl", text = "Data:", style = { width = 52, height = 28 }, color = C_orange }),
+				Text({ key = "flt_data_lbl", text = "Date:", style = { width = 52, height = 28 }, color = C_orange }),
 				Button({
 					key   = "flt_month_btn",
 					style = { width = 56, height = 40, align_items = "center", justify_content = "center" },
@@ -216,9 +217,9 @@ return {
 							          align_items = "center", justify_content = "center" },
 							color = C_transp,
 							children = {
-								Text({ key = "flt_title",    text = "Filtrar Dados",
+								Text({ key = "flt_title",    text = "Filter Data",
 								          style = { height = 26 }, align = "center" }),
-								Text({ key = "flt_subtitle", text = "Selecionar Período",
+								Text({ key = "flt_subtitle", text = "Select Period",
 								          style = { height = 20 }, align = "center",
 								          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
 							}
@@ -227,12 +228,12 @@ return {
 					}
 				}),
 				-- Radio options
-				radio_row("today", "Hoje", "today"),
-				radio_row("last7", "Últimos 7 dias", "last7"),
+				radio_row("today", "Today", "today"),
+				radio_row("last7", "Last 7 days", "last7"),
 				date_row,
 				-- Spacer
 				Box({ key = "flt_spacer", style = { flex_grow = 1 }, color = C_transp }),
-				-- Filtrar button with side padding
+				-- Apply Filter button with side padding
 				Box({
 					key   = "filtrar_wrap",
 					style = { height = 72, flex_direction = "row",
@@ -250,7 +251,7 @@ return {
 								params.page = 1
 								navigation.invalidate()
 							end,
-							children = { Text({ key = "filtrar_lbl", text = "Filtrar",
+							children = { Text({ key = "filtrar_lbl", text = "Apply Filter",
 							             style = { width = "100%", height = "100%" } }) }
 						}),
 					}
@@ -281,7 +282,7 @@ return {
 			          align_items = "center", gap = 10, padding = 16 },
 			color = vmath.vector4(0.12, 0.15, 0.22, 1),
 			children = {
-				Text({ key = "mp_title", text = "Selecionar Mês",
+				Text({ key = "mp_title", text = "Select Month",
 				          style = { height = 28 }, align = "center", color = C_orange }),
 				Box({ key = "mr1", style = { height = 50, flex_direction = "row", gap = 10 }, color = C_transp,
 					children = { month_cell(1), month_cell(2), month_cell(3) } }),
@@ -319,7 +320,7 @@ return {
 			          align_items = "center", gap = 10, padding = 16 },
 			color = vmath.vector4(0.12, 0.15, 0.22, 1),
 			children = {
-				Text({ key = "yp_title", text = "Selecionar Ano",
+				Text({ key = "yp_title", text = "Select Year",
 				          style = { height = 28 }, align = "center", color = C_orange }),
 				Box({ key = "yr1", style = { height = 50, flex_direction = "row", gap = 10 }, color = C_transp,
 					children = year_cells }),
@@ -350,12 +351,12 @@ return {
 						          align_items = "center", justify_content = "center" },
 						color = C_transp,
 						children = {
-							Text({ key = "hist_title",    text = "Histórico do jogo",
+							Text({ key = "hist_title",    text = "Game History",
 							          style = { height = 26 }, align = "center" }),
 							Text({ key = "hist_subtitle",
-							          text = (params.filter_type == "last7") and "Últimos 7 dias"
+							          text = (params.filter_type == "last7") and "Last 7 days"
 							               or (params.filter_type == "custom") and string.format("%02d/%d", params.filter_month, params.filter_year)
-							               or "Hoje",
+							               or "Today",
 							          style = { height = 20 }, align = "center",
 							          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
 						}
@@ -368,7 +369,7 @@ return {
 							params.show_filter = true
 							navigation.invalidate()
 						end,
-						children = { Text({ key = "hist_filter_lbl", text = "Filtro",
+						children = { Text({ key = "hist_filter_lbl", text = "Filter",
 						             style = { width = "100%", height = "100%" } }) }
 					}),
 				}
@@ -380,6 +381,7 @@ return {
 			Scroll({
 				key      = "hist_list",
 				style    = { flex_grow = 1, flex_direction = "column", gap = 0 },
+				color    = C_list_bg,
 				_scrollbar = false,
 				children = rows,
 			}),
