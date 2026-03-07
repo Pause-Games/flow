@@ -77,7 +77,7 @@ return {
 				})
 
 				params.insert_mode = "start"
-				navigation.mark_dirty()
+				navigation.invalidate()
 			end,
 			children = {
 				Text({
@@ -112,7 +112,7 @@ return {
 				})
 
 				params.insert_mode = "end"
-				navigation.mark_dirty()
+				navigation.invalidate()
 			end,
 			children = {
 				Text({
@@ -129,7 +129,7 @@ return {
 			color = params.align_mode == "start" and vmath.vector4(0.4, 0.6, 0.4, 1) or vmath.vector4(0.3, 0.4, 0.3, 1),
 			on_click = function()
 				params.align_mode = "start"
-				navigation.mark_dirty()
+				navigation.invalidate()
 			end,
 			children = {
 				Text({
@@ -146,7 +146,7 @@ return {
 			color = params.align_mode == "end" and vmath.vector4(0.4, 0.6, 0.4, 1) or vmath.vector4(0.3, 0.4, 0.3, 1),
 			on_click = function()
 				params.align_mode = "end"
-				navigation.mark_dirty()
+				navigation.invalidate()
 			end,
 			children = {
 				Text({

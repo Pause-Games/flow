@@ -22,7 +22,7 @@ if params.show_confirm then
     _visible       = true,
     on_backdrop_click = function()
       params.show_confirm = false
-      flow.nav.mark_dirty()
+      flow.nav.invalidate()
     end,
     children = {
       Box({
@@ -41,7 +41,7 @@ if params.show_confirm then
                 color = vmath.vector4(0.4, 0.3, 0.3, 1),
                 on_click = function()
                   params.show_confirm = false
-                  flow.nav.mark_dirty()
+                  flow.nav.invalidate()
                 end,
                 children = { Text({ key = "lbl", text = "Cancel", style = { width = "100%", height = "100%" } }) }
               }),
@@ -51,7 +51,7 @@ if params.show_confirm then
                 on_click = function()
                   params.show_confirm = false
                   params.confirmed    = true
-                  flow.nav.mark_dirty()
+                  flow.nav.invalidate()
                 end,
                 children = { Text({ key = "lbl", text = "OK", style = { width = "100%", height = "100%" } }) }
               }),
@@ -71,7 +71,7 @@ Button({
   key      = "open_btn",
   on_click = function()
     params.show_confirm = true
-    flow.nav.mark_dirty()
+    flow.nav.invalidate()
   end,
   ...
 })
@@ -110,7 +110,7 @@ BottomSheet({
   _visible       = params.show_sheet,
   on_backdrop_click = function()
     params.show_sheet = false
-    flow.nav.mark_dirty()
+    flow.nav.invalidate()
   end,
   children = {
     Box({
@@ -132,7 +132,7 @@ BottomSheet({
           key   = "share", style = { height = 52, padding_left = 20, align_items = "center" },
           color = vmath.vector4(0.2, 0.2, 0.25, 1),
           on_click = function()
-            params.show_sheet = false; flow.nav.mark_dirty()
+            params.show_sheet = false; flow.nav.invalidate()
           end,
           children = { Text({ key = "lbl", text = "Share", style = { height = 28 } }) }
         }),
@@ -140,7 +140,7 @@ BottomSheet({
           key   = "delete", style = { height = 52, padding_left = 20, align_items = "center" },
           color = vmath.vector4(0.3, 0.15, 0.15, 1),
           on_click = function()
-            params.show_sheet = false; flow.nav.mark_dirty()
+            params.show_sheet = false; flow.nav.invalidate()
           end,
           children = { Text({ key = "lbl", text = "Delete", style = { height = 28 } }) }
         }),
@@ -164,11 +164,11 @@ BottomSheet({
   _on_anim_update = function(anim_y, velocity)
     params.sheet_anim_y   = anim_y
     params.sheet_anim_vel = velocity
-    flow.nav.mark_dirty()
+    flow.nav.invalidate()
   end,
   on_backdrop_click = function()
     params.show_sheet = false
-    flow.nav.mark_dirty()
+    flow.nav.invalidate()
   end,
   children = {
     Box({
@@ -226,7 +226,7 @@ end
 | Content box has no `height` | Always set explicit `height` on direct children of overlays |
 | Overlay is nested inside a sized container | Overlays must be top-level children |
 | Animation state not persisted | Use `_on_anim_update` to store `anim_y`/`velocity` in params |
-| Forgetting `mark_dirty()` after closing | Always call `flow.nav.mark_dirty()` after changing `show_popup` / `show_sheet` |
+| Forgetting `invalidate()` after closing | Always call `flow.nav.invalidate()` after changing `show_popup` / `show_sheet` |
 
 ---
 

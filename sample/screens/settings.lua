@@ -59,7 +59,7 @@ return {
 							color = vmath.vector4(0.25, 0.27, 0.35, 1),
 							on_click = function()
 								params.sheet_open = false
-								navigation.mark_dirty()
+								navigation.invalidate()
 							end,
 							children = {
 								Text({ key = "opts_close_label", text = "X", style = { width = "100%", height = "100%" } })
@@ -85,7 +85,7 @@ return {
 									color = vmath.vector4(0.87, 0.47, 0.1, 1),
 									on_click = function()
 										params.last_action = "Musica"
-										navigation.mark_dirty()
+										navigation.invalidate()
 									end,
 									children = {
 										Text({ key = "opts_music_label", text = "Musica", style = { height = 30 } })
@@ -97,7 +97,7 @@ return {
 									color = vmath.vector4(0.87, 0.47, 0.1, 1),
 									on_click = function()
 										params.last_action = "Som"
-										navigation.mark_dirty()
+										navigation.invalidate()
 									end,
 									children = {
 										Text({ key = "opts_sound_label", text = "Som", style = { height = 30 } })
@@ -117,7 +117,7 @@ return {
 									color = vmath.vector4(0.18, 0.20, 0.28, 1),
 									on_click = function()
 										params.last_action = "Regras"
-										navigation.mark_dirty()
+										navigation.invalidate()
 									end,
 									children = {
 										Text({ key = "opts_rules_label", text = "Regras", style = { height = 30 } })
@@ -129,7 +129,7 @@ return {
 									color = vmath.vector4(0.18, 0.20, 0.28, 1),
 									on_click = function()
 										params.last_action = "Historico"
-										navigation.mark_dirty()
+										navigation.invalidate()
 									end,
 									children = {
 										Text({ key = "opts_hist_label", text = "Historico", style = { height = 30 } })
@@ -183,7 +183,7 @@ return {
 								on_click = function()
 									params.sheet_size = "half"
 									params.sheet_open = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = {
 									Text({ key = "settings_open_half_label", text = "Meia tela", style = { height = 28 } })
@@ -196,7 +196,7 @@ return {
 								on_click = function()
 									params.sheet_size = "full"
 									params.sheet_open = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = {
 									Text({ key = "settings_open_full_label", text = "Tela cheia", style = { height = 28 } })
@@ -222,7 +222,7 @@ return {
 			backdrop_color = vmath.vector4(0, 0, 0, 0.6),
 			on_backdrop_click = function()
 				params.sheet_open = false
-				navigation.mark_dirty()
+				navigation.invalidate()
 			end,
 			children = { sheet_content }
 		}))

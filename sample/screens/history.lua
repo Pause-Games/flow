@@ -89,7 +89,7 @@ return {
 					key = "btn_prev", style = { width = 70, height = 36 },
 					color = can_prev and btn_on or btn_off,
 					on_click = function()
-						if can_prev then params.page = params.page - 1; navigation.mark_dirty() end
+						if can_prev then params.page = params.page - 1; navigation.invalidate() end
 					end,
 					children = { Text({ key = "prev_lbl", text = "< Ant", style = { width = "100%", height = "100%" } }) }
 				}),
@@ -102,7 +102,7 @@ return {
 					key = "btn_next", style = { width = 70, height = 36 },
 					color = can_next and btn_on or btn_off,
 					on_click = function()
-						if can_next then params.page = params.page + 1; navigation.mark_dirty() end
+						if can_next then params.page = params.page + 1; navigation.invalidate() end
 					end,
 					children = { Text({ key = "next_lbl", text = "Próx >", style = { width = "100%", height = "100%" } }) }
 				}),
@@ -119,7 +119,7 @@ return {
 				style = { height = 56, flex_direction = "row", align_items = "center",
 				          gap = 16, padding_left = 24 },
 				color = C_transp,
-				on_click = function() params.filter_type = value; navigation.mark_dirty() end,
+				on_click = function() params.filter_type = value; navigation.invalidate() end,
 				children = {
 					Box({
 						key   = "frad_out_" .. key,
@@ -147,7 +147,7 @@ return {
 					key   = "frad_out_custom",
 					style = { width = 36, height = 36, align_items = "center", justify_content = "center" },
 					color = C_radio_bg,
-					on_click = function() params.filter_type = "custom"; navigation.mark_dirty() end,
+					on_click = function() params.filter_type = "custom"; navigation.invalidate() end,
 					children = {
 						Box({ key = "frad_in_custom", style = { width = 16, height = 16 },
 						        color = custom_sel and C_radio_on or C_radio_bg })
@@ -162,7 +162,7 @@ return {
 						params.filter_type = "custom"
 						params.show_month_popup = true
 						params.show_year_popup  = false
-						navigation.mark_dirty()
+						navigation.invalidate()
 					end,
 					children = { Text({ key = "flt_month_val", text = string.format("%02d", params.filter_month),
 					             style = { width = "100%", height = "100%" } }) }
@@ -176,7 +176,7 @@ return {
 						params.filter_type = "custom"
 						params.show_month_popup = false
 						params.show_year_popup  = true
-						navigation.mark_dirty()
+						navigation.invalidate()
 					end,
 					children = { Text({ key = "flt_year_val", text = tostring(params.filter_year),
 					             style = { width = "100%", height = "100%" } }) }
@@ -205,7 +205,7 @@ return {
 								params.show_filter = false
 								params.show_month_popup = false
 								params.show_year_popup  = false
-								navigation.mark_dirty()
+								navigation.invalidate()
 							end,
 							children = { Text({ key = "flt_close_lbl", text = "<",
 							             style = { width = "100%", height = "100%" } }) }
@@ -248,7 +248,7 @@ return {
 								params.show_month_popup = false
 								params.show_year_popup  = false
 								params.page = 1
-								navigation.mark_dirty()
+								navigation.invalidate()
 							end,
 							children = { Text({ key = "filtrar_lbl", text = "Filtrar",
 							             style = { width = "100%", height = "100%" } }) }
@@ -268,7 +268,7 @@ return {
 				on_click = function()
 					params.filter_month = m
 					params.show_month_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { Text({ key = "fmc_lbl_" .. m, text = string.format("%02d", m),
 				             style = { width = "100%", height = "100%" } }) }
@@ -306,7 +306,7 @@ return {
 				on_click = function()
 					params.filter_year = yy
 					params.show_year_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { Text({ key = "fyc_lbl_" .. y, text = tostring(y),
 				             style = { width = "100%", height = "100%" } }) }
@@ -366,7 +366,7 @@ return {
 						color = vmath.vector4(0.20, 0.25, 0.38, 1),
 						on_click = function()
 							params.show_filter = true
-							navigation.mark_dirty()
+							navigation.invalidate()
 						end,
 						children = { Text({ key = "hist_filter_lbl", text = "Filtro",
 						             style = { width = "100%", height = "100%" } }) }
@@ -400,7 +400,7 @@ return {
 					params.show_filter = false
 					params.show_month_popup = false
 					params.show_year_popup  = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { filter_panel },
 			}))
@@ -415,7 +415,7 @@ return {
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_month_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { month_popup_box },
 			}))
@@ -430,7 +430,7 @@ return {
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_year_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { year_popup_box },
 			}))

@@ -35,7 +35,7 @@ local IDS = {
 	replace    = safe_hash("navigation_replace"),
 	reset      = safe_hash("navigation_reset"),
 	back       = safe_hash("navigation_back"),
-	mark_dirty = safe_hash("navigation_mark_dirty"),
+	invalidate = safe_hash("navigation_invalidate"),
 }
 
 --- Extract navigation options from a message table.
@@ -91,9 +91,9 @@ M.RESET = IDS.reset
 ---@type hash|string
 M.BACK = IDS.back
 
---- Message id for navigation.mark_dirty — no payload required
+--- Message id for navigation.invalidate — no payload required
 ---@type hash|string
-M.MARK_DIRTY = IDS.mark_dirty
+M.INVALIDATE = IDS.invalidate
 
 --- Handle an incoming Defold message and dispatch it to the navigation module.
 --- Returns true when the message was a recognized navigation message and was handled.
@@ -102,7 +102,7 @@ M.MARK_DIRTY = IDS.mark_dirty
 --- Supported message payloads:
 ---   PUSH/REPLACE/RESET: { id = "screen_id", params = {}, options = {} }
 ---   POP/BACK:           { result = {}, options = {} }
----   MARK_DIRTY:         no payload needed
+---   INVALIDATE:         no payload needed
 ---@param message_id hash|string   The incoming Defold message id hash, or raw string in test environments
 ---@param message? table           The incoming Defold message payload
 ---@return boolean                 True when the message was handled by navigation
@@ -132,9 +132,9 @@ function M.on_message(message_id, message)
 		navigation.back(message and message.result or nil, resolve_options(message))
 		return true
 	end
-	if message_id == IDS.mark_dirty then
-		log.debug("nav.messages", "dispatch mark_dirty")
-		navigation.mark_dirty()
+	if message_id == IDS.invalidate then
+		log.debug("nav.messages", "dispatch invalidate")
+		navigation.invalidate()
 		return true
 	end
 	return false

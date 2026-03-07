@@ -107,8 +107,8 @@ function M.new()
 	--- True while run_operation's pcall is executing (guards re-entrant calls).
 	local processing = false
 
-	--- True when the navigation state changed since last clear_dirty() call.
-	local dirty = false
+	--- True when the current screen tree should be rebuilt.
+	local invalidated = false
 
 	local router = {}
 
@@ -457,7 +457,7 @@ function M.new()
 	end
 
 	--- Write a value into the current (or targeted) screen's params.
-	--- Marks the router dirty and emits "changed" so the UI re-renders.
+	--- Invalidates the current view and emits "changed" so the UI rebuilds.
 	---@param key string            The param key to write (must not be nil)
 	---@param value any             The value to store
 	---@param options table|nil     Optional: {screen_id = "..."} to target a specific screen
@@ -470,7 +470,7 @@ function M.new()
 			return nil
 		end
 		entry.params[key] = value
-		dirty = true
+		invalidated = true
 		emit_changed()
 		log.debug("nav", "set_data screen=%s key=%s", entry.id, tostring(key))
 		return value
@@ -520,24 +520,24 @@ function M.new()
 		return #stack
 	end
 
-	--- Mark the router as dirty and emit "changed".
+	--- Invalidate the current screen tree and emit "changed".
 	--- Call this from screen render functions when UI state changes and you
-	--- want to force a re-render without a navigation operation.
-	function router:mark_dirty()
-		dirty = true
+	--- want the active view to be rebuilt without a navigation operation.
+	function router:invalidate()
+		invalidated = true
 		emit_changed()
-		log.debug("nav", "marked dirty")
+		log.debug("nav", "invalidated")
 	end
 
-	--- Return true when the router has been marked dirty since last clear_dirty().
-	---@return boolean              True when the navigation state has changed
-	function router:is_dirty()
-		return dirty
+	--- Return true when the router has been invalidated since last clear_invalidation().
+	---@return boolean              True when the active view should be rebuilt
+	function router:is_invalidated()
+		return invalidated
 	end
 
-	--- Clear the dirty flag. Called by the GUI adapter after it has rebuilt the tree.
-	function router:clear_dirty()
-		dirty = false
+	--- Clear the invalidation flag. Called after the active view has been rebuilt.
+	function router:clear_invalidation()
+		invalidated = false
 	end
 
 	--- Return true when a transition is in progress or an operation is being processed.
@@ -620,7 +620,7 @@ function M.new()
 			call_hook(entry, "on_enter", from_entry and from_entry.id or nil, entry.id)
 			update_focus(from_entry and from_entry.screen.focus_url or nil, screen.focus_url)
 
-			dirty = true
+			invalidated = true
 			emit("push", entry.id, from_entry and from_entry.id or nil, entry.params, opts)
 			emit_changed()
 			log.info(
@@ -668,7 +668,7 @@ function M.new()
 			call_hook(to_entry, "on_resume", from_entry and from_entry.id or nil, to_entry and to_entry.id or nil, result)
 			update_focus(from_entry and from_entry.screen.focus_url or nil, to_entry and to_entry.screen.focus_url or nil)
 
-			dirty = true
+			invalidated = true
 			emit("pop", to_entry and to_entry.id or nil, from_entry and from_entry.id or nil, result, opts)
 			emit_changed()
 			log.info(
@@ -719,7 +719,7 @@ function M.new()
 			call_hook(entry, "on_enter", from_entry and from_entry.id or nil, entry.id)
 			update_focus(from_entry and from_entry.screen.focus_url or nil, screen.focus_url)
 
-			dirty = true
+			invalidated = true
 			emit("replace", entry.id, from_entry and from_entry.id or nil, entry.params, opts)
 			emit_changed()
 			log.info(
@@ -768,7 +768,7 @@ function M.new()
 			call_hook(entry, "on_enter", previous_top and previous_top.id or nil, entry.id)
 			update_focus(previous_top and previous_top.screen.focus_url or nil, screen.focus_url)
 
-			dirty = true
+			invalidated = true
 			emit("reset", entry.id, entry.params, opts)
 			emit_changed()
 			log.info("nav", "reset id=%s transition=%s", entry.id, opts.transition or "none")
@@ -796,7 +796,7 @@ function M.new()
 		transition = nil
 		busy = false
 		processing = false
-		dirty = false
+		invalidated = false
 		log.debug("nav", "reset router for tests")
 		return true
 	end

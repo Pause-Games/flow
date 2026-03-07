@@ -22,7 +22,7 @@ return {
 
 		local function close_sheet()
 			params.sheet_visible = false
-			navigation.mark_dirty()
+			navigation.invalidate()
 		end
 
 		-- Build sheet content based on type
@@ -260,7 +260,7 @@ return {
 								on_click = function()
 									params.sheet_type = "actions"
 									params.sheet_visible = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = { Text({ key = "btn_actions_label", text = "Actions", style = { width = "100%", height = "100%" } }) }
 							}),
@@ -271,7 +271,7 @@ return {
 								on_click = function()
 									params.sheet_type = "info"
 									params.sheet_visible = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = { Text({ key = "btn_info_label", text = "Info", style = { width = "100%", height = "100%" } }) }
 							}),
@@ -282,7 +282,7 @@ return {
 								on_click = function()
 									params.sheet_type = "menu"
 									params.sheet_visible = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = { Text({ key = "btn_menu_label", text = "Menu", style = { width = "100%", height = "100%" } }) }
 							})

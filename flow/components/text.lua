@@ -60,7 +60,7 @@ ui.register("text", {
 --- Create a text element.
 --- Renders a Defold text node positioned by the flex layout engine.
 --- The text content is updated every frame from el.text, so you can change
---- it dynamically by mutating the element and calling nav.mark_dirty().
+--- it dynamically by mutating the element and calling nav.invalidate().
 ---@param t Flow.TextProps        Element definition table (mutated in place)
 ---@return Flow.Element           The same table with type set to "text"
 local function Text(t)

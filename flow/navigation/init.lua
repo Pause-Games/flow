@@ -17,9 +17,8 @@
 --   navigation.stack_depth()                      Stack entry count
 --   navigation.get_data(key, opts)                Read current screen params
 --   navigation.set_data(key, value, opts)         Write current screen params
---   navigation.get_scroll_offset(key, opts)       Read saved scroll offset
---   navigation.mark_dirty()                       Force a UI re-render
---   navigation.is_dirty() / clear_dirty()         Dirty flag management
+--   navigation.invalidate()                       Rebuild the active screen view
+--   navigation.is_invalidated() / clear_invalidation()  Invalidation flag management
 --   navigation.is_busy()                          True during transitions
 --   navigation.get_transition()                   Active transition metadata
 --   navigation.begin_transition(meta)             Start a custom transition
@@ -57,9 +56,9 @@ for _, name in ipairs({
 	"get_data",
 	"set_data",
 	"get_scroll_offset",
-	"mark_dirty",
-	"is_dirty",
-	"clear_dirty",
+	"invalidate",
+	"is_invalidated",
+	"clear_invalidation",
 	"is_busy",
 	"get_transition",
 	"begin_transition",

@@ -35,9 +35,9 @@ No native extensions, no external dependencies. Flow is pure Lua.
 
 ## 2. Create a GUI Scene
 
-Add a `.gui` file (e.g. `ui/main.gui`) in the Defold editor. Inside it, create a single **Box node** named `ui_root`. This is the mount point — Flow attaches all runtime nodes under it.
+Add a `.gui` file (e.g. `ui/main.gui`) in the Defold editor and attach a gui script to it.
 
-Set the Box node to cover the full screen (size `960 × 640` or whatever your project resolution is).
+Flow creates its runtime GUI nodes itself, so you do not need to add a root box node such as `ui_root`. The `.gui` must only provide the fonts, textures, and material that your components need.
 
 ---
 
@@ -118,7 +118,7 @@ Build and run in the Defold editor (`Cmd+B` on macOS, `F5` on Windows). You shou
 `flow.init` did three things:
 
 1. Acquired input focus (`msg.post(".", "acquire_input_focus")`).
-2. Mounted a renderer on the `ui_root` node in your GUI scene.
+2. Mounted the renderer state on the gui script instance and prepared runtime node caching.
 3. Registered your screens and navigated to `"home"`.
 
 Each frame, `flow.update` calls the active screen's `view()` function, computes flex layout, and updates Defold GUI nodes — creating new ones or reusing cached ones based on their `key`.

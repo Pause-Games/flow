@@ -45,18 +45,18 @@ Text({ key = "t", text = "Hello", style = { height = 32 } })
 
 ---
 
-## Calling `mark_dirty()`
+## Calling `invalidate()`
 
-Re-renders only happen when the renderer is marked dirty. After mutating any state that affects the UI, call:
+Re-renders only happen when the active view is invalidated or the renderer is asked to redraw. After mutating any state that affects the UI, call:
 
 ```lua
-flow.nav.mark_dirty()    -- from anywhere (preferred)
-flow.mark_dirty(self)    -- from inside the gui_script (alternative)
+flow.nav.invalidate()    -- from anywhere (preferred)
+flow.invalidate(self)    -- from inside the gui_script (alternative)
 ```
 
 Multiple calls in the same frame are collapsed — no penalty for calling it more than once.
 
-**Do not** rely on passing a new tree object to trigger a re-render without marking dirty. Use `mark_dirty()` explicitly.
+**Do not** rely on passing a new tree object to trigger a re-render without invalidating explicitly. Use `invalidate()` directly.
 
 ---
 

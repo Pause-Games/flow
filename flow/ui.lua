@@ -154,7 +154,7 @@ end
 
 --- Initialize the renderer state on a gui_script self table.
 --- Must be called once in gui_script init() before any other ui calls.
---- Creates self.ui with an empty node cache, dirty flag, and debug toggle.
+--- Creates self.ui with an empty node cache, redraw flag, and debug toggle.
 ---@param self table               The gui_script self table to mount onto
 ---@overload fun(self: table)
 ---@param opts? Flow.MountOptions  Options table
@@ -163,8 +163,8 @@ function M.mount(self, opts)
 	self.ui = {
 		nodes = {},           -- cache_key -> gui node
 		tree = nil,           -- current element tree
-		_dirty = true,        -- forces a full re-render on the next update
-		_scroll_dirty = false,-- set by scroll components when scroll offset changes
+		_needs_redraw = true, -- forces a full re-render on the next update
+		_scroll_changed = false, -- set by scroll components when scroll offset changes
 		_set_node_color = set_node_color,
 		debug = opts.debug == true,
 	}
@@ -193,30 +193,30 @@ end
 function M._set_layout_space_unsafe(self, space)
 	if self.ui then
 		self.ui._unsafe_window_layout = (space == "window")
-		self.ui._dirty = true
+		self.ui._needs_redraw = true
 		log.warn("ui", "unsafe layout space set to %s", tostring(space))
 	end
 end
 
---- Mark the renderer as dirty so the next M.update() call triggers a full re-render.
+--- Request a renderer redraw so the next M.update() call triggers a full re-render.
 --- Call this whenever the data driving the UI tree changes and you want the
 --- screen to reflect the new state immediately.
 ---@param self table               The gui_script self table with a mounted renderer
-function M.mark_dirty(self)
+function M.request_redraw(self)
 	if self.ui then
-		self.ui._dirty = true
-		log.debug("ui", "renderer marked dirty")
+		self.ui._needs_redraw = true
+		log.debug("ui", "renderer redraw requested")
 	end
 end
 
---- Mark an element tree as dirty so renderer_core.update() re-renders it.
+--- Request a redraw for an element tree so renderer_core.update() re-renders it.
 --- Use this when you hold a reference to a tree and want to force a re-layout
 --- without going through the full renderer self table.
----@param tree Flow.Element|nil    The root element to mark dirty; no-op if nil
-function M.mark_tree_dirty(tree)
+---@param tree Flow.Element|nil    The root element to flag for redraw; no-op if nil
+function M.request_tree_redraw(tree)
 	if tree then
-		tree._dirty = true
-		log.debug("ui", "tree marked dirty key=%s", tree.key or "nil")
+		tree._needs_redraw = true
+		log.debug("ui", "tree redraw requested key=%s", tree.key or "nil")
 	end
 end
 
@@ -257,10 +257,10 @@ INPUT_DEPS = {
 }
 
 ANIMATION_DEPS = {
-	--- Mark the renderer dirty so the next frame triggers a re-render.
+	--- Request a renderer redraw so the next frame triggers a re-render.
 	---@type fun(self: table)
-	mark_dirty = function(self)
-		M.mark_dirty(self)
+	request_redraw = function(self)
+		M.request_redraw(self)
 	end,
 	--- Map from element type string to its renderer definition.
 	---@type table<string, table>
@@ -323,7 +323,7 @@ end
 
 --- Advance all per-element animations by one frame (dt seconds).
 --- Iterates the current tree and calls each element's update_anim handler.
---- Marks the renderer dirty when at least one element is still animating.
+--- Requests a redraw when at least one element is still animating.
 --- Call this every frame from gui_script update() before M.update().
 ---@param self table               The gui_script self table with a mounted renderer
 ---@param dt number                Delta time in seconds since the last frame
@@ -333,7 +333,7 @@ function M.update_animations(self, dt)
 end
 
 --- Force a full layout + render pass using the given tree and dimensions.
---- Bypasses dirty checking — always re-computes and re-applies all nodes.
+--- Bypasses redraw gating — always re-computes and re-applies all nodes.
 --- Prefer M.update() for normal frame rendering; use M.render() when you
 --- need to guarantee an immediate re-render (e.g. after a window resize event
 --- detected in on_input).
@@ -346,7 +346,7 @@ function M.render(self, tree, w, h)
 end
 
 --- Re-render only if the display size has changed since the last render pass.
---- Cheaper than M.update() — no dirty flag check, just a size comparison.
+--- Cheaper than M.update() — no redraw-flag check, just a size comparison.
 --- Returns true when a re-render was performed.
 ---@param self table               The gui_script self table with a mounted renderer
 ---@param tree Flow.Element|nil    The element tree to render; falls back to self.ui.tree

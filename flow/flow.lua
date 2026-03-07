@@ -117,8 +117,8 @@ end
 --- is produced by `adapter:build_tree()` (which calls the current screen's
 --- `view()` function and wraps it in transition overlays).
 --- When no navigation is active, the last tree set via `M.set_tree()` is used.
---- After building, marks the renderer dirty so Defold will re-draw, clears
---- both the adapter's dirty flag and `self.fl._dirty`.
+--- After building, requests a renderer redraw so Defold will re-apply nodes,
+--- clears both the adapter rebuild flag and `self.fl.needs_rebuild`.
 ---@param self table  The gui_script self table that owns the Flow instance
 ---@return Flow.Element|nil  The newly built tree, or nil if no source is available
 local function regenerate_tree(self)
@@ -132,12 +132,12 @@ local function regenerate_tree(self)
 	end
 
 	if self.tree then
-		ui.mark_dirty(self)
+		ui.request_redraw(self)
 	end
 	if fl.adapter then
-		fl.adapter:clear_dirty()
+		fl.adapter:clear_rebuild_flag()
 	end
-	fl._dirty = false
+	fl.needs_rebuild = false
 	log.debug(
 		"flow",
 		"regenerated tree key=%s source=%s",
@@ -147,33 +147,33 @@ local function regenerate_tree(self)
 	return self.tree
 end
 
---- Handle the scroll-dirty signal raised by the renderer after a scroll interaction.
---- When `self.ui._scroll_dirty` is set, this function:
+--- Handle the scroll-change signal raised by the renderer after a scroll interaction.
+--- When `self.ui._scroll_changed` is set, this function:
 ---   1. Clears the flag to prevent duplicate handling.
 ---   2. If navigation is active, saves the current scroll offset into the screen's
----      params via `adapter:save_scroll_state()`, then marks navigation dirty so
+---      params via `adapter:save_scroll_state()`, then invalidates navigation so
 ---      the screen re-renders with updated scroll state on the next frame.
----   3. If navigation is not active (static tree mode), sets `fl._dirty = true`
+---   3. If navigation is not active (static tree mode), sets `fl.needs_rebuild = true`
 ---      so `regenerate_tree` is triggered on the next `M.update` call.
---- Returns false immediately when there is no pending scroll-dirty signal.
+--- Returns false immediately when there is no pending scroll-change signal.
 ---@param self table  The gui_script self table that owns the Flow instance
----@return boolean    True when the scroll-dirty signal was present and handled
-local function handle_scroll_dirty(self)
-	if not self.tree or not self.ui or not self.ui._scroll_dirty then
+---@return boolean    True when the scroll-change signal was present and handled
+local function handle_scroll_change(self)
+	if not self.tree or not self.ui or not self.ui._scroll_changed then
 		return false
 	end
 
-	self.ui._scroll_dirty = false
+	self.ui._scroll_changed = false
 	if self.fl and self.fl.adapter and self.fl.navigation.current() then
 		self.fl.adapter:save_scroll_state(self.tree)
-		self.fl.navigation.mark_dirty()
-		log.debug("flow", "scroll dirty saved into navigation state")
+		self.fl.navigation.invalidate()
+		log.debug("flow", "scroll change saved into navigation state")
 		return true
 	end
 
 	if self.fl then
-		self.fl._dirty = true
-		log.debug("flow", "scroll dirty marked static tree for regeneration")
+		self.fl.needs_rebuild = true
+		log.debug("flow", "scroll change marked static tree for regeneration")
 	end
 	return true
 end
@@ -194,7 +194,7 @@ function M.init(self, config)
 		tree = nil,
 		on_update = config.on_update,
 		on_message = config.on_message,
-		_dirty = false,
+		needs_rebuild = false,
 	}
 
 	if config.screens then
@@ -232,8 +232,8 @@ end
 --- that you update manually. If `M.init` has not been called yet, it is called
 --- automatically with default options so the renderer is mounted.
 --- The tree is stored in both `self.tree` (renderer-facing) and `fl.tree`
---- (source-of-truth for regeneration) and the renderer is immediately marked
---- dirty so the next `M.update` call redraws.
+--- (source-of-truth for regeneration) and the renderer immediately requests
+--- redraw so the next `M.update` call re-applies it.
 ---@param self table         The gui_script self table that owns the Flow instance
 ---@param tree Flow.Element  Root element of the UI tree to render
 ---@return Flow.Element      The same tree passed in (for chaining convenience)
@@ -243,33 +243,33 @@ function M.set_tree(self, tree)
 	end
 	self.fl.tree = tree
 	self.tree = tree
-	self.fl._dirty = true
-	ui.mark_dirty(self)
+	self.fl.needs_rebuild = true
+	ui.request_redraw(self)
 	log.info("flow", "set static tree key=%s", tree and tree.key or "nil")
 	return tree
 end
 
 --- Request a UI redraw on the next `M.update` call.
---- When navigation is active, forwards to `navigation.mark_dirty()` so the
+--- When navigation is active, forwards to `navigation.invalidate()` so the
 --- navigation GUI adapter schedules a screen re-render (which also handles
 --- scroll state, transition overlays, etc.).
---- When no navigation screen is current, sets `fl._dirty = true` and marks the
---- low-level renderer dirty directly, causing `regenerate_tree` to run on the
+--- When no navigation screen is current, sets `fl.needs_rebuild = true` and requests
+--- low-level redraw directly, causing `regenerate_tree` to run on the
 --- next update from the static tree stored via `M.set_tree`.
 ---@param self table  The gui_script self table that owns the Flow instance
-function M.mark_dirty(self)
+function M.invalidate(self)
 	if not self.fl then return end
 	if self.fl.navigation and self.fl.navigation.current() then
-		self.fl.navigation.mark_dirty()
-		log.debug("flow", "mark_dirty forwarded to navigation")
+		self.fl.navigation.invalidate()
+		log.debug("flow", "invalidate forwarded to navigation")
 	else
-		self.fl._dirty = true
-		ui.mark_dirty(self)
-		log.debug("flow", "mark_dirty queued static tree redraw")
+		self.fl.needs_rebuild = true
+		ui.request_redraw(self)
+		log.debug("flow", "invalidate queued static tree rebuild")
 	end
 end
 
---- Call in gui_script update(). Advances animations, transitions, and redraws when dirty.
+--- Call in gui_script update(). Advances animations, transitions, and redraws when needed.
 ---@param self table
 ---@param dt number               Delta time in seconds
 ---@return boolean                True if the tree was regenerated or the renderer redrew this frame
@@ -280,7 +280,7 @@ function M.update(self, dt)
 	local nav = fl.navigation
 	local transition_complete = fl.adapter and fl.adapter:update(dt) or false
 	local animating = ui.update_animations(self, dt)
-	local hook_dirty = fl.on_update and fl.on_update(self, dt, nav) or false
+	local hook_requested_rebuild = fl.on_update and fl.on_update(self, dt, nav) or false
 
 	local w, h = get_window_size()
 	local size_changed = (self.last_window_w ~= w or self.last_window_h ~= h)
@@ -288,17 +288,17 @@ function M.update(self, dt)
 		sync_window_baseline(self)
 	end
 
-	local scroll_changed = handle_scroll_dirty(self)
-	local needs_regenerate = fl._dirty or animating or hook_dirty or size_changed or scroll_changed
+	local scroll_changed = handle_scroll_change(self)
+	local needs_regenerate = fl.needs_rebuild or animating or hook_requested_rebuild or size_changed or scroll_changed
 
 	if fl.adapter then
-		needs_regenerate = needs_regenerate or fl.adapter:is_dirty() or transition_complete or nav.is_dirty()
+		needs_regenerate = needs_regenerate or fl.adapter:needs_rebuild() or transition_complete or nav.is_invalidated()
 	end
 
 	if needs_regenerate then
 		regenerate_tree(self)
 		if nav then
-			nav.clear_dirty()
+			nav.clear_invalidation()
 		end
 	end
 
@@ -411,8 +411,8 @@ end
 --- Retrieve the saved vertical scroll offset for a named scroll container.
 --- Scroll offsets are saved into the current screen's params by the navigation
 --- GUI adapter on each frame. This lets a screen's `view` function restore
---- the correct scroll position when the tree is rebuilt (e.g., after a dirty
---- mark triggered by a scroll event).
+--- the correct scroll position when the tree is rebuilt (e.g., after an
+--- invalidation triggered by a scroll event).
 ---@param self table   The gui_script self table (unused; kept for method-call symmetry)
 ---@param key  string  The `key` property of the target scroll container element
 ---@return number      The saved scroll offset in pixels (0 when not yet scrolled)

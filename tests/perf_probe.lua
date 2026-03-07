@@ -218,7 +218,7 @@ local function run_probe(iterations, rows)
   for i = 1, iterations do
     local scroll = tree.children[2]
     scroll._scroll_y = (i * 7) % 600
-    ui.mark_dirty(self)
+    ui.request_redraw(self)
 
     local start_t = os.clock()
     ui.update(self, tree)

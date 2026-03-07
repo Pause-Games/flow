@@ -2,7 +2,7 @@
 -- Per-frame animation ticker for the Flow renderer.
 -- Walks the element tree depth-first, calling each element type's
 -- update_anim(el, dt, deps) handler. Tracks whether any animation
--- is still running (to keep the renderer dirty) and whether any
+-- is still running (to keep redraws active) and whether any
 -- scroll offset changed (to trigger a scroll-state save).
 local M = {}
 
@@ -37,9 +37,9 @@ end
 
 --- Advance all animations in the current tree by dt seconds.
 --- Called once per frame from flow/ui.lua M.update_animations().
---- Sets self.ui._scroll_dirty when any scroll offset changed so that
+--- Sets self.ui._scroll_changed when any scroll offset changed so that
 --- the navigation layer can persist the new scroll position.
---- Marks the renderer dirty via deps.mark_dirty() when still animating.
+--- Requests redraw via deps.request_redraw() when still animating.
 ---@param self table               The gui_script self table with a mounted renderer
 ---@param dt number                Delta time in seconds since the last frame
 ---@param deps Flow.AnimationDeps  Dependency bundle from flow/ui.lua (ANIMATION_DEPS)
@@ -48,10 +48,10 @@ function M.update(self, dt, deps)
 	if not self.ui or not self.ui.tree then return false end
 	local animating, scroll_changed = update_recursive(self.ui.tree, dt, deps)
 	if scroll_changed then
-		self.ui._scroll_dirty = true
+		self.ui._scroll_changed = true
 	end
 	if animating then
-		deps.mark_dirty(self)
+		deps.request_redraw(self)
 	end
 	return animating
 end

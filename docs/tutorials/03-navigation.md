@@ -84,7 +84,7 @@ flow.nav.push("profile_editor", { user = current_user }, {
   on_result = function(result)
     if result and result.saved then
       current_user = result.user
-      flow.nav.mark_dirty()
+      flow.nav.invalidate()
     end
   end,
 })
@@ -173,10 +173,10 @@ Screens can declare optional hooks that fire on navigation events:
 local my_screen = {
   view = function(params, nav) ... end,
 
-  on_enter  = function(params, nav) print("entered") end,
-  on_exit   = function(params, nav) print("exited") end,
-  on_pause  = function(params, nav) print("covered by new screen") end,
-  on_resume = function(params, nav) print("uncovered") end,
+  on_enter  = function(params, nav) flow.log.debug("nav", "entered %s", nav.current() and nav.current().id or "unknown") end,
+  on_exit   = function(params, nav) flow.log.debug("nav", "exited %s", nav.current() and nav.current().id or "unknown") end,
+  on_pause  = function(params, nav) flow.log.debug("nav", "covered by new screen") end,
+  on_resume = function(params, nav) flow.log.debug("nav", "uncovered") end,
 }
 ```
 
@@ -187,10 +187,12 @@ Hooks fire when the navigation action begins, not after a transition animation c
 ## Navigation State
 
 ```lua
-flow.nav.current()      -- returns the current screen id
+flow.nav.current()      -- returns the current stack entry
 flow.nav.stack_depth()  -- number of screens on the stack
 flow.nav.is_busy()      -- true during an active transition
 ```
+
+Use `flow.nav.current().id` when you need the current screen id.
 
 ---
 
@@ -210,7 +212,7 @@ msg.post("main:/ui#gui_script", "navigation_pop", {
 })
 ```
 
-Supported message ids: `navigation_push`, `navigation_pop`, `navigation_replace`, `navigation_reset`, `navigation_back`, `navigation_mark_dirty`.
+Supported message ids: `navigation_push`, `navigation_pop`, `navigation_replace`, `navigation_reset`, `navigation_back`, `navigation_invalidate`.
 
 Make sure `flow.on_message` is wired in your gui_script:
 

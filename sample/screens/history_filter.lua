@@ -51,7 +51,7 @@ return {
 				color = C_transp,
 				on_click = function()
 					params.filter_type = value
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = {
 					radio_indicator(key, selected),
@@ -73,7 +73,7 @@ return {
 					key   = "radio_custom_outer",
 					style = { width = 36, height = 36, align_items = "center", justify_content = "center" },
 					color = C_radio_bg,
-					on_click = function() params.filter_type = "custom"; navigation.mark_dirty() end,
+					on_click = function() params.filter_type = "custom"; navigation.invalidate() end,
 					children = {
 						Box({ key = "radio_custom_inner", style = { width = 16, height = 16 },
 						        color = custom_selected and C_radio_on or C_radio_bg })
@@ -89,7 +89,7 @@ return {
 						params.filter_type = "custom"
 						params.show_month_popup = true
 						params.show_year_popup  = false
-						navigation.mark_dirty()
+						navigation.invalidate()
 					end,
 					children = { Text({ key = "month_val", text = string.format("%02d", params.month),
 					             style = { width = "100%", height = "100%" } }) }
@@ -104,7 +104,7 @@ return {
 						params.filter_type = "custom"
 						params.show_month_popup = false
 						params.show_year_popup  = true
-						navigation.mark_dirty()
+						navigation.invalidate()
 					end,
 					children = { Text({ key = "year_val", text = tostring(params.year),
 					             style = { width = "100%", height = "100%" } }) }
@@ -122,7 +122,7 @@ return {
 				on_click = function()
 					params.month = m
 					params.show_month_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { Text({ key = "mc_lbl_" .. m, text = string.format("%02d", m),
 				             style = { width = "100%", height = "100%" } }) }
@@ -161,7 +161,7 @@ return {
 				on_click = function()
 					params.year = yy
 					params.show_year_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { Text({ key = "yc_lbl_" .. y, text = tostring(y),
 				             style = { width = "100%", height = "100%" } }) }
@@ -251,7 +251,7 @@ return {
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_month_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { month_popup_box },
 			}))
@@ -266,7 +266,7 @@ return {
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_year_popup = false
-					navigation.mark_dirty()
+					navigation.invalidate()
 				end,
 				children = { year_popup_box },
 			}))

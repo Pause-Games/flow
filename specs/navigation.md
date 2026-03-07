@@ -40,11 +40,11 @@ State access:
 - `navigation.set_data(key, value, { screen_id = "..." })`
 - `navigation.get_scroll_offset(key)`
 
-Render/dirty helpers:
+Render/invalidation helpers:
 
-- `navigation.mark_dirty()`
-- `navigation.is_dirty()`
-- `navigation.clear_dirty()`
+- `navigation.invalidate()`
+- `navigation.is_invalidated()`
+- `navigation.clear_invalidation()`
 
 Listeners and transition coordination:
 
@@ -58,8 +58,7 @@ Listeners and transition coordination:
 Message transport:
 
 - `navigation.on_message(message_id, message)`
-- `navigation.handle_message(message_id, message)` -- compatibility alias
-- `navigation.PUSH`, `POP`, `REPLACE`, `RESET`, `BACK`, `MARK_DIRTY`
+- `navigation.PUSH`, `POP`, `REPLACE`, `RESET`, `BACK`, `INVALIDATE`
 
 ## Screen Definition
 
@@ -133,7 +132,7 @@ navigation.push("profile_editor", { user = current_user }, {
   on_result = function(result)
     if result and result.saved then
       current_user = result.user
-      navigation.mark_dirty()
+      navigation.invalidate()
     end
   end,
 })
@@ -248,7 +247,7 @@ Supported message ids:
 - `hash("navigation_replace")`
 - `hash("navigation_reset")`
 - `hash("navigation_back")`
-- `hash("navigation_mark_dirty")`
+- `hash("navigation_invalidate")`
 
 Examples:
 
@@ -275,7 +274,6 @@ Message payload rules:
 Notes:
 
 - `flow.nav.on_message(...)` is the preferred low-level transport helper name
-- `flow.nav.handle_message(...)` remains as a compatibility alias
 - transport logging is emitted under `nav.messages`
 
 ## Proxy Runtime Helper
@@ -359,7 +357,7 @@ Behavior:
 - registers screens into app-wide navigation
 - attaches a per-GUI `navigation_gui` adapter
 - exposes `self.navigation`
-- uses `navigation.mark_dirty()` for rebuilds
+- uses `navigation.invalidate()` for rebuilds
 
 Use `flow.init/flow.update/flow.on_input` unless you explicitly need the low-level modules.
 

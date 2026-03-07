@@ -207,7 +207,7 @@ end
 ---   3. collect_node_keys to know which nodes should exist this frame.
 ---   4. apply() to position/size/color every visible node.
 ---   5. Delete any cached nodes whose keys are no longer in the tree.
----   6. Update self.ui metadata (tree, last size, dirty flag).
+---   6. Update self.ui metadata (tree, last size, redraw flag).
 ---@param self table               The gui_script self table with a mounted renderer
 ---@param tree Flow.Element        The element tree to render
 ---@param w number|nil             Layout width; nil/0 = use GUI or window size
@@ -261,7 +261,7 @@ function M.render(self, tree, w, h, deps)
 	self.ui._last_h = h
 	self.ui._last_rw = gw
 	self.ui._last_rh = gh
-	self.ui._dirty = false
+	self.ui._needs_redraw = false
 	log.debug("ui.renderer", "render complete tree=%s deleted_nodes=%d", tree.key or "unknown", deleted)
 end
 
@@ -281,11 +281,11 @@ function M.render_if_size_changed(self, tree, deps)
 	return true
 end
 
---- Conditionally re-render the tree, checking multiple dirty conditions:
----   - self.ui._dirty flag (set by mark_dirty or mount)
+--- Conditionally re-render the tree, checking multiple redraw conditions:
+---   - self.ui._needs_redraw flag (set by request_redraw or mount)
 ---   - Display size changed since last render (GUI size or window size in window mode)
 ---   - Logical render resolution changed (e.g. display profile switch)
----   - tree._dirty flag (set by mark_tree_dirty)
+---   - tree._needs_redraw flag (set by request_tree_redraw)
 ---   - tree reference changed (new tree since last frame)
 ---
 --- This is the primary entry point called every frame from flow/ui.lua M.update().
@@ -297,7 +297,7 @@ function M.update(self, tree, deps)
 	if not self.ui then return false end
 	if tree and tree ~= self.ui.tree then
 		self.ui.tree = tree
-		self.ui._dirty = true
+		self.ui._needs_redraw = true
 	end
 
 	local w, h
@@ -308,15 +308,15 @@ function M.update(self, tree, deps)
 	end
 	if w == 0 or h == 0 then return false end
 
-	local dirty = self.ui._dirty
-	if w ~= self.ui._last_w or h ~= self.ui._last_h then dirty = true end
+	local needs_redraw = self.ui._needs_redraw
+	if w ~= self.ui._last_w or h ~= self.ui._last_h then needs_redraw = true end
 	local gw, gh = deps.get_gui_size()
-	if gw ~= self.ui._last_rw or gh ~= self.ui._last_rh then dirty = true end
-	if self.ui.tree and self.ui.tree._dirty then dirty = true end
+	if gw ~= self.ui._last_rw or gh ~= self.ui._last_rh then needs_redraw = true end
+	if self.ui.tree and self.ui.tree._needs_redraw then needs_redraw = true end
 
-	if dirty then
+	if needs_redraw then
 		M.render(self, self.ui.tree, w, h, deps)
-		if self.ui.tree then self.ui.tree._dirty = nil end
+		if self.ui.tree then self.ui.tree._needs_redraw = nil end
 		return true
 	end
 	return false

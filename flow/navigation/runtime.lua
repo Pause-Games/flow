@@ -77,7 +77,7 @@ end
 
 --- Handle an incoming Defold message and route it to navigation.
 --- Delegates to navigation_messages.on_message() which dispatches
---- push/pop/replace/reset/back/mark_dirty messages.
+--- push/pop/replace/reset/back/invalidate messages.
 --- Returns true when the message was consumed by navigation.
 ---@param self table               The .script self table
 ---@param message_id hash|string   The incoming message id hash, or raw string in test environments

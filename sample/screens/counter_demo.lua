@@ -14,7 +14,7 @@ return {
 		-- Helper function to update counter and trigger a view rebuild
 		local function update_counter(delta)
 			params.counter = params.counter + delta
-			navigation.mark_dirty()  -- Tell navigation to rebuild the active view
+			navigation.invalidate()  -- Tell navigation to rebuild the active view
 		end
 
 		return Box({
@@ -158,7 +158,7 @@ return {
 							color=vmath.vector4(0.5, 0.4, 0.2, 1),
 							on_click = function()
 								params.counter = 0
-								navigation.mark_dirty()
+								navigation.invalidate()
 							end,
 							children = {
 								Text({
@@ -191,7 +191,7 @@ return {
 								}),
 								Text({
 									key="explain_3",
-									text="3. navigation.mark_dirty() triggers a screen view rebuild",
+									text="3. navigation.invalidate() triggers a screen view rebuild",
 									style={ height=20 }
 								}),
 								Text({

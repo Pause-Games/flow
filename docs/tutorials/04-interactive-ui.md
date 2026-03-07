@@ -62,7 +62,7 @@ Button({
   image    = "button_rounded",
   texture  = "button_shapes",
   border   = 18,
-  style    = { width = 180, height = 52 },
+  style    = { width = 180, height = 52, padding_left = 18, padding_right = 18 },
   color    = vmath.vector4(0.2, 0.5, 0.9, 1),
   on_click = function()
     print("play")
@@ -73,7 +73,7 @@ Button({
 })
 ```
 
-Use this when you want the same text/icon-button behavior, but with a curved or decorative background image.
+Use this when you want the same text/icon-button behavior, but with a curved or decorative background image. For rounded backgrounds, add horizontal padding so text does not sit against the slice-9 corners.
 
 ---
 
@@ -109,7 +109,7 @@ Each screen on the navigation stack has a persistent `params` table. This is whe
 The pattern:
 1. Initialize fields in `params` with `or` guards at the top of `view()`.
 2. Mutate them inside `on_click`.
-3. Call `flow.nav.mark_dirty()` to schedule a re-render.
+3. Call `flow.nav.invalidate()` to schedule a re-render.
 
 ```lua
 view = function(params, nav)
@@ -126,7 +126,7 @@ view = function(params, nav)
         color    = vmath.vector4(0.2, 0.6, 0.3, 1),
         on_click = function()
           params.count = params.count + 1
-          flow.nav.mark_dirty()
+          flow.nav.invalidate()
         end,
         children = { Text({ key = "lbl", text = "+1", style = { width = "100%", height = "100%" } }) }
       }),
@@ -135,7 +135,7 @@ view = function(params, nav)
 end
 ```
 
-`flow.nav.mark_dirty()` flags the navigation system to rebuild the active screen's tree on the next frame. The new `view()` call will see the updated `params.count`.
+`flow.nav.invalidate()` flags the navigation system to rebuild the active screen's tree on the next frame. The new `view()` call will see the updated `params.count`.
 
 ---
 
@@ -156,7 +156,7 @@ view = function(params, nav)
     color    = params.enabled and ON_COLOR or OFF_COLOR,
     on_click = function()
       params.enabled = not params.enabled
-      flow.nav.mark_dirty()
+      flow.nav.invalidate()
     end,
     children = {
       Text({ key = "lbl", text = params.enabled and "ON" or "OFF", style = { width = "100%", height = "100%" } })
@@ -189,7 +189,7 @@ view = function(params, nav)
       color    = (params.selected == idx) and SELECTED or UNSELECTED,
       on_click = function()
         params.selected = idx
-        flow.nav.mark_dirty()
+        flow.nav.invalidate()
       end,
       children = { Text({ key = "lbl_" .. i, text = name, style = { height = 24 } }) }
     }))
@@ -284,7 +284,7 @@ Button({
 
 ## Re-render Timing
 
-`flow.nav.mark_dirty()` is **lazy** — it schedules a re-render for the next frame. Multiple calls in the same frame are collapsed into a single re-render. This means you can safely call it from several `on_click` handlers without triggering extra renders.
+`flow.nav.invalidate()` is **lazy** — it schedules a re-render for the next frame. Multiple calls in the same frame are collapsed into a single re-render. This means you can safely call it from several `on_click` handlers without triggering extra renders.
 
 ---
 

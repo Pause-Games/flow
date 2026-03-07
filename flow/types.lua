@@ -98,7 +98,8 @@
 ---@field _node_prefix? string
 ---@field _background_screen? Flow.Element
 ---@field _scroll_ancestor? Flow.Element
----@field _dirty? boolean
+---@field _needs_redraw? boolean
+---@field _scroll_changed? boolean
 ---@field _clips_children? boolean
 ---@field _clipping_visible? boolean
 
@@ -224,9 +225,9 @@
 ---@field current fun(): Flow.StackEntry|nil
 ---@field peek fun(offset?: number): Flow.StackEntry|nil
 ---@field stack_depth fun(): number
----@field mark_dirty fun()
----@field is_dirty fun(): boolean
----@field clear_dirty fun()
+---@field invalidate fun()
+---@field is_invalidated fun(): boolean
+---@field clear_invalidation fun()
 ---@field is_busy fun(): boolean
 ---@field get_transition fun(): Flow.TransitionMeta|nil
 ---@field begin_transition fun(meta: Flow.TransitionMeta): Flow.TransitionMeta
@@ -294,7 +295,7 @@
 
 ---@class Flow.AnimationDeps
 ---@field registry Flow.DefRegistry
----@field mark_dirty fun(self: table)
+---@field request_redraw fun(self: table)
 
 ---@class Flow.RendererDeps
 ---@field registry Flow.DefRegistry

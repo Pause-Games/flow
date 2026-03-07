@@ -8,7 +8,7 @@ local function animate_new_multipliers(self, dt, nav)
 	local multipliers = params and params.multipliers or nil
 	if not multipliers then return false end
 
-	local dirty = false
+	local needs_invalidate = false
 	for _, mult in ipairs(multipliers) do
 		if mult.is_new then
 			mult.anim_progress = (mult.anim_progress or 0) + dt / 0.3
@@ -16,16 +16,16 @@ local function animate_new_multipliers(self, dt, nav)
 				mult.anim_progress = 1
 				mult.is_new = false
 			else
-				dirty = true
+				needs_invalidate = true
 			end
 		end
 	end
 
-	if dirty then
-		nav.mark_dirty()
+	if needs_invalidate then
+		nav.invalidate()
 	end
 
-	return dirty
+	return needs_invalidate
 end
 
 function init(self)

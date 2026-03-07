@@ -268,7 +268,7 @@ return {
 								color = params.music and C.on_col or C.off_col,
 								on_click = function()
 									params.music = not params.music
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = { Text({ key = "music_lbl",
 								             text = params.music and "Music  ON" or "Music OFF",
@@ -281,7 +281,7 @@ return {
 								color = params.sound and C.on_col or C.off_col,
 								on_click = function()
 									params.sound = not params.sound
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = { Text({ key = "sound_lbl",
 								             text = params.sound and "Sound  ON" or "Sound OFF",
@@ -294,7 +294,7 @@ return {
 								color = params.vibrate and C.on_col or C.off_col,
 								on_click = function()
 									params.vibrate = not params.vibrate
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = { Text({ key = "vibrate_lbl",
 								             text = params.vibrate and "Vibrate ON" or "Vibrate OFF",

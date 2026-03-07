@@ -6,7 +6,7 @@
 --   - Drive animated transitions (fade, slide_left, slide_right) by interpolating
 --     _alpha and _offset_x on the from/to trees
 --   - Persist and restore scroll state across screen renders
---   - Track dirtiness so the main update loop knows when to regenerate the tree
+--   - Track rebuild requests so the main update loop knows when to regenerate the tree
 local M = {}
 
 --- Cubic ease-in-out easing function for transition animation.
@@ -130,14 +130,14 @@ function M.new(navigation)
 		---@type table|nil
 		transition = nil,
 		--- True when the tree needs to be rebuilt this frame.
-		dirty = true,
+		_needs_rebuild = true,
 		--- Event listener closures, kept here so they can be removed in destroy().
 		listeners = {},
 	}
 
-	--- Mark dirty whenever the navigation state changes.
+	--- Request a rebuild whenever the navigation state changes.
 	adapter.listeners.changed = function()
-		adapter.dirty = true
+		adapter._needs_rebuild = true
 	end
 
 	--- Capture the from_tree and initialize transition progress when a transition starts.
@@ -153,13 +153,13 @@ function M.new(navigation)
 			--- Snapshot of the outgoing tree at the moment the transition begins.
 			from_tree = adapter.tree,
 		}
-		adapter.dirty = true
+		adapter._needs_rebuild = true
 	end
 
 	--- Clear the transition state when it completes.
 	adapter.listeners.transition_complete = function()
 		adapter.transition = nil
-		adapter.dirty = true
+		adapter._needs_rebuild = true
 	end
 
 	navigation.on("changed", adapter.listeners.changed)
@@ -180,24 +180,24 @@ function M.destroy(adapter)
 	adapter.listeners = nil
 end
 
---- Mark the adapter as dirty so the next build_tree() call regenerates the tree.
+--- Invalidate the adapter so the next build_tree() call regenerates the tree.
 ---@param adapter table  The adapter instance
-function M.mark_dirty(adapter)
-	adapter.dirty = true
+function M.invalidate(adapter)
+	adapter._needs_rebuild = true
 end
 
 --- Return true when the adapter's tree needs to be rebuilt.
 ---@param adapter table  The adapter instance
----@return boolean       True when adapter.dirty is set
-function M.is_dirty(adapter)
-	return adapter and adapter.dirty == true
+---@return boolean       True when adapter._needs_rebuild is set
+function M.needs_rebuild(adapter)
+	return adapter and adapter._needs_rebuild == true
 end
 
---- Clear the dirty flag. Called after build_tree() has been invoked.
+--- Clear the rebuild flag. Called after build_tree() has been invoked.
 ---@param adapter table  The adapter instance
-function M.clear_dirty(adapter)
+function M.clear_rebuild_flag(adapter)
 	if adapter then
-		adapter.dirty = false
+		adapter._needs_rebuild = false
 	end
 end
 
@@ -229,7 +229,7 @@ function M.build_tree(adapter)
 	local current = navigation.current()
 	if not current then
 		adapter.tree = nil
-		adapter.dirty = false
+		adapter._needs_rebuild = false
 		return nil
 	end
 
@@ -265,12 +265,12 @@ function M.build_tree(adapter)
 	end
 
 	adapter.tree = tree
-	adapter.dirty = false
+	adapter._needs_rebuild = false
 	return tree
 end
 
 --- Advance the active transition by dt seconds.
---- Updates transition.progress and marks the adapter dirty each frame.
+--- Updates transition.progress and requests an adapter rebuild each frame.
 --- When progress reaches 1.0, calls navigation.complete_transition() to
 --- signal that the transition is done and clear the busy flag.
 ---@param adapter table   The adapter instance
@@ -283,7 +283,7 @@ function M.update(adapter, dt)
 
 	local transition = adapter.transition
 	transition.progress = transition.progress + dt / transition.duration
-	adapter.dirty = true
+	adapter._needs_rebuild = true
 
 	if transition.progress >= 1 then
 		transition.progress = 1

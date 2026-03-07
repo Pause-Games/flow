@@ -214,8 +214,8 @@ local function on_wheel(self, el, delta)
 	else
 		el._scroll_y = math.max(min_scroll, math.min(max_scroll, (el._scroll_y or 0) + delta))
 	end
-	self.ui._scroll_dirty = true
-	self.ui._dirty = true
+	self.ui._scroll_changed = true
+	self.ui._needs_redraw = true
 	log.debug("ui.scroll", "wheel key=%s delta=%d x=%s y=%s", el.key or "scroll", delta, tostring(el._scroll_x), tostring(el._scroll_y))
 	return true
 end
@@ -279,8 +279,8 @@ local function on_drag_move(self, el, x, y, now)
 		end
 	end
 
-	self.ui._scroll_dirty = true
-	self.ui._dirty = true
+	self.ui._scroll_changed = true
+	self.ui._needs_redraw = true
 	log.debug("ui.scroll", "drag move key=%s x=%s y=%s", el.key or "scroll", tostring(el._scroll_x), tostring(el._scroll_y))
 	return true
 end
@@ -332,8 +332,8 @@ local function on_drag_end(self, el, action, now)
 		end
 	end
 
-	self.ui._scroll_dirty = true
-	self.ui._dirty = true
+	self.ui._scroll_changed = true
+	self.ui._needs_redraw = true
 	log.debug(
 		"ui.scroll",
 		"drag end key=%s velocity=%.2f momentum=%s bouncing=%s",

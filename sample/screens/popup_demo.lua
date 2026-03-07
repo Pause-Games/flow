@@ -25,7 +25,7 @@ return {
 		-- Close popup helper
 		local function close_popup()
 			params.popup_visible = false
-			navigation.mark_dirty()
+			navigation.invalidate()
 		end
 
 		-- Build popup content based on type
@@ -296,7 +296,7 @@ return {
 								on_click = function()
 									params.popup_type = "confirm"
 									params.popup_visible = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = {
 									Text({
@@ -314,7 +314,7 @@ return {
 								on_click = function()
 									params.popup_type = "alert"
 									params.popup_visible = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = {
 									Text({
@@ -332,7 +332,7 @@ return {
 								on_click = function()
 									params.popup_type = "form"
 									params.popup_visible = true
-									navigation.mark_dirty()
+									navigation.invalidate()
 								end,
 								children = {
 									Text({

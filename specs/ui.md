@@ -53,8 +53,8 @@ Initialises `self.ui` state. Must be called once in `init()` before any other `u
 self.ui = {
   nodes         = {},    -- cache: key → Defold GUI node
   tree          = nil,   -- last rendered tree
-  _dirty        = true,
-  _scroll_dirty = false,
+  _needs_redraw = true,
+  _scroll_changed = false,
   debug         = false,
 }
 ```
@@ -258,7 +258,7 @@ Scrollable container. Clips children using Defold stencil clipping. Supports ver
 - `_virtual_height` / `_virtual_width` define the logical content extent
 - the tree should render only the currently visible rows plus a small buffer
 - rows outside the render window should be replaced by spacer boxes
-- when scroll state changes, the renderer sets `_scroll_dirty`
+- when scroll state changes, the renderer sets `_scroll_changed`
 - the higher-level flow integration persists scroll state and regenerates the active screen view on the next update
 
 This is what allows large lists without exhausting the GUI node budget.
@@ -320,21 +320,21 @@ Full render: computes layout and applies all nodes. Called automatically by `ui.
 
 ### `ui.update(self, tree)`
 
-Dirty-tracking wrapper around `render`. Re-renders only when:
+Redraw-gating wrapper around `render`. Re-renders only when:
 - A new tree is passed.
 - Window size has changed.
-- `self.ui._dirty` is `true`.
-- `tree._dirty` is `true`.
+- `self.ui._needs_redraw` is `true`.
+- `tree._needs_redraw` is `true`.
 
 Use this in the `update()` loop instead of calling `render()` manually.
 
 In high-level flow integration, `flow.update()` also:
 
 - advances primitive animations
-- handles `_scroll_dirty`
+- handles `_scroll_changed`
 - rebuilds the active navigation tree when scroll state, transitions, or data changes require it
 
-### `ui.mark_dirty(self)`
+### `ui.request_redraw(self)`
 
 Forces a re-render on the next `update()` call.
 
@@ -421,7 +421,7 @@ Built-in examples:
 - `scroll` owns momentum and bounce-back physics.
 - `bottom_sheet` owns its slide animation.
 
-Calls `ui.mark_dirty(self)` whenever any animation is active, triggering a re-render.
+Calls `ui.request_redraw(self)` whenever any animation is active, triggering a re-render.
 
 ---
 
@@ -445,7 +445,7 @@ Returns the deepest interactive element at `(x, y)`, or `nil`.
 ui.set_debug(self, true)
 ```
 
-When enabled, prints to console on each `action.pressed`:
+When enabled, emits `flow.log` debug entries on each `action.pressed`:
 - Input coordinates in GUI space and layout space.
 - Window size, GUI size, scale factors.
 - Hit element key and its layout bounds.
@@ -459,5 +459,6 @@ Debug mode is stored on `self.ui` and is not shared across `.gui_script` instanc
 | Function                         | Description                                               |
 |----------------------------------|-----------------------------------------------------------|
 | `ui.get_size()`                  | Returns logical GUI size `(w, h)` from `game.project`    |
-| `ui.mark_tree_dirty(tree)`       | Sets `tree._dirty = true` (alternative to `mark_dirty`) |
+| `ui.request_redraw(self)`        | Requests a full redraw on the next `update()` call       |
+| `ui.request_tree_redraw(tree)`   | Sets `tree._needs_redraw = true` (alternative to `request_redraw`) |
 | `ui.render_if_size_changed(self, tree)` | Renders only if GUI size has changed since last render |

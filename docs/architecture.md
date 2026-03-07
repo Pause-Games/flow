@@ -73,7 +73,7 @@ Each frame, the pipeline runs in this order:
 6. update_anim(tree, dt)          → tick per-primitive physics/animations
 ```
 
-Steps 1–5 only run when the renderer is **dirty** (window resized, `mark_dirty()` called, or a new tree is passed). Step 6 runs every frame and calls `mark_dirty()` automatically when any animation is active.
+Steps 1–5 only run when the renderer needs redraw (window resized, invalidation requested, or a new tree is passed). Step 6 runs every frame and calls `ui.request_redraw()` automatically when any animation is active.
 
 ---
 
@@ -131,9 +131,9 @@ Transitions (fade, slide_left, slide_right) work by rendering both the outgoing 
 Flow avoids re-running layout every frame. A render only happens when:
 
 - The window size changed.
-- `flow.mark_dirty(self)` or `flow.nav.mark_dirty()` is called.
+- `flow.invalidate(self)` or `flow.nav.invalidate()` is called.
 - A new tree instance is passed to `ui.update()`.
-- An active animation marks the renderer dirty automatically.
+- An active animation requests redraw automatically.
 
 The common pattern for state-driven UIs:
 
@@ -141,7 +141,7 @@ The common pattern for state-driven UIs:
 -- In a button's on_click:
 on_click = function()
   params.count = params.count + 1
-  flow.nav.mark_dirty()   -- schedules a re-render next frame
+  flow.nav.invalidate()   -- schedules a re-render next frame
 end
 ```
 

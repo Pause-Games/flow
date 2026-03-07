@@ -34,7 +34,7 @@ Deep-dives on specific topics.
 
 | Guide | Description |
 |-------|-------------|
-| [Best Practices](guides/best-practices.md) | Keys, heights, node budget, dirty tracking patterns |
+| [Best Practices](guides/best-practices.md) | Keys, heights, node budget, invalidation and redraw patterns |
 | [Debugging](guides/debugging.md) | Debug mode, log levels, per-context logging |
 
 ---
