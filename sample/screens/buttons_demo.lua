@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -16,21 +17,21 @@ return {
 		if params.vibrate == nil then params.vibrate = true  end
 
 		local C = {
-			bg       = vmath.vector4(0.08, 0.09, 0.12, 1),
-			header   = vmath.vector4(0.10, 0.12, 0.18, 1),
-			primary  = vmath.vector4(0.22, 0.52, 0.90, 1),
-			secondary= vmath.vector4(0.30, 0.35, 0.45, 1),
-			danger   = vmath.vector4(0.75, 0.20, 0.20, 1),
-			purple   = vmath.vector4(0.58, 0.32, 0.72, 1),
-			green    = vmath.vector4(0.20, 0.62, 0.38, 1),
-			orange   = vmath.vector4(0.87, 0.47, 0.10, 1),
-			teal     = vmath.vector4(0.12, 0.62, 0.62, 1),
-			align_bg = vmath.vector4(0.16, 0.20, 0.32, 1),
-			on_col   = vmath.vector4(0.87, 0.47, 0.10, 1),
-			off_col  = vmath.vector4(0.24, 0.26, 0.34, 1),
-			enabled  = vmath.vector4(0.20, 0.60, 0.35, 1),
-			disabled = vmath.vector4(0.35, 0.35, 0.38, 0.50),
-			transp   = vmath.vector4(0, 0, 0, 0),
+			bg       = rgba(0.08, 0.09, 0.12, 1),
+			header   = rgba(0.10, 0.12, 0.18, 1),
+			primary  = rgba(0.22, 0.52, 0.90, 1),
+			secondary= rgba(0.30, 0.35, 0.45, 1),
+			danger   = rgba(0.75, 0.20, 0.20, 1),
+			purple   = rgba(0.58, 0.32, 0.72, 1),
+			green    = rgba(0.20, 0.62, 0.38, 1),
+			orange   = rgba(0.87, 0.47, 0.10, 1),
+			teal     = rgba(0.12, 0.62, 0.62, 1),
+			align_bg = rgba(0.16, 0.20, 0.32, 1),
+			on_col   = rgba(0.87, 0.47, 0.10, 1),
+			off_col  = rgba(0.24, 0.26, 0.34, 1),
+			enabled  = rgba(0.20, 0.60, 0.35, 1),
+			disabled = rgba(0.35, 0.35, 0.38, 0.50),
+			transp   = rgba(0, 0, 0, 0),
 		}
 
 		-- helper: section title (full-width text, height=22)
@@ -124,7 +125,7 @@ return {
 									Box({
 										key = "btn_fav_inner",
 										style = { flex_direction = "row", align_items = "center", gap = 8, width = 140, height = 28 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											Icon({ key = "fav_icon", image = "icon_favorite", style = { width = 28, height = 28 } }),
 											Text({ key = "fav_lbl", text = "Favorito", style = { flex_grow = 1, height = 28 }, align = "center" })
@@ -141,7 +142,7 @@ return {
 									Box({
 										key = "btn_add_inner",
 										style = { flex_direction = "row", align_items = "center", gap = 8, width = 140, height = 28 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											Icon({ key = "add_icon", image = "icon_plus", style = { width = 28, height = 28 } }),
 											Text({ key = "add_lbl", text = "Adicionar", style = { flex_grow = 1, height = 28 }, align = "center" })
@@ -158,7 +159,7 @@ return {
 									Box({
 										key = "btn_next_inner",
 										style = { flex_direction = "row", align_items = "center", gap = 8, width = 140, height = 28 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											Icon({ key = "next_icon", image = "icon_arrow", style = { width = 28, height = 28 } }),
 											Text({ key = "next_lbl", text = "Proximo", style = { flex_grow = 1, height = 28 }, align = "center" })

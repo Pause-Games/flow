@@ -10,6 +10,7 @@ local BottomSheet = require "flow/components/bottom_sheet"
 local Box = require "flow/components/box"
 local Button = require "flow/components/button"
 local ButtonImage = require "flow/components/button_image"
+local color = require "flow/color"
 local Flex = require "flow/flex"
 local Icon = require "flow/components/icon"
 local layout = require "flow/layout"
@@ -39,6 +40,7 @@ local function build_ui_namespace()
 	}
 	local namespace = {
 		Flex = Flex,
+		color = color,
 		flex = Flex,
 		layout = layout,
 		cp = components,
@@ -66,6 +68,7 @@ local M = {
 	ui = build_ui_namespace(),
 	nav = build_nav_namespace(),
 	log = log,
+	color = color,
 }
 
 --- Query the current Defold window dimensions in physical pixels.

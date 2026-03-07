@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -6,18 +7,18 @@ local Scroll = flow.ui.cp.Scroll
 local Text = flow.ui.cp.Text
 
 local C = {
-	bg = vmath.vector4(0.07, 0.08, 0.12, 1),
-	header = vmath.vector4(0.10, 0.12, 0.18, 1),
-	panel = vmath.vector4(0.12, 0.15, 0.22, 1),
-	panel_alt = vmath.vector4(0.15, 0.18, 0.27, 1),
-	muted = vmath.vector4(0.76, 0.81, 0.90, 1),
-	red = vmath.vector4(0.82, 0.33, 0.31, 1),
-	orange = vmath.vector4(0.89, 0.56, 0.20, 1),
-	yellow = vmath.vector4(0.83, 0.76, 0.29, 1),
-	green = vmath.vector4(0.30, 0.67, 0.42, 1),
-	teal = vmath.vector4(0.18, 0.63, 0.63, 1),
-	blue = vmath.vector4(0.25, 0.49, 0.85, 1),
-	purple = vmath.vector4(0.56, 0.38, 0.78, 1),
+	bg = rgba(0.07, 0.08, 0.12, 1),
+	header = rgba(0.10, 0.12, 0.18, 1),
+	panel = rgba(0.12, 0.15, 0.22, 1),
+	panel_alt = rgba(0.15, 0.18, 0.27, 1),
+	muted = rgba(0.76, 0.81, 0.90, 1),
+	red = rgba(0.82, 0.33, 0.31, 1),
+	orange = rgba(0.89, 0.56, 0.20, 1),
+	yellow = rgba(0.83, 0.76, 0.29, 1),
+	green = rgba(0.30, 0.67, 0.42, 1),
+	teal = rgba(0.18, 0.63, 0.63, 1),
+	blue = rgba(0.25, 0.49, 0.85, 1),
+	purple = rgba(0.56, 0.38, 0.78, 1),
 }
 
 local function label(key, text, h, color, font)
@@ -51,12 +52,12 @@ local function section(key, title, subtitle, demo, demo_height)
 	return Box({
 		key = key,
 		style = { height = 54 + demo_height, flex_direction = "column", gap = 10 },
-		color = vmath.vector4(0, 0, 0, 0),
+		color = rgba(0, 0, 0, 0),
 		children = {
 			Box({
 				key = key .. "_head",
 				style = { height = 44, flex_direction = "column", gap = 4 },
-				color = vmath.vector4(0, 0, 0, 0),
+				color = rgba(0, 0, 0, 0),
 				children = {
 					label(key .. "_title", title, 24, nil, "heading"),
 					label(key .. "_subtitle", subtitle, 16, C.muted),
@@ -120,7 +121,7 @@ return {
 							Box({
 								key = "growth_demo",
 								style = { height = 92, flex_direction = "row", gap = 10 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									chip("growth_1", "1x", C.red, 1),
 									chip("growth_2", "2x", C.blue, 2),
@@ -142,7 +143,7 @@ return {
 									Box({
 										key = "percent_row",
 										style = { height = 54, flex_direction = "row", gap = 10 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											chip("percent_left", "25%", C.orange, nil, "25%"),
 											chip("percent_mid", "50%", C.purple, nil, "50%"),
@@ -152,7 +153,7 @@ return {
 									Box({
 										key = "percent_overlay",
 										style = { height = 20, flex_direction = "row", gap = 10 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											Box({ key = "percent_left_box", style = { width = "25%", height = 20 }, color = C.orange }),
 											Box({ key = "percent_mid_box", style = { width = "50%", height = 20 }, color = C.purple }),
@@ -171,7 +172,7 @@ return {
 							Box({
 								key = "nested_demo",
 								style = { height = 196, flex_direction = "row", gap = 12 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									Box({
 										key = "nested_sidebar",
@@ -186,12 +187,12 @@ return {
 									Box({
 										key = "nested_main",
 										style = { flex_grow = 1, flex_direction = "column", gap = 10 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											Box({
 												key = "nested_top",
 												style = { height = 64, flex_direction = "row", gap = 10 },
-												color = vmath.vector4(0, 0, 0, 0),
+												color = rgba(0, 0, 0, 0),
 												children = {
 													chip("nested_stat_a", "64", C.red, 1),
 													chip("nested_stat_b", "12", C.yellow, 1),
@@ -207,7 +208,7 @@ return {
 													Box({
 														key = "nested_chart_bars",
 														style = { flex_grow = 1, flex_direction = "row", gap = 8, align_items = "end" },
-														color = vmath.vector4(0, 0, 0, 0),
+														color = rgba(0, 0, 0, 0),
 														children = {
 															Box({ key = "bar_a", style = { flex_grow = 1, height = 40 }, color = C.red }),
 															Box({ key = "bar_b", style = { flex_grow = 1, height = 86 }, color = C.orange }),
@@ -236,7 +237,7 @@ return {
 									Box({
 										key = "spacing_row_top",
 										style = { height = 46, flex_direction = "row", gap = 12 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											chip("spacing_a", "Padding edge", C.red, 1),
 											chip("spacing_b", "Gap", C.blue, 1),
@@ -245,7 +246,7 @@ return {
 									Box({
 										key = "spacing_row_bottom",
 										style = { flex_grow = 1, flex_direction = "row", gap = 12 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											Box({
 												key = "spacing_note",
@@ -258,7 +259,7 @@ return {
 											Box({
 												key = "spacing_stack",
 												style = { flex_grow = 1, flex_direction = "column", gap = 10 },
-												color = vmath.vector4(0, 0, 0, 0),
+												color = rgba(0, 0, 0, 0),
 												children = {
 													chip("spacing_stack_a", "Child 1", C.green),
 													chip("spacing_stack_b", "Child 2", C.purple),
@@ -278,7 +279,7 @@ return {
 							Box({
 								key = "screen_pattern",
 								style = { height = 246, flex_direction = "column", gap = 10 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									Box({
 										key = "screen_header_box",
@@ -291,7 +292,7 @@ return {
 									Box({
 										key = "screen_toolbar_box",
 										style = { height = 42, flex_direction = "row", gap = 8 },
-										color = vmath.vector4(0, 0, 0, 0),
+										color = rgba(0, 0, 0, 0),
 										children = {
 											chip("screen_tool_a", "Filters", C.orange, 1),
 											chip("screen_tool_b", "Search", C.yellow, 1),

@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -20,18 +21,18 @@ return {
 		return Box({
 			key = "counter_root",
 			style = { width="100%", height="100%", flex_direction="column", gap=0, padding=0 },
-			color = vmath.vector4(0.1, 0.08, 0.12, 1),
+			color = rgba(0.1, 0.08, 0.12, 1),
 			children = {
 				-- Header
 				Box({
 					key="header",
 					style={ height=60, flex_direction="row", gap=8, align_items="center" },
-					color=vmath.vector4(0.2, 0.2, 0.2, 0.8),
+					color=rgba(0.2, 0.2, 0.2, 0.8),
 					children = {
 						Button({
 							key="btn_back",
 							style={ width=80, height=40 },
-							color=vmath.vector4(0.8, 0.3, 0.3, 1),
+							color=rgba(0.8, 0.3, 0.3, 1),
 							on_click = function()
 								navigation.pop("slide_right")
 							end,
@@ -54,7 +55,7 @@ return {
 				Box({
 					key="content",
 					style={ flex_grow=1, flex_direction="column", gap=20, align_items="center", justify_content="center", padding=20 },
-					color=vmath.vector4(0.05, 0.05, 0.1, 1),
+					color=rgba(0.05, 0.05, 0.1, 1),
 					children = {
 						-- Info text
 						Text({
@@ -66,7 +67,7 @@ return {
 						Box({
 							key="counter_display",
 							style={ width=300, height=150, flex_direction="column", gap=10, align_items="center", justify_content="center" },
-							color=vmath.vector4(0.15, 0.15, 0.2, 1),
+							color=rgba(0.15, 0.15, 0.2, 1),
 							children = {
 								Text({
 									key="counter_label",
@@ -89,7 +90,7 @@ return {
 								Button({
 									key="btn_minus_10",
 									style={ width=80, height=60 },
-									color=vmath.vector4(0.6, 0.2, 0.2, 1),
+									color=rgba(0.6, 0.2, 0.2, 1),
 									on_click = function()
 										update_counter(-10)
 									end,
@@ -105,7 +106,7 @@ return {
 								Button({
 									key="btn_minus",
 									style={ width=80, height=60 },
-									color=vmath.vector4(0.8, 0.3, 0.3, 1),
+									color=rgba(0.8, 0.3, 0.3, 1),
 									on_click = function()
 										update_counter(-1)
 									end,
@@ -121,7 +122,7 @@ return {
 								Button({
 									key="btn_plus",
 									style={ width=80, height=60 },
-									color=vmath.vector4(0.3, 0.8, 0.3, 1),
+									color=rgba(0.3, 0.8, 0.3, 1),
 									on_click = function()
 										update_counter(1)
 									end,
@@ -137,7 +138,7 @@ return {
 								Button({
 									key="btn_plus_10",
 									style={ width=80, height=60 },
-									color=vmath.vector4(0.2, 0.6, 0.2, 1),
+									color=rgba(0.2, 0.6, 0.2, 1),
 									on_click = function()
 										update_counter(10)
 									end,
@@ -155,7 +156,7 @@ return {
 						Button({
 							key="btn_reset",
 							style={ width=200, height=50 },
-							color=vmath.vector4(0.5, 0.4, 0.2, 1),
+							color=rgba(0.5, 0.4, 0.2, 1),
 							on_click = function()
 								params.counter = 0
 								navigation.invalidate()
@@ -172,7 +173,7 @@ return {
 						Box({
 							key="explanation",
 							style={ width="80%", flex_direction="column", gap=10, padding=20 },
-							color=vmath.vector4(0.15, 0.12, 0.18, 1),
+							color=rgba(0.15, 0.12, 0.18, 1),
 							children = {
 								Text({
 									key="explain_title",

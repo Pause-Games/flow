@@ -19,6 +19,9 @@ vmath = {}
 function vmath.vector3(x, y, z)
   return { x = x or 0, y = y or 0, z = z or 0 }
 end
+function rgba(x, y, z, w)
+  return { r = x or 0, g = y or 0, b = z or 0, a = w == nil and 1 or w }
+end
 function vmath.vector4(x, y, z, w)
   return { x = x or 0, y = y or 0, z = z or 0, w = w or 0 }
 end
@@ -76,7 +79,7 @@ local function new_node(kind, pos, size)
     position = deepcopy(pos or vmath.vector3()),
     size = deepcopy(size or vmath.vector3()),
     scale = vmath.vector3(1, 1, 1),
-    color = vmath.vector4(1, 1, 1, 1),
+    color = rgba(1, 1, 1, 1),
     alpha = 1,
     deleted = false,
   }
@@ -173,6 +176,8 @@ end
 
 local layout = require "flow/layout"
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
+local color = flow.color
 local flow_log = require "flow/log"
 local navigation = require "flow/navigation/init"
 local navigation_messages = require "flow/navigation/messages"
@@ -240,6 +245,8 @@ local function test_flow_facade_namespaces()
   check(flow.ui.cp.Text == Text, "flow facade: flow.ui.cp should expose Text")
   check(flow.ui.cp.Button == Button, "flow facade: flow.ui.cp should expose Button")
   check(flow.ui.cp.ButtonImage == ButtonImage, "flow facade: flow.ui.cp should expose ButtonImage")
+  check(flow.color ~= nil, "flow facade: flow should expose the color helper module")
+  check(flow.ui.color == flow.color, "flow facade: flow.ui should expose the same color helper module")
   check(flow.nav.push == navigation.push, "flow facade: flow.nav should expose navigation singleton methods")
   check(flow.nav.invalidate == navigation.invalidate, "flow facade: flow.nav should expose navigation invalidation")
   check(flow.nav.is_invalidated == navigation.is_invalidated, "flow facade: flow.nav should expose navigation invalidation state")
@@ -255,6 +262,28 @@ local function test_flow_facade_namespaces()
   check(flow.nav.runtime == navigation_runtime, "flow facade: flow.nav.runtime should expose the non-gui runtime helper")
   check(flow.nav.proxy == navigation_proxy, "flow facade: flow.nav.proxy should expose the proxy helper")
   check(flow.log == flow_log, "flow facade: flow.log should expose the centralized logger")
+end
+
+local function test_color_api_parses_public_formats()
+  local hex = color.resolve("#778899")
+  check(approx_eq(hex.x, 0x77 / 255) and approx_eq(hex.y, 0x88 / 255) and approx_eq(hex.z, 0x99 / 255) and approx_eq(hex.w, 1),
+    "color api: hex strings should resolve to normalized rgba")
+
+  local rgba_text = color.resolve("rgba(119, 136, 153, 0.5)")
+  check(approx_eq(rgba_text.x, 119 / 255) and approx_eq(rgba_text.y, 136 / 255) and approx_eq(rgba_text.z, 153 / 255) and approx_eq(rgba_text.w, 0.5),
+    "color api: rgba() strings should resolve to normalized rgba")
+
+  local helper = color.resolve(color.rgba(0.2, 0.4, 0.8, 1))
+  check(approx_eq(helper.x, 0.2) and approx_eq(helper.y, 0.4) and approx_eq(helper.z, 0.8) and approx_eq(helper.w, 1),
+    "color api: flow.color.rgba should produce valid public color values")
+
+  local array = color.resolve({ 119, 136, 153, 255 })
+  check(approx_eq(array.x, 119 / 255) and approx_eq(array.y, 136 / 255) and approx_eq(array.z, 153 / 255) and approx_eq(array.w, 1),
+    "color api: array tables should resolve as rgba values")
+
+  local ok, err = pcall(color.resolve, vmath.vector4(1, 1, 1, 1))
+  check(ok == false and tostring(err):match("vector4"),
+    "color api: vector4 values should be rejected at the public API boundary")
 end
 
 local function test_flow_log_levels_and_contexts()
@@ -401,7 +430,7 @@ local function test_button_visual_prefix_lookup()
       Button({
         key = "button",
         style = { width = 100, height = 50 },
-        color = vmath.vector4(1, 0.5, 0.25, 1),
+        color = rgba(1, 0.5, 0.25, 1),
         on_click = function()
           clicked = clicked + 1
         end,
@@ -438,7 +467,7 @@ local function test_button_hover_visual()
       Button({
         key = "button",
         style = { width = 100, height = 50 },
-        color = vmath.vector4(0.5, 0.4, 0.3, 1),
+        color = rgba(0.5, 0.4, 0.3, 1),
         children = {
           Text({ key = "label", text = "Hover", style = { width = "100%", height = "100%" } })
         }
@@ -472,7 +501,7 @@ local function test_button_image_and_slice9()
         texture = "button_shapes",
         border = 18,
         style = { width = 120, height = 50 },
-        color = vmath.vector4(0.2, 0.4, 0.8, 1),
+        color = rgba(0.2, 0.4, 0.8, 1),
         children = {
           Text({ key = "rounded_label", text = "Rounded", style = { width = "100%", height = "100%" } })
         }
@@ -1136,6 +1165,7 @@ end
 
 local tests = {
   test_flow_facade_namespaces,
+  test_color_api_parses_public_formats,
   test_flow_on_message_facade,
   test_flow_log_levels_and_contexts,
   test_layout_overflow_clamp,

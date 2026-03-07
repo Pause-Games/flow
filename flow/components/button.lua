@@ -54,20 +54,22 @@ local function apply_button_visual(self, el)
 	end
 
 	if is_active_press and el._pressed then
-		local c = el.pressed_color or el.color
+		local c = el._pressed_color or el._color
 		if c then
 			self.ui._set_node_color(node, c.x * 0.7, c.y * 0.7, c.z * 0.7, c.w)
 		elseif el.image then
 			self.ui._set_node_color(node, 0.7, 0.7, 0.7, 1)
 		end
 	elseif is_active_press then
-		if el.color then
-			self.ui._set_node_color(node, el.color.x, el.color.y, el.color.z, el.color.w)
+		if el._color then
+			local c = el._color
+			self.ui._set_node_color(node, c.x, c.y, c.z, c.w)
 		elseif el.image then
 			self.ui._set_node_color(node, 1, 1, 1, 1)
 		end
-	elseif el.color then
-		self.ui._set_node_color(node, el.color.x, el.color.y, el.color.z, el.color.w)
+	elseif el._color then
+		local c = el._color
+		self.ui._set_node_color(node, c.x, c.y, c.z, c.w)
 	elseif el.image then
 		self.ui._set_node_color(node, 1, 1, 1, 1)
 	end
@@ -174,7 +176,7 @@ local function Button(t)
 	t._pressed = false
 	t._hovered = false
 	if t.image and t.color == nil then
-		t.color = vmath.vector4(1, 1, 1, 1)
+		t.color = "#ffffff"
 	end
 	return t
 end

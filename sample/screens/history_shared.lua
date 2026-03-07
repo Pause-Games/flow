@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -36,10 +37,10 @@ local HISTORY_DATA = (function()
 end)()
 
 local function history_row(item, key_suffix, on_click)
-	local C_green  = vmath.vector4(0.30, 0.85, 0.40, 1)
-	local C_white  = vmath.vector4(0.90, 0.90, 0.90, 1)
-	local C_transp = vmath.vector4(0, 0, 0, 0)
-	local C_row    = vmath.vector4(0.12, 0.14, 0.20, 1)
+	local C_green  = rgba(0.30, 0.85, 0.40, 1)
+	local C_white  = rgba(0.90, 0.90, 0.90, 1)
+	local C_transp = rgba(0, 0, 0, 0)
+	local C_row    = rgba(0.12, 0.14, 0.20, 1)
 	local function fmt(v)
 		return ("R$ " .. string.format("%.2f", v)):gsub("%.", ",")
 	end

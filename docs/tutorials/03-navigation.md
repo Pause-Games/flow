@@ -232,9 +232,9 @@ local Box    = flow.ui.cp.Box
 local Text   = flow.ui.cp.Text
 local Button = flow.ui.cp.Button
 
-local WHITE = vmath.vector4(1, 1, 1, 1)
-local BLUE  = vmath.vector4(0.2, 0.4, 0.9, 1)
-local DARK  = vmath.vector4(0.1, 0.12, 0.15, 1)
+local WHITE = "#ffffff"
+local BLUE  = "#3366e6"
+local DARK  = "#1a1f26"
 
 local screens = {
   home = {

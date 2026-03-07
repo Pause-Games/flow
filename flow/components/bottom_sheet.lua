@@ -93,7 +93,7 @@ ui.register("bottom_sheet", {
 	---@param node userdata        The backdrop GUI node to color
 	---@param alpha number         Accumulated alpha from parent transitions [0..1]
 	apply = function(self, el, node, alpha)
-		local c = el.backdrop_color or vmath.vector4(0, 0, 0, 0.7)
+		local c = el._backdrop_color
 		if el._open ~= nil then
 			-- Fade backdrop proportionally to how open the sheet is
 			local progress
@@ -163,7 +163,7 @@ local function BottomSheet(t)
 	t.type = "bottom_sheet"
 	-- _is_overlay = true causes layout.lua to skip this in flex flow and lay it at full parent bounds
 	t._is_overlay = true
-	t.backdrop_color = t.backdrop_color or vmath.vector4(0, 0, 0, 0.5)
+	t.backdrop_color = t.backdrop_color or "rgba(0, 0, 0, 0.5)"
 	t.style = t.style or {}
 	-- Default style: full screen, content anchored to bottom center
 	t.style.width = t.style.width or "100%"

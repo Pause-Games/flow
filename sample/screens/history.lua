@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -29,17 +30,17 @@ return {
 		local total_pages = math.max(1, math.ceil(total / PER_PAGE))
 		params.page = math.min(params.page, total_pages)
 
-		local C_bg       = vmath.vector4(0.10, 0.12, 0.18, 1)
-		local C_header   = vmath.vector4(0.08, 0.10, 0.15, 1)
-		local C_sep      = vmath.vector4(0.25, 0.28, 0.38, 1)
-		local C_orange   = vmath.vector4(0.87, 0.62, 0.15, 1)
-		local C_transp   = vmath.vector4(0, 0, 0, 0)
-		local C_radio_bg = vmath.vector4(0.20, 0.23, 0.32, 1)
-		local C_radio_on = vmath.vector4(0.80, 0.80, 0.85, 1)
-		local C_dark_box = vmath.vector4(0.08, 0.10, 0.15, 1)
-		local C_cell_bg  = vmath.vector4(0.20, 0.23, 0.32, 1)
-		local C_panel    = vmath.vector4(0.13, 0.15, 0.22, 1)
-		local C_list_bg  = vmath.vector4(0.12, 0.14, 0.20, 1)
+		local C_bg       = rgba(0.10, 0.12, 0.18, 1)
+		local C_header   = rgba(0.08, 0.10, 0.15, 1)
+		local C_sep      = rgba(0.25, 0.28, 0.38, 1)
+		local C_orange   = rgba(0.87, 0.62, 0.15, 1)
+		local C_transp   = rgba(0, 0, 0, 0)
+		local C_radio_bg = rgba(0.20, 0.23, 0.32, 1)
+		local C_radio_on = rgba(0.80, 0.80, 0.85, 1)
+		local C_dark_box = rgba(0.08, 0.10, 0.15, 1)
+		local C_cell_bg  = rgba(0.20, 0.23, 0.32, 1)
+		local C_panel    = rgba(0.13, 0.15, 0.22, 1)
+		local C_list_bg  = rgba(0.12, 0.14, 0.20, 1)
 
 		-- Column header
 		local col_header = Box({
@@ -77,8 +78,8 @@ return {
 		-- Pagination bar
 		local can_prev = params.page > 1
 		local can_next = params.page < total_pages
-		local btn_on   = vmath.vector4(0.20, 0.25, 0.38, 1)
-		local btn_off  = vmath.vector4(0.15, 0.17, 0.22, 0.5)
+		local btn_on   = rgba(0.20, 0.25, 0.38, 1)
+		local btn_off  = rgba(0.15, 0.17, 0.22, 0.5)
 
 		local pagination = Box({
 			key   = "pagination",
@@ -221,7 +222,7 @@ return {
 								          style = { height = 26 }, align = "center" }),
 								Text({ key = "flt_subtitle", text = "Select Period",
 								          style = { height = 20 }, align = "center",
-								          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
+								          color = rgba(0.6, 0.6, 0.7, 1) }),
 							}
 						}),
 						Box({ key = "flt_hdr_pad", style = { width = 50, height = 50 }, color = C_transp }),
@@ -280,7 +281,7 @@ return {
 			key   = "month_popup_box",
 			style = { width = 292, height = 298, flex_direction = "column",
 			          align_items = "center", gap = 10, padding = 16 },
-			color = vmath.vector4(0.12, 0.15, 0.22, 1),
+			color = rgba(0.12, 0.15, 0.22, 1),
 			children = {
 				Text({ key = "mp_title", text = "Select Month",
 				          style = { height = 28 }, align = "center", color = C_orange }),
@@ -318,7 +319,7 @@ return {
 			key   = "year_popup_box",
 			style = { width = 260, height = 126, flex_direction = "column",
 			          align_items = "center", gap = 10, padding = 16 },
-			color = vmath.vector4(0.12, 0.15, 0.22, 1),
+			color = rgba(0.12, 0.15, 0.22, 1),
 			children = {
 				Text({ key = "yp_title", text = "Select Year",
 				          style = { height = 28 }, align = "center", color = C_orange }),
@@ -358,13 +359,13 @@ return {
 							               or (params.filter_type == "custom") and string.format("%02d/%d", params.filter_month, params.filter_year)
 							               or "Today",
 							          style = { height = 20 }, align = "center",
-							          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
+							          color = rgba(0.6, 0.6, 0.7, 1) }),
 						}
 					}),
 					Button({
 						key   = "hist_filter_btn",
 						style = { width = 80, height = 40, align_items = "center", justify_content = "center" },
-						color = vmath.vector4(0.20, 0.25, 0.38, 1),
+						color = rgba(0.20, 0.25, 0.38, 1),
 						on_click = function()
 							params.show_filter = true
 							navigation.invalidate()
@@ -396,7 +397,7 @@ return {
 				key = "filter_overlay",
 				style = { width = "100%", height = "100%",
 				          align_items = "stretch", justify_content = "start" },
-				backdrop_color = vmath.vector4(0, 0, 0, 0.6),
+				backdrop_color = rgba(0, 0, 0, 0.6),
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_filter = false
@@ -413,7 +414,7 @@ return {
 			table.insert(children, Popup({
 				key = "month_picker_popup",
 				style = { width = "100%", height = "100%", align_items = "center", justify_content = "center" },
-				backdrop_color = vmath.vector4(0, 0, 0, 0.4),
+				backdrop_color = rgba(0, 0, 0, 0.4),
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_month_popup = false
@@ -428,7 +429,7 @@ return {
 			table.insert(children, Popup({
 				key = "year_picker_popup",
 				style = { width = "100%", height = "100%", align_items = "center", justify_content = "center" },
-				backdrop_color = vmath.vector4(0, 0, 0, 0.4),
+				backdrop_color = rgba(0, 0, 0, 0.4),
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_year_popup = false

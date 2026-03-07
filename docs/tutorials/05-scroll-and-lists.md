@@ -48,7 +48,7 @@ view = function(params, nav)
   for i = 1, 30 do
     table.insert(items, Box({
       key   = "item_" .. i,
-      color = vmath.vector4(0.18, 0.2, 0.25, 1),
+      color = "#2e3340",
       style = { height = 60, width = "100%", padding_left = 16, align_items = "center" },
       children = {
         Text({ key = "lbl_" .. i, text = "Item " .. i, style = { height = 28 } }),
@@ -62,7 +62,7 @@ view = function(params, nav)
     children = {
       Box({
         key   = "header",
-        color = vmath.vector4(0.1, 0.12, 0.15, 1),
+        color = "#1a1f26",
         style = { height = 56, padding_left = 16, align_items = "center" },
         children = { Text({ key = "title", text = "My List", style = { height = 32 } }) }
       }),
@@ -127,7 +127,7 @@ view = function(params, nav)
   if first_render > 1 then
     table.insert(items, Box({
       key   = "top_spacer",
-      color = vmath.vector4(0, 0, 0, 0),
+      color = "rgba(0, 0, 0, 0)",
       style = { height = (first_render - 1) * ITEM_H, width = "100%" },
     }))
   end
@@ -136,7 +136,7 @@ view = function(params, nav)
   for i = first_render, last_render do
     table.insert(items, Box({
       key   = "item_" .. i,
-      color = vmath.vector4(0.18, 0.2, 0.25, 1),
+      color = "#2e3340",
       style = { height = ITEM_H, width = "100%", padding_left = 16, align_items = "center" },
       children = { Text({ key = "lbl_" .. i, text = "Item " .. i, style = { height = 28 } }) }
     }))
@@ -146,7 +146,7 @@ view = function(params, nav)
   if last_render < TOTAL then
     table.insert(items, Box({
       key   = "bottom_spacer",
-      color = vmath.vector4(0, 0, 0, 0),
+      color = "rgba(0, 0, 0, 0)",
       style = { height = (TOTAL - last_render) * ITEM_H, width = "100%" },
     }))
   end

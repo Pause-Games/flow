@@ -11,7 +11,7 @@ local function ButtonImage(t)
 		t.texture = "icons"
 	end
 	if t.color == nil then
-		t.color = vmath.vector4(1, 1, 1, 1)
+		t.color = "#ffffff"
 	end
 	return Button(t)
 end

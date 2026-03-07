@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -7,17 +8,17 @@ local Scroll = flow.ui.cp.Scroll
 local Text = flow.ui.cp.Text
 
 local C = {
-	bg = vmath.vector4(0.08, 0.09, 0.13, 1),
-	header = vmath.vector4(0.10, 0.12, 0.18, 1),
-	panel = vmath.vector4(0.12, 0.15, 0.22, 1),
-	panel_alt = vmath.vector4(0.15, 0.18, 0.27, 1),
-	muted = vmath.vector4(0.78, 0.82, 0.90, 1),
-	red = vmath.vector4(0.78, 0.29, 0.29, 1),
-	orange = vmath.vector4(0.86, 0.50, 0.15, 1),
-	yellow = vmath.vector4(0.83, 0.76, 0.29, 1),
-	green = vmath.vector4(0.25, 0.60, 0.40, 1),
-	blue = vmath.vector4(0.28, 0.48, 0.78, 1),
-	purple = vmath.vector4(0.53, 0.41, 0.78, 1),
+	bg = rgba(0.08, 0.09, 0.13, 1),
+	header = rgba(0.10, 0.12, 0.18, 1),
+	panel = rgba(0.12, 0.15, 0.22, 1),
+	panel_alt = rgba(0.15, 0.18, 0.27, 1),
+	muted = rgba(0.78, 0.82, 0.90, 1),
+	red = rgba(0.78, 0.29, 0.29, 1),
+	orange = rgba(0.86, 0.50, 0.15, 1),
+	yellow = rgba(0.83, 0.76, 0.29, 1),
+	green = rgba(0.25, 0.60, 0.40, 1),
+	blue = rgba(0.28, 0.48, 0.78, 1),
+	purple = rgba(0.53, 0.41, 0.78, 1),
 }
 
 local function label(key, text, h, color, font, align, width)
@@ -35,7 +36,7 @@ local function status_row(key, title, value, color)
 	return Box({
 		key = key,
 		style = { height = 26, flex_direction = "row", gap = 8 },
-		color = vmath.vector4(0, 0, 0, 0),
+		color = rgba(0, 0, 0, 0),
 		children = {
 			label(key .. "_title", title, 22, C.muted, nil, nil, 92),
 			label(key .. "_value", value, 22, color),
@@ -60,7 +61,7 @@ local function popup_shell(key, title, subtitle, body_children, tone_color, heig
 		Box({
 			key = key .. "_hero",
 			style = { height = 58, flex_direction = "row", gap = 12, align_items = "center" },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = {
 				Box({
 					key = key .. "_badge",
@@ -70,7 +71,7 @@ local function popup_shell(key, title, subtitle, body_children, tone_color, heig
 				Box({
 					key = key .. "_titles",
 					style = { flex_grow = 1, flex_direction = "column", gap = 4 },
-					color = vmath.vector4(0, 0, 0, 0),
+					color = rgba(0, 0, 0, 0),
 					children = {
 						label(key .. "_title", title, 28, nil, "heading"),
 						label(key .. "_subtitle", subtitle, 18, C.muted),
@@ -143,7 +144,7 @@ return {
 					Box({
 						key = "popup_confirm_actions",
 						style = { height = 54, flex_direction = "row", gap = 10 },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							action_button("popup_confirm_cancel", "Cancel", C.red, function()
 								close_popup("Cancelled archive action", "cancel")
@@ -174,7 +175,7 @@ return {
 					Box({
 						key = "popup_alert_meta",
 						style = { height = 26, justify_content = "center" },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							label("popup_alert_meta_text", "Warnings: 2   Updated: now", 22, C.muted, nil, "center", "100%"),
 						},
@@ -203,7 +204,7 @@ return {
 					Box({
 						key = "popup_settings_fields",
 						style = { height = 112, flex_direction = "column", gap = 8 },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							status_row("settings_sound", "Sound", "Enabled", C.green),
 							status_row("settings_music", "Music", "Ambient", C.yellow),
@@ -223,7 +224,7 @@ return {
 					Box({
 						key = "popup_settings_actions",
 						style = { height = 54, flex_direction = "row", gap = 10 },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							action_button("popup_settings_cancel", "Cancel", C.red, function()
 								close_popup("Settings were not saved", "cancel")
@@ -329,7 +330,7 @@ return {
 					Box({
 						key = "trigger_intro",
 						style = { height = 44, flex_direction = "column", gap = 4 },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							label("trigger_title", "Open A Popup", 24, nil, "heading"),
 							label("trigger_copy", "The trigger area stays responsive on narrower screens by stacking buttons vertically.", 16, C.muted),
@@ -338,7 +339,7 @@ return {
 					Box({
 						key = "trigger_buttons",
 						style = { height = 252, flex_direction = "column", gap = 12 },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							Button({
 								key = "btn_confirm",
@@ -415,7 +416,7 @@ return {
 			local overlay = {
 				key = "popup_overlay",
 				style = { width = "100%", height = "100%", align_items = "center", justify_content = "center", padding_left = 12, padding_right = 12 },
-				backdrop_color = vmath.vector4(0, 0, 0, 0.72),
+				backdrop_color = rgba(0, 0, 0, 0.72),
 				children = { popup_content },
 			}
 			if params.popup_type ~= "blocking" then

@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -11,18 +12,18 @@ return {
 		return Box({
 			key = "multi_gui_root",
 			style = { width="100%", height="100%", flex_direction="column", gap=0, padding=0 },
-			color = vmath.vector4(0.1, 0.1, 0.15, 1),
+			color = rgba(0.1, 0.1, 0.15, 1),
 			children = {
 				-- Header
 				Box({
 					key="header",
 					style={ height=60, flex_direction="row", gap=8, align_items="center", padding_left=10 },
-					color=vmath.vector4(0.2, 0.2, 0.2, 0.8),
+					color=rgba(0.2, 0.2, 0.2, 0.8),
 					children = {
 						Button({
 							key="btn_back",
 							style={ width=80, height=40 },
-							color=vmath.vector4(0.8, 0.3, 0.3, 1),
+							color=rgba(0.8, 0.3, 0.3, 1),
 							on_click = function()
 								navigation.pop("slide_right")
 							end,
@@ -45,7 +46,7 @@ return {
 				Scroll({
 					key="info_scroll",
 					style={ flex_grow=1, flex_direction="column", gap=15, padding=20 },
-					color=vmath.vector4(0.05, 0.05, 0.1, 1),
+					color=rgba(0.05, 0.05, 0.1, 1),
 					_scrollbar = true,
 					_bounce = true,
 					_momentum = true,
@@ -53,7 +54,7 @@ return {
 						Box({
 							key="intro",
 							style={ width="100%", flex_direction="column", gap=8, padding=15 },
-							color=vmath.vector4(0.15, 0.2, 0.25, 1),
+							color=rgba(0.15, 0.2, 0.25, 1),
 							children = {
 								Text({
 									key="intro_title",
@@ -70,7 +71,7 @@ return {
 						Box({
 							key="step1",
 							style={ width="100%", flex_direction="column", gap=8, padding=15 },
-							color=vmath.vector4(0.2, 0.15, 0.2, 1),
+							color=rgba(0.2, 0.15, 0.2, 1),
 							children = {
 								Text({
 									key="step1_title",
@@ -92,7 +93,7 @@ return {
 						Box({
 							key="step2",
 							style={ width="100%", flex_direction="column", gap=8, padding=15 },
-							color=vmath.vector4(0.15, 0.2, 0.15, 1),
+							color=rgba(0.15, 0.2, 0.15, 1),
 							children = {
 								Text({
 									key="step2_title",
@@ -114,7 +115,7 @@ return {
 						Box({
 							key="step3",
 							style={ width="100%", flex_direction="column", gap=8, padding=15 },
-							color=vmath.vector4(0.2, 0.2, 0.15, 1),
+							color=rgba(0.2, 0.2, 0.15, 1),
 							children = {
 								Text({
 									key="step3_title",
@@ -136,7 +137,7 @@ return {
 						Box({
 							key="features",
 							style={ width="100%", flex_direction="column", gap=8, padding=15 },
-							color=vmath.vector4(0.15, 0.15, 0.25, 1),
+							color=rgba(0.15, 0.15, 0.25, 1),
 							children = {
 								Text({
 									key="features_title",
@@ -168,7 +169,7 @@ return {
 						Box({
 							key="note",
 							style={ width="100%", flex_direction="column", gap=8, padding=15 },
-							color=vmath.vector4(0.25, 0.2, 0.15, 1),
+							color=rgba(0.25, 0.2, 0.15, 1),
 							children = {
 								Text({
 									key="note_title",

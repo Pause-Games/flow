@@ -63,12 +63,12 @@ A few things to note:
 
 ## Step 3 — Add Color
 
-Both `Box` and `Text` accept a `color` field (a `vmath.vector4`):
+Both `Box` and `Text` accept a `color` field. Use CSS-like strings or `flow.color` helpers:
 
 ```lua
-local WHITE  = vmath.vector4(1, 1, 1, 1)
-local MUTED  = vmath.vector4(0.7, 0.7, 0.7, 1)
-local DARK   = vmath.vector4(0.1, 0.12, 0.15, 1)
+local WHITE  = "#ffffff"
+local MUTED  = "#b3b3b3"
+local DARK   = "#1a1f26"
 ```
 
 ```lua
@@ -113,7 +113,7 @@ style = {
 Wrap the text in a card box with its own background and padding:
 
 ```lua
-local CARD = vmath.vector4(0.18, 0.2, 0.25, 1)
+local CARD = "#2e3340"
 
 return Box({
   key   = "root",
@@ -176,7 +176,7 @@ Run the project. You should see a centered dark card with title and subtitle on 
 | `font` | Optional `Text` field; selects a font registered in the `.gui` |
 | `key` | Required on every element; must be stable and unique |
 | `style` | Flex layout properties |
-| `color` | `vmath.vector4` fill color |
+| `color` | CSS-like string or `flow.color.*` helper value |
 | `children` | Ordered list of child elements |
 | `flex_direction` | Stack direction: `"column"` (default) or `"row"` |
 | `align_items` | Cross-axis alignment: `"center"`, `"start"`, `"end"`, `"stretch"` |

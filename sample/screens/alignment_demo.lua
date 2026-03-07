@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -6,18 +7,18 @@ local Scroll = flow.ui.cp.Scroll
 local Text = flow.ui.cp.Text
 
 local C = {
-	bg = vmath.vector4(0.08, 0.11, 0.10, 1),
-	header = vmath.vector4(0.11, 0.16, 0.15, 1),
-	panel = vmath.vector4(0.13, 0.20, 0.19, 1),
-	panel_alt = vmath.vector4(0.16, 0.24, 0.23, 1),
-	muted = vmath.vector4(0.78, 0.86, 0.84, 1),
-	red = vmath.vector4(0.81, 0.33, 0.31, 1),
-	orange = vmath.vector4(0.88, 0.55, 0.21, 1),
-	yellow = vmath.vector4(0.85, 0.75, 0.30, 1),
-	green = vmath.vector4(0.28, 0.68, 0.42, 1),
-	teal = vmath.vector4(0.18, 0.63, 0.63, 1),
-	blue = vmath.vector4(0.27, 0.53, 0.83, 1),
-	purple = vmath.vector4(0.55, 0.40, 0.78, 1),
+	bg = rgba(0.08, 0.11, 0.10, 1),
+	header = rgba(0.11, 0.16, 0.15, 1),
+	panel = rgba(0.13, 0.20, 0.19, 1),
+	panel_alt = rgba(0.16, 0.24, 0.23, 1),
+	muted = rgba(0.78, 0.86, 0.84, 1),
+	red = rgba(0.81, 0.33, 0.31, 1),
+	orange = rgba(0.88, 0.55, 0.21, 1),
+	yellow = rgba(0.85, 0.75, 0.30, 1),
+	green = rgba(0.28, 0.68, 0.42, 1),
+	teal = rgba(0.18, 0.63, 0.63, 1),
+	blue = rgba(0.27, 0.53, 0.83, 1),
+	purple = rgba(0.55, 0.40, 0.78, 1),
 }
 
 local function label(key, text, h, color, font, align)
@@ -52,12 +53,12 @@ local function section(key, title, subtitle, demo, demo_height)
 	return Box({
 		key = key,
 		style = { height = 54 + demo_height, flex_direction = "column", gap = 10 },
-		color = vmath.vector4(0, 0, 0, 0),
+		color = rgba(0, 0, 0, 0),
 		children = {
 			Box({
 				key = key .. "_head",
 				style = { height = 44, flex_direction = "column", gap = 4 },
-				color = vmath.vector4(0, 0, 0, 0),
+				color = rgba(0, 0, 0, 0),
 				children = {
 					label(key .. "_title", title, 24, nil, "heading"),
 					label(key .. "_subtitle", subtitle, 16, C.muted),
@@ -121,7 +122,7 @@ return {
 							Box({
 								key = "align_items_rows_demo",
 								style = { height = 286, flex_direction = "column", gap = 10 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									Box({
 										key = "align_start_row",
@@ -165,7 +166,7 @@ return {
 							Box({
 								key = "justify_demo",
 								style = { height = 214, flex_direction = "column", gap = 10 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									Box({
 										key = "justify_start",
@@ -227,7 +228,7 @@ return {
 							Box({
 								key = "column_alignment_demo",
 								style = { height = 176, flex_direction = "row", gap = 12 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									Box({
 										key = "column_start",
@@ -271,7 +272,7 @@ return {
 							Box({
 								key = "text_alignment_demo",
 								style = { height = 174, flex_direction = "column", gap = 10 },
-								color = vmath.vector4(0, 0, 0, 0),
+								color = rgba(0, 0, 0, 0),
 								children = {
 									Box({
 										key = "text_align_left_card",

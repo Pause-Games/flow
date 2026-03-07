@@ -1,8 +1,9 @@
 local M = {}
+local resolve_color = require("flow/color").resolve
 
 M.POSITION = vmath.vector3(10, 20, 0)
 M.FORMAT = "FPS %.2f"
-M.COLOR = vmath.vector4(0, 0, 1, 1)
+M.COLOR = resolve_color("#0000ff")
 
 function M.create(samples, format, text_node_id)
 	samples = samples or 60

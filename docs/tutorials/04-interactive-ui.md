@@ -15,7 +15,7 @@ local Text   = flow.ui.cp.Text
 Button({
   key      = "my_btn",
   style    = { width = 160, height = 48 },
-  color    = vmath.vector4(0.2, 0.4, 0.9, 1),
+  color    = "#3366e6",
   on_click = function()
     print("clicked!")
   end,
@@ -63,7 +63,7 @@ Button({
   texture  = "button_shapes",
   border   = 18,
   style    = { width = 180, height = 52, padding_left = 18, padding_right = 18 },
-  color    = vmath.vector4(0.2, 0.5, 0.9, 1),
+  color    = "#3380e6",
   on_click = function()
     print("play")
   end,
@@ -110,7 +110,7 @@ Any `Text` node inside a button or any other container can select a GUI font by 
 Button({
   key      = "play_btn",
   style    = { width = 180, height = 52 },
-  color    = vmath.vector4(0.2, 0.5, 0.9, 1),
+  color    = "#3380e6",
   on_click = function()
     print("play")
   end,
@@ -145,7 +145,7 @@ view = function(params, nav)
       Button({
         key      = "inc",
         style    = { width = 120, height = 44 },
-        color    = vmath.vector4(0.2, 0.6, 0.3, 1),
+        color    = "#33994d",
         on_click = function()
           params.count = params.count + 1
           flow.nav.invalidate()
@@ -166,8 +166,8 @@ end
 The same pattern works for boolean toggles:
 
 ```lua
-local ON_COLOR  = vmath.vector4(0.2, 0.7, 0.3, 1)
-local OFF_COLOR = vmath.vector4(0.4, 0.4, 0.4, 1)
+local ON_COLOR  = "#33b34d"
+local OFF_COLOR = "#666666"
 
 view = function(params, nav)
   params.enabled = params.enabled ~= false  -- default true
@@ -196,8 +196,8 @@ For a list of selectable items, store the selected index in params:
 ```lua
 local items = { "Apple", "Banana", "Cherry" }
 
-local SELECTED   = vmath.vector4(0.2, 0.4, 0.8, 1)
-local UNSELECTED = vmath.vector4(0.2, 0.2, 0.25, 1)
+local SELECTED   = "#3366cc"
+local UNSELECTED = "#333340"
 
 view = function(params, nav)
   params.selected = params.selected or 1
@@ -267,7 +267,7 @@ Button({
   key   = "settings_btn",
   style = { width = 140, height = 48, flex_direction = "row", align_items = "center",
             justify_content = "center", gap = 8 },
-  color = vmath.vector4(0.2, 0.2, 0.25, 1),
+  color = "#333340",
   on_click = function()
     flow.nav.push("settings", {})
   end,
@@ -287,8 +287,8 @@ The `icon` primitive requires the atlas to be registered in your `.gui` file. Th
 Flow doesn't have a built-in disabled state, but you can implement it:
 
 ```lua
-local ACTIVE   = vmath.vector4(0.2, 0.5, 0.9, 1)
-local DISABLED = vmath.vector4(0.3, 0.3, 0.35, 1)
+local ACTIVE   = "#3380e6"
+local DISABLED = "#4d4d59"
 
 Button({
   key   = "submit",

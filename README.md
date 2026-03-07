@@ -160,7 +160,7 @@ return Box({
       image = "button_rounded",
       texture = "button_shapes",
       border = 18,
-      color = vmath.vector4(0.22, 0.52, 0.90, 1),
+      color = "#3885e6",
       style = { width = 220, height = 56 },
       on_click = function() print("rounded clicked") end,
       children = {
@@ -186,6 +186,7 @@ return Box({
 - Primitive constructors live under `flow.ui.cp.*`.
 - `flow.ui.components.*` is also available as a longer alias for the same constructors.
 - `Text` accepts `font = "name"` for any font registered in the owning `.gui`; it falls back to `"default"`.
+- Color props accept CSS-like strings such as `"#778899"` and `"rgba(119, 136, 153, 0.5)"`, plus helper values from `flow.color.rgb(...)` / `flow.color.rgba(...)`.
 - `Button` can use a texture/image background and slice-9 border via `image`, `texture`, and `border`.
 - `ButtonImage` is a convenience wrapper around `Button` for image-backed buttons.
 - Component behaviors are self-registered; simply requiring the component module is enough.

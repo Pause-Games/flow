@@ -77,6 +77,17 @@ flow.ui._set_layout_space_unsafe(self, "window")
 
 This is intentionally not part of the public API.
 
+## Colour Values
+
+Flow colour props use `ColorValue`, not Defold `vmath.vector4`.
+
+Supported formats:
+
+- hex strings such as `"#778899"` and `"#778899cc"`
+- CSS-like strings such as `"rgb(119, 136, 153)"` and `"rgba(119, 136, 153, 0.5)"`
+- helper values from `flow.color.rgb(...)`, `flow.color.rgba(...)`, and `flow.color.hex(...)`
+- plain Lua tables such as `{ 119, 136, 153, 255 }` or `{ r = 119, g = 136, b = 153, a = 255 }`
+
 ## Logging
 
 Runtime observability is exposed through `flow.log`.
@@ -154,7 +165,7 @@ Generic container. Renders as a Defold box node.
 |------------|-----------------|---------------------------|
 | `key`      | string          | **Required.** Unique stable identifier for node caching |
 | `style`    | table           | Layout properties (see `layout.md`) |
-| `color`    | vector4         | Fill colour. Defaults to transparent white |
+| `color`    | ColorValue      | Fill colour. Accepts CSS-like strings or plain Lua colour tables |
 | `children` | table           | Ordered list of child elements |
 
 ### `text` primitive
@@ -166,7 +177,7 @@ Text label. Renders as a Defold text node using the `.gui` font named by `font`,
 | `key`   | string  | Required                                                 |
 | `text`  | string  | Text content. Updated every frame via `gui.set_text()`  |
 | `style` | table   | `width`, `height`, `flex_grow`, etc.                    |
-| `color` | vector4 | Text colour                                              |
+| `color` | ColorValue | Text colour                                           |
 | `align` | string  | `"left"` (default), `"center"`, `"right"`               |
 | `font`  | string  | GUI font name registered in the `.gui` file. Defaults to `"default"` |
 
@@ -191,8 +202,8 @@ Clickable element. Internally a box node with press-state tracking.
 |-----------------|----------|---------------------------------------------------|
 | `key`           | string   | Required                                          |
 | `style`         | table    | Layout properties                                 |
-| `color`         | vector4  | Normal colour                                     |
-| `pressed_color` | vector4  | Colour while pressed (defaults to 70% of `color`) |
+| `color`         | ColorValue  | Normal colour                                  |
+| `pressed_color` | ColorValue  | Colour while pressed (defaults to 70% of `color`) |
 | `image`         | string   | Optional atlas animation id for an image-backed button background |
 | `texture`       | string   | GUI texture name for `image` (default `"icons"`) |
 | `border`        | number or table | Optional slice-9 inset for image-backed buttons |
@@ -272,7 +283,7 @@ Full-screen modal overlay. Does not participate in flex layout — always receiv
 |--------------------|----------|---------------------------|-------------------------------------------|
 | `key`              | string   | —                         | Required                                  |
 | `style`            | table    | —                         | Controls how children are positioned within the full-screen area |
-| `backdrop_color`   | vector4  | `(0,0,0,0.7)`             | Backdrop fill colour                      |
+| `backdrop_color`   | ColorValue  | `"rgba(0, 0, 0, 0.7)"` | Backdrop fill colour                   |
 | `_visible`         | bool     | `true`                    | When `false`, no nodes are created        |
 | `on_backdrop_click`| function | —                         | Called when user taps the backdrop node   |
 | `children`         | table    | —                         | Dialog content                            |
@@ -295,7 +306,7 @@ Full-screen overlay anchored to the bottom. Two operating modes:
 | Field              | Type     | Default        | Description                                           |
 |--------------------|----------|----------------|-------------------------------------------------------|
 | `key`              | string   | —              | Required                                              |
-| `backdrop_color`   | vector4  | `(0,0,0,0.5)` | Backdrop colour                                       |
+| `backdrop_color`   | ColorValue  | `"rgba(0, 0, 0, 0.5)"` | Backdrop colour                                |
 | `_visible`         | bool     | `true`         | Legacy mode visibility                                |
 | `_open`            | bool     | —              | Animated mode: `true` = slide open, `false` = close  |
 | `_on_anim_update`  | function | —              | `function(anim_y, velocity)` — called each animation tick so state survives tree regeneration |

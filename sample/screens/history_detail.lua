@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -14,13 +15,13 @@ return {
 		if not params then params = {} end
 		local item = params.item or HISTORY_DATA[1]
 
-		local C_bg     = vmath.vector4(0.10, 0.12, 0.18, 1)
-		local C_header = vmath.vector4(0.08, 0.10, 0.15, 1)
-		local C_sep    = vmath.vector4(0.25, 0.28, 0.38, 1)
-		local C_orange = vmath.vector4(0.87, 0.62, 0.15, 1)
-		local C_white  = vmath.vector4(0.90, 0.90, 0.90, 1)
-		local C_green  = vmath.vector4(0.30, 0.85, 0.40, 1)
-		local C_transp = vmath.vector4(0, 0, 0, 0)
+		local C_bg     = rgba(0.10, 0.12, 0.18, 1)
+		local C_header = rgba(0.08, 0.10, 0.15, 1)
+		local C_sep    = rgba(0.25, 0.28, 0.38, 1)
+		local C_orange = rgba(0.87, 0.62, 0.15, 1)
+		local C_white  = rgba(0.90, 0.90, 0.90, 1)
+		local C_green  = rgba(0.30, 0.85, 0.40, 1)
+		local C_transp = rgba(0, 0, 0, 0)
 
 		local function fmt(v)
 			return ("R$ " .. string.format("%.2f", v)):gsub("%.", ",")
@@ -45,7 +46,7 @@ return {
 			key   = "det_data_row",
 			style = { height = 50, flex_direction = "row", align_items = "center",
 			          padding_left = 12, padding_right = 12 },
-			color = vmath.vector4(0.12, 0.14, 0.20, 1),
+			color = rgba(0.12, 0.14, 0.20, 1),
 			children = {
 				Text({ key = "ddr_aposta",  text = item.bet,
 				          style = { flex_grow = 1, height = 22 } }),
@@ -62,13 +63,13 @@ return {
 		-- Slot machine placeholder grid (3 x 3 symbol cells)
 		local function sym(k)
 			return Box({ key = "sym_" .. k, style = { width = 80, height = 56 },
-			                color = vmath.vector4(0.42, 0.22, 0.10, 1) })
+			                color = rgba(0.42, 0.22, 0.10, 1) })
 		end
 		local grid = Box({
 			key   = "game_grid",
 			style = { width = 280, height = 204, flex_direction = "column", gap = 6,
 			          align_items = "center", justify_content = "center", padding = 8 },
-			color = vmath.vector4(0.35, 0.18, 0.10, 1),
+			color = rgba(0.35, 0.18, 0.10, 1),
 			children = {
 				Box({ key = "gr1", style = { height = 56, flex_direction = "row", gap = 6 }, color = C_transp,
 					children = { sym("1"), sym("2"), sym("3") } }),
@@ -109,7 +110,7 @@ return {
 								          style = { height = 26 }, align = "center" }),
 								Text({ key = "det_subtitle", text = item.time .. " " .. item.date,
 								          style = { height = 20 }, align = "center",
-								          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
+								          color = rgba(0.6, 0.6, 0.7, 1) }),
 							}
 						}),
 						Box({ key = "det_right_pad", style = { width = 50, height = 50 }, color = C_transp }),

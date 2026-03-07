@@ -18,7 +18,7 @@ if params.show_confirm then
   table.insert(children, Popup({
     key            = "confirm",
     style          = { width = "100%", height = "100%", align_items = "center", justify_content = "center" },
-    backdrop_color = vmath.vector4(0, 0, 0, 0.7),
+    backdrop_color = "rgba(0, 0, 0, 0.7)",
     _visible       = true,
     on_backdrop_click = function()
       params.show_confirm = false
@@ -27,7 +27,7 @@ if params.show_confirm then
     children = {
       Box({
         key   = "dialog",
-        color = vmath.vector4(0.15, 0.17, 0.22, 1),
+        color = "#262b38",
         style = { width = 320, height = 180, flex_direction = "column",
                   align_items = "center", justify_content = "center", gap = 20, padding = 24 },
         children = {
@@ -38,7 +38,7 @@ if params.show_confirm then
             children = {
               Button({
                 key = "cancel", style = { width = 100, height = 44 },
-                color = vmath.vector4(0.4, 0.3, 0.3, 1),
+                color = "#664d4d",
                 on_click = function()
                   params.show_confirm = false
                   flow.nav.invalidate()
@@ -47,7 +47,7 @@ if params.show_confirm then
               }),
               Button({
                 key = "ok", style = { width = 100, height = 44 },
-                color = vmath.vector4(0.3, 0.55, 0.3, 1),
+                color = "#4d8c4d",
                 on_click = function()
                   params.show_confirm = false
                   params.confirmed    = true
@@ -106,7 +106,7 @@ local BottomSheet = flow.ui.cp.BottomSheet
 
 BottomSheet({
   key            = "actions",
-  backdrop_color = vmath.vector4(0, 0, 0, 0.5),
+  backdrop_color = "rgba(0, 0, 0, 0.5)",
   _visible       = params.show_sheet,
   on_backdrop_click = function()
     params.show_sheet = false
@@ -115,22 +115,22 @@ BottomSheet({
   children = {
     Box({
       key   = "sheet_content",
-      color = vmath.vector4(0.15, 0.17, 0.22, 1),
+      color = "#262b38",
       style = { width = "100%", height = 220, flex_direction = "column", gap = 0 },
       children = {
         -- Handle bar
         Box({
           key   = "handle_wrap",
-          color = vmath.vector4(0, 0, 0, 0),
+          color = "rgba(0, 0, 0, 0)",
           style = { height = 24, align_items = "center", justify_content = "center" },
           children = {
-            Box({ key = "handle", color = vmath.vector4(0.4, 0.4, 0.4, 1),
+            Box({ key = "handle", color = "#666666",
                   style = { width = 40, height = 5 } }),
           }
         }),
         Button({
           key   = "share", style = { height = 52, padding_left = 20, align_items = "center" },
-          color = vmath.vector4(0.2, 0.2, 0.25, 1),
+          color = "#333340",
           on_click = function()
             params.show_sheet = false; flow.nav.invalidate()
           end,
@@ -138,7 +138,7 @@ BottomSheet({
         }),
         Button({
           key   = "delete", style = { height = 52, padding_left = 20, align_items = "center" },
-          color = vmath.vector4(0.3, 0.15, 0.15, 1),
+          color = "#4d2626",
           on_click = function()
             params.show_sheet = false; flow.nav.invalidate()
           end,
@@ -157,7 +157,7 @@ When `_open` is provided, the sheet always has nodes in the tree and uses a spri
 ```lua
 BottomSheet({
   key            = "actions",
-  backdrop_color = vmath.vector4(0, 0, 0, 0.5),
+  backdrop_color = "rgba(0, 0, 0, 0.5)",
   _open          = params.show_sheet,           -- true = open, false = closed
   _anim_y        = params.sheet_anim_y,         -- persisted animation position
   _anim_velocity = params.sheet_anim_vel,       -- persisted animation velocity
@@ -173,7 +173,7 @@ BottomSheet({
   children = {
     Box({
       key   = "sheet_content",
-      color = vmath.vector4(0.15, 0.17, 0.22, 1),
+      color = "#262b38",
       style = { width = "100%", height = 240, flex_direction = "column", padding = 20, gap = 12 },
       children = {
         Text({ key = "title",  text = "Options",  style = { height = 32 } }),

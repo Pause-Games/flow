@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -34,7 +35,7 @@ return {
 			table.insert(items, Box({
 				key = "top_spacer",
 				style = { height = spacer_height, width = "100%" },
-				color = vmath.vector4(0, 0, 0, 0)
+				color = rgba(0, 0, 0, 0)
 			}))
 		end
 
@@ -44,7 +45,7 @@ return {
 			table.insert(items, Button({
 				key = "item_" .. row,
 				style = { height = item_height, width = "100%", flex_direction = "row", align_items = "center", padding = 10, gap = 10 },
-				color = vmath.vector4(
+				color = rgba(
 					0.3 + (row % 3) * 0.2,
 					0.2 + (row % 5) * 0.15,
 					0.4 + (row % 7) * 0.1,
@@ -57,7 +58,7 @@ return {
 					Box({
 						key = "item_" .. row .. "_number",
 						style = { width = 40, height = 30 },
-						color = vmath.vector4(0, 0, 0, 0.3),
+						color = rgba(0, 0, 0, 0.3),
 						children = {
 							Text({
 								key = "item_" .. row .. "_number_text",
@@ -81,25 +82,25 @@ return {
 			table.insert(items, Box({
 				key = "bottom_spacer",
 				style = { height = spacer_height, width = "100%" },
-				color = vmath.vector4(0, 0, 0, 0)
+				color = rgba(0, 0, 0, 0)
 			}))
 		end
 
 		return Box({
 			key = "scroll_root",
 			style = { width="100%", height="100%", flex_direction="column", gap=0, padding=0 },
-			color = vmath.vector4(0.1, 0.1, 0.15, 1),
+			color = rgba(0.1, 0.1, 0.15, 1),
 			children = {
 				-- Header
 				Box({
 					key="header",
 					style={ height=60, flex_direction="row", gap=8, align_items="center" },
-					color=vmath.vector4(0.2, 0.2, 0.2, 0.8),
+					color=rgba(0.2, 0.2, 0.2, 0.8),
 					children = {
 						Button({
 							key="btn_back",
 							style={ width=80, height=40 },
-							color=vmath.vector4(0.8, 0.3, 0.3, 1),
+							color=rgba(0.8, 0.3, 0.3, 1),
 							on_click = function()
 								navigation.pop("slide_right")
 							end,
@@ -122,7 +123,7 @@ return {
 				Scroll({
 					key="scroll_container",
 					style={ flex_grow=1, flex_direction="column", gap=0, padding=0 },
-					color=vmath.vector4(0.05, 0.05, 0.1, 1),
+					color=rgba(0.05, 0.05, 0.1, 1),
 					_virtual_height = total_items * item_height,  -- Total virtual content height
 					children = items
 				})

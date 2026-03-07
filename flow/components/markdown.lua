@@ -19,6 +19,7 @@
 --   M.viewer(text, key, style) → Scroll element (full viewer component)
 --   M(opts)                    → Scroll element (callable shorthand)
 local Box = require "flow/components/box"
+local rgba = require("flow/color").rgba
 local Icon = require "flow/components/icon"
 local Scroll = require "flow/components/scroll"
 local Text = require "flow/components/text"
@@ -279,7 +280,7 @@ local function create_formatted_text(segments, base_key, height)
 			table.insert(children, Box({
 				key = base_key .. "_bold_" .. i,
 				style = { width = text_width + 6, height = height or 20, padding_left = 3, padding_right = 3 },
-				color = vmath.vector4(0.3, 0.35, 0.4, 1),
+				color = rgba(0.3, 0.35, 0.4, 1),
 				children = {
 					Text({
 						key = base_key .. "_bold_text_" .. i,
@@ -293,7 +294,7 @@ local function create_formatted_text(segments, base_key, height)
 			table.insert(children, Box({
 				key = base_key .. "_code_" .. i,
 				style = { width = text_width + 8, height = height or 20, padding_left = 4, padding_right = 4 },
-				color = vmath.vector4(0.15, 0.17, 0.2, 1),
+				color = rgba(0.15, 0.17, 0.2, 1),
 				children = {
 					Text({
 						key = base_key .. "_code_text_" .. i,
@@ -307,7 +308,7 @@ local function create_formatted_text(segments, base_key, height)
 			table.insert(children, Box({
 				key = base_key .. "_text_box_" .. i,
 				style = { width = text_width, height = height or 20 },
-				color = vmath.vector4(0, 0, 0, 0),
+				color = rgba(0, 0, 0, 0),
 				children = {
 					Text({
 						key = base_key .. "_text_" .. i,
@@ -322,7 +323,7 @@ local function create_formatted_text(segments, base_key, height)
 	return Box({
 		key = base_key .. "_formatted",
 		style = { flex_grow = 1, height = height or 20, flex_direction = "row", gap = 0, align_items = "center" },
-		color = vmath.vector4(0, 0, 0, 0),
+		color = rgba(0, 0, 0, 0),
 		children = children
 	})
 end
@@ -350,7 +351,7 @@ local function parse_line(line, base_key)
 		return Box({
 			key = base_key .. "_space",
 			style = { width = "100%", height = 10 },
-			color = vmath.vector4(0, 0, 0, 0)
+			color = rgba(0, 0, 0, 0)
 		})
 	end
 
@@ -363,7 +364,7 @@ local function parse_line(line, base_key)
 		return Box({
 			key = base_key,
 			style = { width = "100%", height = height + 15, padding_top = 10, padding_bottom = 5 },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = { create_formatted_text(segments, base_key, height) }
 		})
 	end
@@ -373,12 +374,12 @@ local function parse_line(line, base_key)
 		return Box({
 			key = base_key,
 			style = { width = "100%", height = 20 },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = {
 				Box({
 					key = base_key .. "_line",
 					style = { width = "100%", height = 2 },
-					color = vmath.vector4(0.3, 0.3, 0.4, 1)
+					color = rgba(0.3, 0.3, 0.4, 1)
 				})
 			}
 		})
@@ -392,12 +393,12 @@ local function parse_line(line, base_key)
 			return Box({
 				key = base_key,
 				style = { width = "100%", height = image_spec.height + 30, flex_direction = "column", gap = 8, padding = 10, align_items = "center" },
-				color = vmath.vector4(0, 0, 0, 0),
+				color = rgba(0, 0, 0, 0),
 				children = {
 					Box({
 						key = base_key .. "_image_frame",
 						style = { width = image_spec.width, height = image_spec.height, flex_direction = "column", align_items = "center", justify_content = "center" },
-						color = vmath.vector4(0.08, 0.1, 0.14, 1),
+						color = rgba(0.08, 0.1, 0.14, 1),
 						children = {
 							Icon({
 								key = base_key .. "_image",
@@ -412,7 +413,7 @@ local function parse_line(line, base_key)
 					Box({
 						key = base_key .. "_caption_container",
 						style = { width = "100%", height = 20 },
-						color = vmath.vector4(0, 0, 0, 0),
+						color = rgba(0, 0, 0, 0),
 						children = {
 							Text({
 								key = base_key .. "_caption",
@@ -426,23 +427,23 @@ local function parse_line(line, base_key)
 			})
 		end
 
-		local color = vmath.vector4(0.3, 0.4, 0.5, 1)
+		local color = rgba(0.3, 0.4, 0.5, 1)
 		-- Optional color hint embedded in URL: color:r,g,b
 		local r, g, b = image_url:match("color:([%d%.]+),([%d%.]+),([%d%.]+)")
 		if r then
-			color = vmath.vector4(tonumber(r), tonumber(g), tonumber(b), 1)
+			color = rgba(tonumber(r), tonumber(g), tonumber(b), 1)
 		end
 
 		return Box({
 			key = base_key,
 			style = { width = "100%", height = 180, flex_direction = "column", gap = 5, padding = 10 },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = {
 				Box({ key = base_key .. "_img", style = { width = "100%", height = 150 }, color = color }),
 				Box({
 					key = base_key .. "_caption_container",
 					style = { width = "100%", height = 20 },
-					color = vmath.vector4(0, 0, 0, 0),
+					color = rgba(0, 0, 0, 0),
 					children = {
 						Text({ key = base_key .. "_caption", text = alt_text, style = { width = "100%", height = 20 } })
 					}
@@ -458,7 +459,7 @@ local function parse_line(line, base_key)
 		return Box({
 			key = base_key,
 			style = { width = "100%", height = 25, flex_direction = "row", gap = 10, padding_left = 10 },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = {
 				Text({ key = base_key .. "_bullet", text = "•", style = { width = 20, height = 20 } }),
 				create_formatted_text(segments, base_key, 20)
@@ -473,7 +474,7 @@ local function parse_line(line, base_key)
 		return Box({
 			key = base_key,
 			style = { width = "100%", height = 25, flex_direction = "row", gap = 10, padding_left = 10 },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = {
 				Text({ key = base_key .. "_number", text = number .. ".", style = { width = 30, height = 20 } }),
 				create_formatted_text(segments, base_key, 20)
@@ -488,9 +489,9 @@ local function parse_line(line, base_key)
 		return Box({
 			key = base_key,
 			style = { width = "100%", height = 30, flex_direction = "row", gap = 10, padding_left = 15 },
-			color = vmath.vector4(0, 0, 0, 0),
+			color = rgba(0, 0, 0, 0),
 			children = {
-				Box({ key = base_key .. "_border", style = { width = 4, height = 20 }, color = vmath.vector4(0.5, 0.6, 0.8, 1) }),
+				Box({ key = base_key .. "_border", style = { width = 4, height = 20 }, color = rgba(0.5, 0.6, 0.8, 1) }),
 				create_formatted_text(segments, base_key, 20)
 			}
 		})
@@ -506,7 +507,7 @@ local function parse_line(line, base_key)
 	return Box({
 		key = base_key,
 		style = { width = "100%", height = 24 },
-		color = vmath.vector4(0, 0, 0, 0),
+		color = rgba(0, 0, 0, 0),
 		children = { create_formatted_text(segments, base_key, 20) }
 	})
 end
@@ -565,7 +566,7 @@ function M.parse(markdown_text, key_prefix)
 				table.insert(elements, Box({
 					key = block_key,
 					style = { width = "100%", height = code_height + 20, padding = 10 },
-					color = vmath.vector4(0.1, 0.12, 0.15, 1),
+					color = rgba(0.1, 0.12, 0.15, 1),
 					children = {
 						Text({
 							key = block_key .. "_code",
@@ -613,7 +614,7 @@ local function build_markdown(opts)
 	return Scroll({
 		key = key,
 		style = style,
-		color = vmath.vector4(0.05, 0.05, 0.1, 1),
+		color = rgba(0.05, 0.05, 0.1, 1),
 		_scrollbar = opts._scrollbar ~= false,
 		_bounce = opts._bounce ~= false,
 		_momentum = opts._momentum ~= false,

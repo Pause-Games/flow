@@ -43,13 +43,15 @@
 ---@field aspect_ratio? number
 ---@field direction? "inherit"|"ltr"|"rtl"
 
+---@alias Flow.ColorValue string|table
+
 ---@class Flow.Element
 ---@field key string                     Stable unique identifier for node caching
 ---@field type? string                   Element type ("box", "text", "button", etc.); filled by constructors like Box()/Text()/Button()
 ---@field style? Flow.Style
 ---@field children? Flow.Element[]
 ---@field layout? Flow.LayoutRect        Computed layout (written by layout engine)
----@field color? vector4
+---@field color? Flow.ColorValue
 ---@field text? string
 ---@field align? "left"|"center"|"right"
 ---@field font? string
@@ -58,9 +60,9 @@
 ---@field scale_mode? "stretch"|"fit"
 ---@field image_aspect? number
 ---@field border? number|{left?: number, top?: number, right?: number, bottom?: number}
----@field pressed_color? vector4
+---@field pressed_color? Flow.ColorValue
 ---@field on_click? fun(element: Flow.Element)
----@field backdrop_color? vector4
+---@field backdrop_color? Flow.ColorValue
 ---@field on_backdrop_click? fun(element: Flow.Element)
 ---@field _visible? boolean
 ---@field _is_overlay? boolean
@@ -112,7 +114,7 @@
 ---@field font? string
 
 ---@class Flow.ButtonProps : Flow.Element
----@field pressed_color? vector4
+---@field pressed_color? Flow.ColorValue
 ---@field on_click? fun(element: Flow.Element)
 ---@field image? string
 ---@field texture? string
@@ -137,11 +139,11 @@
 ---@field _scroll_x? number
 
 ---@class Flow.PopupProps : Flow.Element
----@field backdrop_color? vector4
+---@field backdrop_color? Flow.ColorValue
 ---@field on_backdrop_click? fun(element: Flow.Element)
 
 ---@class Flow.BottomSheetProps : Flow.Element
----@field backdrop_color? vector4
+---@field backdrop_color? Flow.ColorValue
 ---@field _open? boolean
 ---@field _anim_y? number
 ---@field _anim_velocity? number

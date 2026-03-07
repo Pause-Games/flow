@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -211,18 +212,18 @@ Good luck, adventurer!
 		return Box({
 			key = "game_guide_root",
 			style = { width="100%", height="100%", flex_direction="column", gap=0, padding=0 },
-			color = vmath.vector4(0.08, 0.08, 0.12, 1),
+			color = rgba(0.08, 0.08, 0.12, 1),
 			children = {
 				-- Header
 				Box({
 					key="header",
 					style={ height=60, flex_direction="row", gap=8, align_items="center" },
-					color=vmath.vector4(0.2, 0.2, 0.2, 0.8),
+					color=rgba(0.2, 0.2, 0.2, 0.8),
 					children = {
 						Button({
 							key="btn_back",
 							style={ width=80, height=40 },
-							color=vmath.vector4(0.8, 0.3, 0.3, 1),
+							color=rgba(0.8, 0.3, 0.3, 1),
 							on_click = function()
 								navigation.pop("slide_right")
 							end,

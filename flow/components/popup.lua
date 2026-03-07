@@ -28,7 +28,7 @@ ui.register("popup", {
 	---@param node userdata        The backdrop GUI node to color
 	---@param alpha number         Accumulated alpha from parent transitions [0..1]
 	apply = function(self, el, node, alpha)
-		local c = el.backdrop_color or vmath.vector4(0, 0, 0, 0.7)
+		local c = el._backdrop_color
 		self.ui._set_node_color(node, c.x, c.y, c.z, c.w * alpha)
 	end,
 })
@@ -48,7 +48,7 @@ local function Popup(t)
 	-- and lay it out at full parent bounds in a separate overlay pass.
 	t._is_overlay = true
 	t._visible = t._visible ~= false
-	t.backdrop_color = t.backdrop_color or vmath.vector4(0, 0, 0, 0.7)
+	t.backdrop_color = t.backdrop_color or "rgba(0, 0, 0, 0.7)"
 	return t
 end
 

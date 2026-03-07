@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local rgba = flow.color.rgba
 
 local Box = flow.ui.cp.Box
 local Button = flow.ui.cp.Button
@@ -15,15 +16,15 @@ return {
 		if params.show_month_popup  == nil then params.show_month_popup  = false end
 		if params.show_year_popup   == nil then params.show_year_popup   = false end
 
-		local C_bg       = vmath.vector4(0.10, 0.12, 0.18, 1)
-		local C_header   = vmath.vector4(0.08, 0.10, 0.15, 1)
-		local C_orange   = vmath.vector4(0.87, 0.62, 0.15, 1)
-		local C_transp   = vmath.vector4(0, 0, 0, 0)
-		local C_radio_bg = vmath.vector4(0.20, 0.23, 0.32, 1)
-		local C_radio_on = vmath.vector4(0.80, 0.80, 0.85, 1)
-		local C_dark_box = vmath.vector4(0.08, 0.10, 0.15, 1)
-		local C_popup_bg = vmath.vector4(0.12, 0.15, 0.22, 1)
-		local C_cell_bg  = vmath.vector4(0.20, 0.23, 0.32, 1)
+		local C_bg       = rgba(0.10, 0.12, 0.18, 1)
+		local C_header   = rgba(0.08, 0.10, 0.15, 1)
+		local C_orange   = rgba(0.87, 0.62, 0.15, 1)
+		local C_transp   = rgba(0, 0, 0, 0)
+		local C_radio_bg = rgba(0.20, 0.23, 0.32, 1)
+		local C_radio_on = rgba(0.80, 0.80, 0.85, 1)
+		local C_dark_box = rgba(0.08, 0.10, 0.15, 1)
+		local C_popup_bg = rgba(0.12, 0.15, 0.22, 1)
+		local C_cell_bg  = rgba(0.20, 0.23, 0.32, 1)
 
 		-- Radio indicator circle (outer box + inner dot)
 		local function radio_indicator(key, selected)
@@ -208,7 +209,7 @@ return {
 							          style = { height = 26 }, align = "center" }),
 							Text({ key = "flt_subtitle", text = "Select Period",
 							          style = { height = 20 }, align = "center",
-							          color = vmath.vector4(0.6, 0.6, 0.7, 1) }),
+							          color = rgba(0.6, 0.6, 0.7, 1) }),
 						}
 					}),
 					Box({ key = "flt_right_pad", style = { width = 50, height = 50 }, color = C_transp }),
@@ -247,7 +248,7 @@ return {
 			table.insert(children, Popup({
 				key = "month_popup",
 				style = { width = "100%", height = "100%", align_items = "center", justify_content = "center" },
-				backdrop_color = vmath.vector4(0, 0, 0, 0.65),
+				backdrop_color = rgba(0, 0, 0, 0.65),
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_month_popup = false
@@ -262,7 +263,7 @@ return {
 			table.insert(children, Popup({
 				key = "year_popup",
 				style = { width = "100%", height = "100%", align_items = "center", justify_content = "center" },
-				backdrop_color = vmath.vector4(0, 0, 0, 0.65),
+				backdrop_color = rgba(0, 0, 0, 0.65),
 				_visible = true,
 				on_backdrop_click = function()
 					params.show_year_popup = false

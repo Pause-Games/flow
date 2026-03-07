@@ -9,6 +9,7 @@
 --   "gui"    — layout in logical GUI units; nodes positioned at GUI coords
 --   "window" — layout in physical pixels; nodes scaled back via _scale_x/y
 local M = {}
+local color = require "flow/color"
 local log = require "flow/log"
 
 --- Look up an element's type definition in the registry.
@@ -58,6 +59,35 @@ local function ensure(self, el, prefix, deps)
 	n = def.create_node(el)
 	self.ui.nodes[cache_key] = n
 	return n
+end
+
+local function resolve_color_field(el, source_key, resolved_key, cache_key)
+	local value = el[source_key]
+	if value == nil then
+		el[resolved_key] = nil
+		el[cache_key] = nil
+		return
+	end
+	if el[cache_key] == value then
+		return
+	end
+	el[resolved_key] = color.resolve(value)
+	el[cache_key] = value
+end
+
+local function resolve_tree_colors(el)
+	if not el then return end
+
+	resolve_color_field(el, "color", "_color", "_color_source")
+	resolve_color_field(el, "pressed_color", "_pressed_color", "_pressed_color_source")
+	resolve_color_field(el, "backdrop_color", "_backdrop_color", "_backdrop_color_source")
+
+	if el._background_screen then
+		resolve_tree_colors(el._background_screen)
+	end
+	for _, child in ipairs(el.children or {}) do
+		resolve_tree_colors(child)
+	end
 end
 
 --- Apply layout, position, size, alpha, and visual state to a single element
@@ -150,8 +180,9 @@ local function apply(self, el, parent_alpha, parent_offset_x, parent_offset_y, p
 
 	-- Apply alpha: multiply into color if element has a color, else set alpha only
 	local alpha = (parent_alpha or 1) * (el._alpha or 1)
-	if el.color then
-		deps.set_node_color(n, el.color.x, el.color.y, el.color.z, el.color.w * alpha)
+	if el._color then
+		local c = el._color
+		deps.set_node_color(n, c.x, c.y, c.z, c.w * alpha)
 	else
 		gui.set_alpha(n, alpha)
 	end
@@ -233,6 +264,8 @@ function M.render(self, tree, w, h, deps)
 		self.ui._scale_x = nil
 		self.ui._scale_y = nil
 	end
+
+	resolve_tree_colors(tree)
 
 	deps.layout.compute(tree, 0, 0, w, h)
 	log.debug("ui.renderer", "render start tree=%s size=%dx%d window_mode=%s", tree.key or "unknown", w, h, tostring(self.ui._unsafe_window_layout == true))

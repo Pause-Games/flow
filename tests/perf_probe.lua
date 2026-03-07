@@ -19,6 +19,9 @@ vmath = {}
 function vmath.vector3(x, y, z)
   return { x = x or 0, y = y or 0, z = z or 0 }
 end
+function rgba(x, y, z, w)
+  return { r = x or 0, g = y or 0, b = z or 0, a = w == nil and 1 or w }
+end
 function vmath.vector4(x, y, z, w)
   return { x = x or 0, y = y or 0, z = z or 0, w = w or 0 }
 end
@@ -65,7 +68,7 @@ local function new_node(kind, pos, size)
     kind = kind,
     position = deepcopy(pos or vmath.vector3()),
     size = deepcopy(size or vmath.vector3()),
-    color = vmath.vector4(1, 1, 1, 1),
+    color = rgba(1, 1, 1, 1),
     alpha = 1,
   }
 end
@@ -154,7 +157,7 @@ local function build_row(i)
       padding_left = 8,
       padding_right = 8,
     },
-    color = vmath.vector4(0.15 + (i % 3) * 0.05, 0.18, 0.24, 1),
+    color = rgba(0.15 + (i % 3) * 0.05, 0.18, 0.24, 1),
     children = {
       Text({
         key = "row_" .. i .. "_label",
@@ -164,7 +167,7 @@ local function build_row(i)
       Box({
         key = "row_" .. i .. "_spacer",
         style = { flex_grow = 1, height = 1 },
-        color = vmath.vector4(0, 0, 0, 0),
+        color = rgba(0, 0, 0, 0),
       }),
       Text({
         key = "row_" .. i .. "_value",
@@ -189,7 +192,7 @@ local function build_tree(count)
       Box({
         key = "header",
         style = { width = "100%", height = 56, align_items = "center", justify_content = "center" },
-        color = vmath.vector4(0.08, 0.10, 0.14, 1),
+        color = rgba(0.08, 0.10, 0.14, 1),
         children = {
           Text({ key = "title", text = "Perf Probe", style = { width = 200, height = 24 }, align = "center" }),
         },
