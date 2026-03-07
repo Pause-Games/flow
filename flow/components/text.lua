@@ -57,13 +57,15 @@ ui.register("text", {
 		gui.set_text(node, el.text or "")
 	end,
 
-	--- Tell the renderer that this text element uses a left-anchored pivot (PIVOT_W).
-	--- When true, the renderer places the node at (layout.x, layout.y + h/2) instead of
-	--- the normal center-origin position, so the text renders inside the layout box.
+	--- Tell the renderer which horizontal anchor to use for text positioning.
+	--- The renderer matches the GUI pivot:
+	---   left   -> layout.x
+	---   center -> layout.x + layout.w / 2
+	---   right  -> layout.x + layout.w
 	---@param el Flow.TextProps  The text element
-	---@return boolean         True when el.align is nil or "left"
-	is_left_aligned = function(el)
-		return el.align == nil or el.align == "left"
+	---@return "left"|"center"|"right"
+	get_text_anchor = function(el)
+		return el.align or "left"
 	end,
 })
 

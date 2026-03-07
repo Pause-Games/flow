@@ -117,13 +117,17 @@ local function apply(self, el, parent_alpha, parent_offset_x, parent_offset_y, p
 	local pixel_offset_y = el._offset_y_pixels or 0
 	local scroll_y = parent_scroll_y or 0
 	local scroll_x = parent_scroll_x or 0
-	local is_left_aligned_text = def and def.is_left_aligned and def.is_left_aligned(el)
+	local text_anchor = def and def.get_text_anchor and def.get_text_anchor(el) or "center"
 
 	-- Convert bottom-left layout origin to Defold center-origin GUI coords
 	local pos_x, pos_y
-	if is_left_aligned_text then
+	if text_anchor == "left" then
 		-- Text with PIVOT_W: position at left edge + vertical center
 		pos_x = l.x + screen_offset_x - scroll_x + pixel_offset_x
+		pos_y = (l.y + l.h / 2) + screen_offset_y + scroll_y + pixel_offset_y + (extra_offset_y or 0)
+	elseif text_anchor == "right" then
+		-- Text with PIVOT_E: position at right edge + vertical center
+		pos_x = (l.x + l.w) + screen_offset_x - scroll_x + pixel_offset_x
 		pos_y = (l.y + l.h / 2) + screen_offset_y + scroll_y + pixel_offset_y + (extra_offset_y or 0)
 	else
 		pos_x = (l.x + l.w / 2) + screen_offset_x - scroll_x + pixel_offset_x

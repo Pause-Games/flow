@@ -61,7 +61,7 @@ local SCRATCH_COLOR = vmath.vector4(1, 1, 1, 1)
 ---   clips_children -> boolean               — node is used as parent for children
 ---   capture_descendant_hits -> boolean      — returns self instead of child on hit
 ---   is_backdrop_click_target -> boolean     — receives backdrop click events
----   is_left_aligned(el) -> boolean          — text pivot is PIVOT_W instead of center
+---   get_text_anchor(el) -> "left"|"center"|"right" — text pivot anchor for positioning
 ---   hover_begin(self, el, deps)             — called when pointer enters element
 ---   hover_end(self, el, deps)               — called when pointer leaves element
 ---   press_begin(self, el, deps)             — called when element is pressed

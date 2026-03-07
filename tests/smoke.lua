@@ -528,6 +528,42 @@ local function test_text_font_assignment_and_fallback()
     "text font: Text should fall back to the default gui font when font is cleared")
 end
 
+local function test_text_alignment_anchors_match_box_edges()
+  local self = {}
+  ui.mount(self)
+
+  local label = Text({
+    key = "label",
+    text = "Hello",
+    align = "left",
+    style = { width = 120, height = 24 },
+  })
+
+  local tree = Box({
+    key = "root",
+    style = { width = "100%", height = "100%", align_items = "start" },
+    children = { label },
+  })
+
+  ui.render(self, tree, 200, 120)
+
+  local node = self.ui.nodes["label"]
+  local left_x = node and node.position and node.position.x or 0
+
+  label.align = "center"
+  ui.render(self, tree, 200, 120)
+  local center_x = node and node.position and node.position.x or 0
+
+  label.align = "right"
+  ui.render(self, tree, 200, 120)
+  local right_x = node and node.position and node.position.x or 0
+
+  check(approx_eq(center_x - left_x, 60),
+    "text alignment: center-aligned text should anchor at the middle of its layout box")
+  check(approx_eq(right_x - center_x, 60),
+    "text alignment: right-aligned text should anchor at the right edge of its layout box")
+end
+
 local function test_sample_hub_uses_registered_heading_font()
   local self = {}
   ui.mount(self)
@@ -572,6 +608,27 @@ local function test_sample_screens_remove_redundant_settings_and_merge_options_s
   ui.render(self, hub_tree, 960, 640)
   check(self.ui.nodes["btn_sheet_options"] == nil,
     "sample hub: standalone options button should be removed")
+end
+
+local function test_sample_layouts_and_alignment_demos_render_expanded_examples()
+  local self = {}
+  ui.mount(self)
+
+  local layouts_tree = screens.layouts_demo.view({}, navigation)
+  ui.render(self, layouts_tree, 960, 640)
+
+  check(self.ui.nodes["growth_2_label"] and self.ui.nodes["growth_2_label"].text == "2x",
+    "sample layouts demo: flex grow ratio example should render")
+  check(self.ui.nodes["nested_chart_title"] and self.ui.nodes["nested_chart_title"].text == "Main content area",
+    "sample layouts demo: nested dashboard example should render")
+
+  local alignment_tree = screens.alignment_demo.view({}, navigation)
+  ui.render(self, alignment_tree, 960, 640)
+
+  check(self.ui.nodes["align_self_bottom_label"] and self.ui.nodes["align_self_bottom_label"].text == "Bottom",
+    "sample alignment demo: align_self override example should render")
+  check(self.ui.nodes["text_align_right"] and self.ui.nodes["text_align_right"].text == "Right aligned label",
+    "sample alignment demo: text alignment examples should render")
 end
 
 local function test_markdown_style_isolation_and_blank_lines()
@@ -1042,8 +1099,10 @@ local tests = {
   test_button_hover_visual,
   test_button_image_and_slice9,
   test_text_font_assignment_and_fallback,
+  test_text_alignment_anchors_match_box_edges,
   test_sample_hub_uses_registered_heading_font,
   test_sample_screens_remove_redundant_settings_and_merge_options_sheet,
+  test_sample_layouts_and_alignment_demos_render_expanded_examples,
   test_markdown_style_isolation_and_blank_lines,
   test_markdown_atlas_images,
   test_markdown_image_modifiers_and_scaling,
