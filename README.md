@@ -3,6 +3,30 @@
 Flow is a Defold library that implements a CSS Flexbox-inspired UI system in pure Lua.
 No native extensions. No HTML. Just runtime-created GUI nodes with layout computed in Lua.
 
+## Install
+
+Add Flow as a Defold library dependency in your game's `game.project`:
+
+```ini
+[project]
+dependencies#0 = https://github.com/Pause-Games/flow/archive/refs/heads/main.zip
+```
+
+Or pin a tag:
+
+```ini
+[project]
+dependencies#0 = https://github.com/Pause-Games/flow/archive/refs/tags/v1.0.0.zip
+```
+
+This repository exports the `flow/` directory through Defold's `[library] include_dirs`, so after fetching libraries you can require:
+
+```lua
+local flow = require "flow/flow"
+```
+
+Input bindings are not applied automatically from a dependency. Add `touch`, `scroll_up`, and `scroll_down` in your own project's input binding file.
+
 ## Quick Start
 
 ```lua
@@ -169,7 +193,7 @@ return Box({
 
 | | |
 |-|-|
-| [Getting Started](docs/getting-started.md) | Install Flow and build your first screen |
+| [Getting Started](docs/getting-started.md) | Install Flow as a dependency and build your first screen |
 | [Architecture](docs/architecture.md) | How the three layers fit together |
 | **Tutorials** | |
 | [1 — First Screen](docs/tutorials/01-first-screen.md) | `Box`, `Text`, mounting a GUI |

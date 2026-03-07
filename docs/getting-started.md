@@ -13,7 +13,29 @@ This guide walks you from zero to a working Flow screen inside a Defold project.
 
 ## 1. Add Flow to Your Project
 
-Copy the `flow/` directory into your Defold project root. Your project tree should look like:
+Preferred: add Flow as a Defold library dependency in your game's `game.project`:
+
+```ini
+[project]
+dependencies#0 = https://github.com/Pause-Games/flow/archive/refs/heads/main.zip
+```
+
+Or pin a release tag:
+
+```ini
+[project]
+dependencies#0 = https://github.com/Pause-Games/flow/archive/refs/tags/v1.0.0.zip
+```
+
+After that, run `Project -> Fetch Libraries` in the Defold editor.
+
+Flow exports only the `flow/` directory through Defold's library mechanism, so your own project stays clean and you can require it directly:
+
+```lua
+local flow = require "flow/flow"
+```
+
+Manual alternative: copy the `flow/` directory into your Defold project root. Your project tree should look like:
 
 ```
 my_game/
