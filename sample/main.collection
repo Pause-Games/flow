@@ -24,3 +24,11 @@ embedded_instances {
   "}\n"
   ""
 }
+embedded_instances {
+  id: "bottom_sheet_host"
+  data: "components {\n"
+  "  id: \"bottom_sheet_host\"\n"
+  "  component: \"/sample/bottom_sheet_host.gui\"\n"
+  "}\n"
+  ""
+}

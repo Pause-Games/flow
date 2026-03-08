@@ -1,0 +1,11 @@
+script: "/sample/bottom_sheet_host.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+fonts {
+  name: "heading"
+  font: "/builtins/fonts/default.font"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

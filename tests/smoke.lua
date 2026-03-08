@@ -176,18 +176,19 @@ end
 
 local layout = require "flow/layout"
 local flow = require "flow/flow"
-local rgba = flow.color.rgba
 local color = flow.color
 local flow_log = require "flow/log"
 local navigation = require "flow/navigation/init"
 local navigation_messages = require "flow/navigation/messages"
 local navigation_proxy = require "flow/navigation/proxy"
 local navigation_runtime = require "flow/navigation/runtime"
+local bottom_sheet_host_view = require "sample/screens/bottom_sheet/host_view"
+local bottom_sheet_sample = require "sample/screens/bottom_sheet/shared"
 local screens = require "sample/screens"
 local ui = require "flow/ui"
 local Markdown = require "flow/components/markdown"
 local Box = require "flow/components/box"
-local BottomSheet = require "flow/components/bottom_sheet"
+local BottomSheet = require "flow/bottom_sheet/component"
 local Button = require "flow/components/button"
 local ButtonImage = require "flow/components/button_image"
 local Scroll = require "flow/components/scroll"
@@ -615,23 +616,49 @@ local function test_sample_screens_remove_redundant_settings_and_merge_options_s
   local params = {
     sheet_type = "menu",
     sheet_size = "half",
-    sheet_visible = true,
+    sheet_active = false,
   }
   local tree = screens.bottom_sheet_demo.view(params, navigation)
   ui.render(self, tree, 960, 640)
 
-  local menu_settings = tree.children[3].children[1].children[4]
+  local menu_button = tree.children[2].children[3].children[3]
+  check(menu_button and menu_button.key == "btn_menu",
+    "sample bottom sheet demo: controller screen should expose the hosted menu launcher")
+
+  local options_half_button = tree.children[2].children[4].children[1]
+  local options_full_button = tree.children[2].children[4].children[2]
+  check(options_half_button and options_half_button.key == "btn_options_half",
+    "sample bottom sheet demo: controller should expose an explicit half-height options example")
+  check(options_full_button and options_full_button.key == "btn_options_full",
+    "sample bottom sheet demo: controller should expose an explicit full-height options example")
+
+  clear_posted_messages()
+  menu_button.on_click()
+  check(params.sheet_active == true and params.sheet_type == "menu",
+    "sample bottom sheet demo: tapping Menu should mark the controller state as active")
+
+  local open_message = find_post(bottom_sheet_sample.host_url(), bottom_sheet_sample.OPEN_MESSAGE_ID)
+  check(open_message and open_message.message and open_message.message.params and open_message.message.params.sheet_type == "menu",
+    "sample bottom sheet demo: controller should post an open request to the hosted bottom sheet gui")
+
+  local invalidations = 0
+  local host_params = {
+    sheet_type = "menu",
+    sheet_size = "half",
+  }
+  local host_content = bottom_sheet_host_view(host_params, {
+    dismiss = function() end,
+    invalidate = function()
+      invalidations = invalidations + 1
+    end,
+  })
+  local menu_settings = host_content.children[4]
   check(menu_settings and menu_settings.key == "menu_settings",
-    "sample bottom sheet demo: menu sheet should expose the merged settings action")
+    "sample bottom sheet host view: menu sheet should expose the merged settings action")
 
   menu_settings.on_click()
-
-  local options_tree = screens.bottom_sheet_demo.view(params, navigation)
-  ui.render(self, options_tree, 960, 640)
-
-  local options_title = self.ui.nodes["sheet_options_title"]
-  check(options_title and options_title.text == "Quick Settings",
-    "sample bottom sheet demo: merged settings should open the options sheet from the menu action")
+  check(host_params.sheet_type == "options" and host_params.sheet_size == "full" and invalidations == 1,
+    "sample bottom sheet host view: settings action should switch the hosted sheet to the options variant")
 
   local hub_tree = screens.hub.view({}, navigation)
   ui.render(self, hub_tree, 960, 640)

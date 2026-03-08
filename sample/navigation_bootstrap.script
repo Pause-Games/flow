@@ -156,7 +156,7 @@ function init(self)
 	local controller_url = msg.url()
 	self.controller_url = controller_url
 
-	flow.log.set_level("debug")
+	flow.log.set_level("warn")
 --  flow.log.set_context_level("nav", "debug")
 --  flow.log.set_context_level("ui.input", "debug")
 

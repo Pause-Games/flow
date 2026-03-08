@@ -150,6 +150,27 @@
 ---@field _on_anim_update? fun(anim_y: number, velocity: number)
 ---@field on_backdrop_click? fun(element: Flow.Element)
 
+---@class Flow.BottomSheetApi
+---@field dismiss fun(result?: any): boolean
+---@field invalidate fun(): boolean
+
+---@class Flow.BottomSheetSheetDef
+---@field view fun(params: table, api: Flow.BottomSheetApi): Flow.Element
+---@field backdrop_color? Flow.ColorValue
+---@field dismiss_on_backdrop? boolean
+---@field on_dismiss? fun(params: table, result: any, api: Flow.BottomSheetApi)
+
+---@class Flow.BottomSheetHostConfig
+---@field id string
+---@field sheet Flow.BottomSheetSheetDef
+---@field open_message_id? hash|string
+---@field close_message_id? hash|string
+---@field background_focus_url? userdata
+---@field render_order? number
+---@field debug? boolean
+---@field on_update? fun(self: table, dt: number, api: Flow.BottomSheetApi): boolean|nil
+---@field on_message? fun(self: table, message_id: hash|string, message: table|nil, sender: userdata|nil, api: Flow.BottomSheetApi): boolean|nil
+
 ---@class Flow.LayoutRect
 ---@field x number
 ---@field y number

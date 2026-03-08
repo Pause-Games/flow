@@ -295,27 +295,39 @@ Full-screen modal overlay. Does not participate in flex layout — always receiv
 
 **Important**: Child content boxes must have an explicit `height`. Auto/intrinsic heights are not supported.
 
-### `bottom_sheet` primitive
+### `flow.bottom_sheet` host
 
-Full-screen overlay anchored to the bottom. Two operating modes:
+Bottom sheets are hosted through `flow.bottom_sheet.*`, not `flow.ui.cp.*`.
 
-**Legacy mode** (`_open` not set): `_visible` toggles node creation on/off. No animation.
+`flow.bottom_sheet.init(self, config)` mounts a dedicated bottom-sheet host onto a gui script.
 
-**Animated mode** (`_open = true/false`): Nodes always present. Spring animation drives a vertical slide offset (`_anim_y`). Backdrop fades proportionally.
+| Config field                 | Type         | Description |
+|-----------------------------|--------------|-------------|
+| `id`                        | string       | Required host identifier used in internal keys |
+| `sheet`                     | table        | Required sheet definition |
+| `sheet.view`                | function     | `function(params, api) -> Flow.Element`; must return the content box |
+| `sheet.backdrop_color`      | ColorValue   | Optional backdrop colour, defaults to `"rgba(0, 0, 0, 0.5)"` |
+| `sheet.dismiss_on_backdrop` | bool         | Defaults to `true`; set `false` for a blocking sheet |
+| `sheet.on_dismiss`          | function     | Optional `function(params, result, api)` callback after the close animation finishes |
+| `open_message_id`           | hash/string  | Optional message id handled by the host to present a sheet |
+| `close_message_id`          | hash/string  | Optional message id handled by the host to dismiss a sheet |
+| `background_focus_url`      | url          | Optional url that should release/acquire input focus while the sheet is open |
+| `render_order`              | number       | Optional gui render order (defaults to `20`) |
+| `on_update`                 | function     | Optional host-specific update hook |
+| `on_message`                | function     | Optional host-specific message hook |
 
-| Field              | Type     | Default        | Description                                           |
-|--------------------|----------|----------------|-------------------------------------------------------|
-| `key`              | string   | —              | Required                                              |
-| `backdrop_color`   | ColorValue  | `"rgba(0, 0, 0, 0.5)"` | Backdrop colour                                |
-| `_visible`         | bool     | `true`         | Legacy mode visibility                                |
-| `_open`            | bool     | —              | Animated mode: `true` = slide open, `false` = close  |
-| `_on_anim_update`  | function | —              | `function(anim_y, velocity)` — called each animation tick so state survives tree regeneration |
-| `on_backdrop_click`| function | —              | Called on backdrop tap                                |
-| `children`         | table    | —              | Sheet content                                         |
+Host API:
 
-Default style: `justify_content = "end"`, `align_items = "center"`.
+- `flow.bottom_sheet.present(self, params)` — open a sheet programmatically
+- `flow.bottom_sheet.dismiss(self, result)` — dismiss it programmatically
+- `flow.bottom_sheet.invalidate(self)` — rebuild the hosted sheet after changing its params
 
-Spring constants: stiffness = 600, damping = 28. Overshoot clamped to ±30 px.
+Inside `sheet.view(params, api)`:
+
+- `api.dismiss(result)` closes the current sheet
+- `api.invalidate()` rebuilds the hosted sheet after mutating `params`
+
+The visual sheet still uses the internal `bottom_sheet` component and keeps the same spring animation behavior, but that component is no longer part of the public constructor surface.
 
 ---
 
@@ -431,7 +443,7 @@ Must be called every frame in `update(self, dt)`. Traverses the tree and calls e
 Built-in examples:
 
 - `scroll` owns momentum and bounce-back physics.
-- `bottom_sheet` owns its slide animation.
+- the internal `bottom_sheet` component owns its slide animation.
 
 Calls `ui.request_redraw(self)` whenever any animation is active, triggering a re-render.
 

@@ -1,6 +1,6 @@
 # Tutorial 6 — Overlays
 
-Flow provides two overlay primitives: `Popup` (centered modal dialog) and `BottomSheet` (panel that slides up from the bottom). Both render on top of all other content and block input to elements beneath them.
+Flow provides two overlay systems: `Popup` (centered modal dialog in the current tree) and `flow.bottom_sheet` (a hosted panel rendered by a dedicated gui instance). Both render on top of other content and block input beneath them.
 
 ---
 
@@ -93,104 +93,98 @@ Button({
 
 ---
 
-## Bottom Sheet
+## Bottom Sheet Host
 
-`BottomSheet` is an overlay anchored to the bottom of the screen. It has two operating modes.
+Bottom sheets now use `flow.bottom_sheet.*`. The host lives in a dedicated gui script and renders the sheet independently from the current screen tree.
 
-### Legacy mode (`_visible`)
-
-Nodes are created/destroyed based on `_visible`. No animation.
+### Host init
 
 ```lua
-local BottomSheet = flow.ui.cp.BottomSheet
+local flow = require "flow/flow"
+local Box = flow.ui.cp.Box
+local Button = flow.ui.cp.Button
+local Text = flow.ui.cp.Text
 
-BottomSheet({
-  key            = "actions",
-  backdrop_color = "rgba(0, 0, 0, 0.5)",
-  _visible       = params.show_sheet,
-  on_backdrop_click = function()
-    params.show_sheet = false
-    flow.nav.invalidate()
-  end,
-  children = {
-    Box({
-      key   = "sheet_content",
-      color = "#262b38",
-      style = { width = "100%", height = 220, flex_direction = "column", gap = 0 },
-      children = {
-        -- Handle bar
-        Box({
-          key   = "handle_wrap",
-          color = "rgba(0, 0, 0, 0)",
-          style = { height = 24, align_items = "center", justify_content = "center" },
+function init(self)
+  flow.bottom_sheet.init(self, {
+    id = "sample_bottom_sheet",
+    background_focus_url = msg.url("main:/go#sample1"),
+    open_message_id = hash("sample_bottom_sheet_open"),
+    close_message_id = hash("sample_bottom_sheet_close"),
+    sheet = {
+      backdrop_color = "rgba(0, 0, 0, 0.55)",
+      view = function(params, api)
+        return Box({
+          key = "sheet_content",
+          color = "#262b38",
+          style = { width = "100%", height = 240, flex_direction = "column", padding = 20, gap = 12 },
           children = {
-            Box({ key = "handle", color = "#666666",
-                  style = { width = 40, height = 5 } }),
+            Text({ key = "title", text = "Options", style = { height = 32 } }),
+            Button({
+              key = "close_btn",
+              style = { width = 140, height = 44 },
+              color = "#4d8c4d",
+              on_click = function()
+                api.dismiss("Closed from sheet")
+              end,
+              children = { Text({ key = "lbl", text = "Close", style = { width = "100%", height = "100%" } }) }
+            }),
           }
-        }),
-        Button({
-          key   = "share", style = { height = 52, padding_left = 20, align_items = "center" },
-          color = "#333340",
-          on_click = function()
-            params.show_sheet = false; flow.nav.invalidate()
-          end,
-          children = { Text({ key = "lbl", text = "Share", style = { height = 28 } }) }
-        }),
-        Button({
-          key   = "delete", style = { height = 52, padding_left = 20, align_items = "center" },
-          color = "#4d2626",
-          on_click = function()
-            params.show_sheet = false; flow.nav.invalidate()
-          end,
-          children = { Text({ key = "lbl", text = "Delete", style = { height = 28 } }) }
-        }),
-      }
-    })
-  }
-})
+        })
+      end,
+      on_dismiss = function(params, result)
+        msg.post(msg.url("main:/go#sample1"), hash("sample_bottom_sheet_dismissed"), {
+          params = params,
+          result = result,
+        })
+      end,
+    },
+  })
+end
 ```
 
-### Animated mode (`_open`)
+Call `flow.update`, `flow.on_input`, `flow.on_message`, and `flow.final` from that gui script normally. Once the host is initialized, the top-level flow facade delegates automatically.
 
-When `_open` is provided, the sheet always has nodes in the tree and uses a spring animation to slide in and out. The animation state must be persisted across re-renders via `_on_anim_update`.
+### Presenting and dismissing
+
+Open the hosted sheet by posting the configured open message:
 
 ```lua
-BottomSheet({
-  key            = "actions",
-  backdrop_color = "rgba(0, 0, 0, 0.5)",
-  _open          = params.show_sheet,           -- true = open, false = closed
-  _anim_y        = params.sheet_anim_y,         -- persisted animation position
-  _anim_velocity = params.sheet_anim_vel,       -- persisted animation velocity
-  _on_anim_update = function(anim_y, velocity)
-    params.sheet_anim_y   = anim_y
-    params.sheet_anim_vel = velocity
-    flow.nav.invalidate()
-  end,
-  on_backdrop_click = function()
-    params.show_sheet = false
-    flow.nav.invalidate()
-  end,
-  children = {
-    Box({
-      key   = "sheet_content",
-      color = "#262b38",
-      style = { width = "100%", height = 240, flex_direction = "column", padding = 20, gap = 12 },
-      children = {
-        Text({ key = "title",  text = "Options",  style = { height = 32 } }),
-        Text({ key = "detail", text = "Choose an action below", style = { height = 24 } }),
-      }
-    })
-  }
+msg.post(msg.url("main:/bottom_sheet_host#bottom_sheet_host"), hash("sample_bottom_sheet_open"), {
+  params = {
+    sheet_type = "menu",
+    sheet_size = "half",
+  },
 })
 ```
 
-**Important**: When the window resizes, the animation position resets. Clear `sheet_anim_y` and `sheet_anim_vel` from params in that case to avoid visual glitches.
+Dismiss it from the controller:
+
+```lua
+msg.post(msg.url("main:/bottom_sheet_host#bottom_sheet_host"), hash("sample_bottom_sheet_close"), {
+  result = "Closed from controller",
+})
+```
+
+### Sheet view contract
+
+`sheet.view(params, api)` receives:
+
+- `params`: a persistent table copied from the open payload
+- `api.dismiss(result)`: close the current sheet
+- `api.invalidate()`: rebuild the hosted sheet after mutating `params`
+
+This lets the hosted sheet manage internal transitions. The sample menu sheet uses `api.invalidate()` to switch into its merged settings/options sheet without dismissing first.
+
+### Blocking sheets
+
+Backdrop dismissal is enabled by default. Set `dismiss_on_backdrop = false` to require an explicit button press to close the sheet.
 
 ---
 
 ## Combining Overlays with Screen Content
 
-Both `Popup` and `BottomSheet` must be added **at the top level of your tree** as siblings of other content boxes. They bypass normal flex layout and always receive the full parent bounds.
+`Popup` still lives inside the current screen tree. Hosted bottom sheets do not. Instead, the background screen posts open/close messages to the host gui and reacts to `sheet.on_dismiss(...)`.
 
 ```lua
 view = function(params, nav)
@@ -203,10 +197,6 @@ view = function(params, nav)
   -- Conditionally append overlays
   if params.show_popup then
     table.insert(children, Popup({ key = "confirm", ... }))
-  end
-
-  if params.show_sheet then
-    table.insert(children, BottomSheet({ key = "actions", ... }))
   end
 
   return Box({
@@ -224,9 +214,10 @@ end
 | Mistake | Fix |
 |---------|-----|
 | Content box has no `height` | Always set explicit `height` on direct children of overlays |
-| Overlay is nested inside a sized container | Overlays must be top-level children |
-| Animation state not persisted | Use `_on_anim_update` to store `anim_y`/`velocity` in params |
-| Forgetting `invalidate()` after closing | Always call `flow.nav.invalidate()` after changing `show_popup` / `show_sheet` |
+| Hosted sheet content has no `height` | Always set explicit `height` on the sheet content box |
+| Treating bottom sheet like a primitive child | Use `flow.bottom_sheet.init(...)` in a dedicated gui script |
+| Mutating hosted sheet params without rebuilding | Call `api.invalidate()` after changing hosted params |
+| Forgetting to handle results | Use `sheet.on_dismiss(params, result)` to notify the background screen |
 
 ---
 
@@ -239,7 +230,7 @@ You've completed all six tutorials. You now know how to:
 3. Navigate between screens with params, transitions, and result callbacks
 4. Build interactive UIs with buttons and state mutation
 5. Handle large lists efficiently with virtual scrolling
-6. Add modal popups and animated bottom sheets
+6. Add modal popups and hosted bottom sheets
 
 **Recommended next reads:**
 - [Best Practices](../guides/best-practices.md) — key rules to keep your app correct and performant

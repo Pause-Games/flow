@@ -6,10 +6,10 @@
 -- Navigation helpers are exposed as `flow.nav.*`.
 -- Centralized logging is exposed as `flow.log`.
 -- Usage: local flow = require "flow/flow"
-local BottomSheet = require "flow/components/bottom_sheet"
 local Box = require "flow/components/box"
 local Button = require "flow/components/button"
 local ButtonImage = require "flow/components/button_image"
+local bottom_sheet = require "flow/bottom_sheet"
 local color = require "flow/color"
 local Flex = require "flow/flex"
 local Icon = require "flow/components/icon"
@@ -28,7 +28,6 @@ local ui = require "flow/ui"
 
 local function build_ui_namespace()
 	local components = {
-		BottomSheet = BottomSheet,
 		Box = Box,
 		Button = Button,
 		ButtonImage = ButtonImage,
@@ -64,9 +63,17 @@ local function build_nav_namespace()
 	return setmetatable(namespace, { __index = navigation })
 end
 
+local function get_bottom_sheet_host(self)
+	if self and self.bottom_sheet_state then
+		return require "flow/bottom_sheet/host"
+	end
+	return nil
+end
+
 local M = {
 	ui = build_ui_namespace(),
 	nav = build_nav_namespace(),
+	bottom_sheet = bottom_sheet,
 	log = log,
 	color = color,
 }
@@ -223,6 +230,11 @@ end
 --- Call in gui_script final(). Releases input focus and cleans up navigation.
 ---@param self table
 function M.final(self)
+	local bottom_sheet_host = get_bottom_sheet_host(self)
+	if bottom_sheet_host then
+		return bottom_sheet_host.final(self)
+	end
+
 	msg.post(".", "release_input_focus")
 	if self.fl and self.fl.adapter then
 		self.fl.adapter:destroy()
@@ -261,6 +273,11 @@ end
 --- next update from the static tree stored via `M.set_tree`.
 ---@param self table  The gui_script self table that owns the Flow instance
 function M.invalidate(self)
+	local bottom_sheet_host = get_bottom_sheet_host(self)
+	if bottom_sheet_host then
+		return bottom_sheet_host.invalidate(self)
+	end
+
 	if not self.fl then return end
 	if self.fl.navigation and self.fl.navigation.current() then
 		self.fl.navigation.invalidate()
@@ -277,6 +294,11 @@ end
 ---@param dt number               Delta time in seconds
 ---@return boolean                True if the tree was regenerated or the renderer redrew this frame
 function M.update(self, dt)
+	local bottom_sheet_host = get_bottom_sheet_host(self)
+	if bottom_sheet_host then
+		return bottom_sheet_host.update(self, dt)
+	end
+
 	if not self.fl then return false end
 
 	local fl = self.fl
@@ -324,6 +346,11 @@ end
 ---@param action table
 ---@return boolean                True if input was consumed
 function M.on_input(self, action_id, action)
+	local bottom_sheet_host = get_bottom_sheet_host(self)
+	if bottom_sheet_host then
+		return bottom_sheet_host.on_input(self, action_id, action)
+	end
+
 	if not self.fl then return false end
 
 	local w, h = get_window_size()
@@ -348,6 +375,11 @@ end
 ---@param sender? userdata
 ---@return boolean                True if the message was consumed
 function M.on_message(self, message_id, message, sender)
+	local bottom_sheet_host = get_bottom_sheet_host(self)
+	if bottom_sheet_host then
+		return bottom_sheet_host.on_message(self, message_id, message, sender)
+	end
+
 	local handled = navigation_messages.on_message(message_id, message)
 	if handled then
 		log.debug("flow", "handled navigation transport message id=%s", tostring(message_id))

@@ -1,4 +1,5 @@
 local flow = require "flow/flow"
+local bottom_sheet_sample = require "sample/screens/bottom_sheet/shared"
 
 local function animate_new_multipliers(self, dt, nav)
 	if not nav then return false end
@@ -28,9 +29,32 @@ local function animate_new_multipliers(self, dt, nav)
 	return needs_invalidate
 end
 
+local function handle_bottom_sheet_result(self, message_id, message)
+	if message_id ~= bottom_sheet_sample.DISMISSED_MESSAGE_ID then
+		return false
+	end
+
+	local nav = self.navigation
+	local current = nav and nav.current() or nil
+	if not current or current.id ~= "bottom_sheet_demo" then
+		return false
+	end
+
+	local params = current.params or {}
+	local sheet_params = message and message.params or {}
+	params.sheet_active = false
+	params.sheet_type = sheet_params.sheet_type or params.sheet_type or "actions"
+	params.sheet_size = sheet_params.sheet_size or params.sheet_size or "half"
+	params.last_action = sheet_params.last_action or params.last_action
+	params.message = message and message.result or "Dismissed by backdrop"
+	nav.invalidate()
+	return true
+end
+
 function init(self)
 	flow.init(self, {
 		on_update = animate_new_multipliers,
+		on_message = handle_bottom_sheet_result,
 	})
 end
 
@@ -43,7 +67,7 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	return flow.on_message(self, message_id, message, sender)
+	flow.on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)

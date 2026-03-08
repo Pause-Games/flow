@@ -54,7 +54,7 @@ The renderer is generic — it doesn't know about buttons, scrollbars, or popups
 
 ### Layer 3 — Components (`flow/components/`)
 
-Each component (`box`, `text`, `button`, `scroll`, `popup`, `bottom_sheet`, `icon`, `markdown`) registers itself with the renderer. Registration provides hooks like `create_node`, `apply`, `press_begin`, `on_drag_start`, `update_anim`, and more.
+Each component (`box`, `text`, `button`, `scroll`, `popup`, internal `bottom_sheet`, `icon`, `markdown`) registers itself with the renderer. Registration provides hooks like `create_node`, `apply`, `press_begin`, `on_drag_start`, `update_anim`, and more.
 
 This means the core renderer never hardcodes scroll or button behavior — it calls registered hooks.
 
@@ -179,6 +179,9 @@ flow/
     icon.lua            Sprite / atlas image
     scroll.lua          Scrollable container (momentum + bounce)
     popup.lua           Full-screen modal overlay
-    bottom_sheet.lua    Spring-animated bottom panel
     markdown.lua        Markdown parser and viewer
+  bottom_sheet/
+    component.lua       Internal spring-animated sheet component
+    host.lua            Hosted bottom-sheet runtime
+    init.lua            Public bottom-sheet facade
 ```

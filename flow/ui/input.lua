@@ -117,17 +117,21 @@ end
 ---
 --- Returns the deepest element whose bounds contain the point, or the
 --- nearest ancestor that has capture_descendant_hits = true.
+--- Also returns the nearest modal overlay ancestor (popup/bottom_sheet) so
+--- callers can consume input even when the exact hit child is non-interactive.
 ---@param el Flow.Element          The element to test (with its subtree)
 ---@param px number                X coordinate in layout space (already scroll-adjusted)
 ---@param py number                Y coordinate in layout space (already scroll-adjusted)
 ---@param scroll_y number|nil      Accumulated vertical scroll offset from ancestors
 ---@param scroll_x number|nil      Accumulated horizontal scroll offset from ancestors
+---@param modal_owner Flow.Element|nil  Nearest modal overlay ancestor from parents
 ---@param deps Flow.InputDeps      Dependency bundle (INPUT_DEPS from flow/ui.lua)
 ---@return Flow.Element|nil        The hit element, or nil if nothing was hit
-local function hit_test_recursive(el, px, py, scroll_y, scroll_x, deps)
-	if not el.layout then return nil end
+---@return Flow.Element|nil        The nearest modal overlay ancestor for the hit
+local function hit_test_recursive(el, px, py, scroll_y, scroll_x, modal_owner, deps)
+	if not el.layout then return nil, nil end
 	local def = get_def(deps, el)
-	if not is_hittable(el, deps, def) then return nil end
+	if not is_hittable(el, deps, def) then return nil, nil end
 
 	-- Adjust test coordinates for current scroll offset
 	local test_y = py
@@ -139,24 +143,29 @@ local function hit_test_recursive(el, px, py, scroll_y, scroll_x, deps)
 		test_x = px + scroll_x
 	end
 
-	if not point_in_rect(test_x, test_y, el.layout) then return nil end
+	if not point_in_rect(test_x, test_y, el.layout) then return nil, nil end
+
+	local current_modal_owner = modal_owner
+	if def.is_backdrop_click_target then
+		current_modal_owner = el
+	end
 
 	-- Propagate scroll into children: scroll containers reset it to their own offset
 	local child_scroll_y = def.is_scroll_container and (el._scroll_y or 0) or scroll_y
 	local child_scroll_x = def.is_scroll_container and (el._scroll_x or 0) or scroll_x
 	local children = el.children or {}
 	for i = #children, 1, -1 do
-		local hit = hit_test_recursive(children[i], px, py, child_scroll_y, child_scroll_x, deps)
+		local hit, child_modal_owner = hit_test_recursive(children[i], px, py, child_scroll_y, child_scroll_x, current_modal_owner, deps)
 		if hit then
 			-- capture_descendant_hits: return parent instead of actual hit child
 			if def.capture_descendant_hits then
-				return el
+				return el, child_modal_owner
 			end
-			return hit
+			return hit, child_modal_owner
 		end
 	end
 
-	return el
+	return el, current_modal_owner
 end
 
 --- Perform a point hit-test against the current element tree.
@@ -167,10 +176,11 @@ end
 ---@param y number                 Y coordinate in GUI space (from action.y)
 ---@param deps Flow.InputDeps      Dependency bundle (INPUT_DEPS from flow/ui.lua)
 ---@return Flow.Element|nil        The hit element, or nil if nothing was hit
+---@return Flow.Element|nil        The nearest modal overlay ancestor for the hit
 function M.hit_test(self, x, y, deps)
 	if not self.ui or not self.ui.tree then return nil end
 	local lx, ly = screen_to_layout(self, x, y, deps)
-	return hit_test_recursive(self.ui.tree, lx, ly, nil, nil, deps)
+	return hit_test_recursive(self.ui.tree, lx, ly, nil, nil, nil, deps)
 end
 
 ---@param self table
@@ -221,7 +231,7 @@ function M.on_input(self, action_id, action, deps)
 	local scroll_up = action_id == HASH_SCROLL_UP
 	local scroll_down = action_id == HASH_SCROLL_DOWN
 	if scroll_up or scroll_down then
-		local hit = M.hit_test(self, action.x, action.y, deps)
+		local hit, modal_owner = M.hit_test(self, action.x, action.y, deps)
 		if hit then
 			local scroll_container = hit._scroll_ancestor
 			if scroll_container then
@@ -233,6 +243,9 @@ function M.on_input(self, action_id, action, deps)
 				end
 			end
 		end
+		if modal_owner then
+			return true
+		end
 		return false
 	end
 
@@ -242,7 +255,7 @@ function M.on_input(self, action_id, action, deps)
 	end
 
 	local x, y = action.x, action.y
-	local hit = M.hit_test(self, x, y, deps)
+	local hit, modal_owner = M.hit_test(self, x, y, deps)
 
 	-- Debug logging: emit coordinates and hit info on press
 	if deps.is_debug_enabled(self) and action.pressed and hit then
@@ -287,11 +300,11 @@ function M.on_input(self, action_id, action, deps)
 		end
 
 		-- 2. Backdrop click: overlays (popup, bottom_sheet backdrop)
-		if hit then
-			local def = get_def(deps, hit)
-			if def.is_backdrop_click_target and hit.on_backdrop_click then
-				hit.on_backdrop_click(hit)
-				log.info("ui.input", "backdrop click key=%s", hit.key or "unknown")
+		if modal_owner and hit == modal_owner then
+			local def = get_def(deps, modal_owner)
+			if def.is_backdrop_click_target and modal_owner.on_backdrop_click then
+				modal_owner.on_backdrop_click(modal_owner)
+				log.info("ui.input", "backdrop click key=%s", modal_owner.key or "unknown")
 				return true
 			end
 		end
@@ -313,6 +326,10 @@ function M.on_input(self, action_id, action, deps)
 			end
 		end
 
+		if modal_owner then
+			return true
+		end
+
 	elseif action.released then
 		-- Release: end press on the captured pressed element
 		local pressed_el = self.ui._pressed_element
@@ -328,6 +345,10 @@ function M.on_input(self, action_id, action, deps)
 			end
 		end
 
+		if modal_owner then
+			return true
+		end
+
 	else
 		-- Move: update pressed element's visual hot state
 		local pressed_el = self.ui._pressed_element
@@ -341,7 +362,10 @@ function M.on_input(self, action_id, action, deps)
 		end
 
 		sync_hover_target(self, hit, deps)
-		return self.ui._hover_element ~= nil
+		if self.ui._hover_element ~= nil then
+			return true
+		end
+		return modal_owner ~= nil
 	end
 
 	return false

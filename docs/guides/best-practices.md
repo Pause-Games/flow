@@ -32,7 +32,7 @@ Flow does not support intrinsic / auto height. A node without an explicit `heigh
 This is especially critical for:
 
 - `Text` nodes — always set `height`.
-- Overlay content boxes (`Popup`, `BottomSheet` children) — always set `height`.
+- Overlay content boxes (`Popup` content and hosted bottom-sheet content) — always set `height`.
 - Intermediate wrapper boxes that don't fill the full parent.
 
 ```lua
@@ -136,7 +136,7 @@ flow.ui.render(self, tree, w, h)
 
 ## Overlay Content Needs Explicit Height
 
-Popup and BottomSheet children are positioned by flex inside the overlay's full-screen bounds. The overlay itself takes up the full screen, but its content box needs an explicit height to be visible.
+Popup content and hosted bottom-sheet content are positioned by flex inside the overlay's full-screen bounds. The overlay itself takes up the full screen, but its content box needs an explicit height to be visible.
 
 ```lua
 -- Bad: dialog is 0px tall, invisible

@@ -77,7 +77,8 @@ For centralized logging, use `flow.log.*`.
   - `flow/navigation/messages.lua` — message transport helper exposed on `flow.nav`
   - `flow/navigation/proxy.lua` — optional runtime helper exposed as `flow.nav.proxy`
   - `flow/navigation/runtime.lua` — non-GUI bootstrap exposed as `flow.nav.runtime`
-- `flow/components/` — UI components (box, text, button, icon, scroll, popup, bottom_sheet, markdown)
+- `flow/components/` — UI components (box, text, button, icon, scroll, popup, markdown)
+- `flow/bottom_sheet/` — hosted bottom-sheet runtime plus the internal sheet component
 - `flow/types.lua` — LuaLS type definitions
 
 **Sample** (`sample/`):
@@ -128,9 +129,10 @@ local ButtonImage = flow.ui.cp.ButtonImage
 local Icon        = flow.ui.cp.Icon
 local Scroll      = flow.ui.cp.Scroll
 local Popup       = flow.ui.cp.Popup
-local BottomSheet = flow.ui.cp.BottomSheet
 local Markdown    = flow.ui.cp.Markdown
 ```
+
+Hosted bottom sheets are exposed separately as `flow.bottom_sheet.*`.
 
 Example:
 

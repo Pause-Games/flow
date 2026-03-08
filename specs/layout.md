@@ -81,7 +81,7 @@ inner_h = h - padding_top  - padding_bottom
 
 ### Step 2 — Separate overlays
 
-Children with `child._is_overlay == true` are pulled out of normal flex flow and laid out in a final overlay pass. Built-in `popup` and `bottom_sheet` primitives set this flag.
+Children with `child._is_overlay == true` are pulled out of normal flex flow and laid out in a final overlay pass. Built-in `popup` and the internal hosted `bottom_sheet` component set this flag.
 
 Overlay children receive the full parent bounds (`x, y, w, h`) regardless of padding or direction.
 
