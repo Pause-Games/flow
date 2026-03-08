@@ -86,7 +86,7 @@ return {
 						Box({
 							key = "buttons_row_primary",
 							style = { height = 70, flex_direction = "row", gap = 15 },
-							color = "rgba(0, 0, 0, 0)",
+							color = "transparent",
 							children = {
 								Button({
 									key = "btn_actions",
@@ -120,7 +120,7 @@ return {
 						Box({
 							key = "buttons_row_options",
 							style = { height = 64, flex_direction = "row", gap = 15 },
-							color = "rgba(0, 0, 0, 0)",
+							color = "transparent",
 							children = {
 								Button({
 									key = "btn_options_half",

@@ -84,9 +84,9 @@ Flow colour props use `ColorValue`, not Defold `vmath.vector4`.
 Supported formats:
 
 - hex strings such as `"#778899"` and `"#778899cc"`
-- CSS-like strings such as `"rgb(119, 136, 153)"` and `"rgba(119, 136, 153, 0.5)"`
-- helper values from `flow.color.rgb(...)`, `flow.color.rgba(...)`, and `flow.color.hex(...)`
-- plain Lua tables such as `{ 119, 136, 153, 255 }` or `{ r = 119, g = 136, b = 153, a = 255 }`
+- standard CSS named colors such as `"white"`, `"black"`, `"rebeccapurple"`, and `"transparent"`
+
+`flow.color.rgb(...)`, `flow.color.rgba(...)`, and `flow.color.hex(...)` are convenience helpers that return normalized hex strings.
 
 ## Logging
 
@@ -165,7 +165,7 @@ Generic container. Renders as a Defold box node.
 |------------|-----------------|---------------------------|
 | `key`      | string          | **Required.** Unique stable identifier for node caching |
 | `style`    | table           | Layout properties (see `layout.md`) |
-| `color`    | ColorValue      | Fill colour. Accepts CSS-like strings or plain Lua colour tables |
+| `color`    | ColorValue      | Fill colour. Prefer strings such as `"#778899"`, `"#778899cc"`, `"white"`, or `"transparent"` |
 | `children` | table           | Ordered list of child elements |
 
 ### `text` primitive
@@ -283,7 +283,7 @@ Full-screen modal overlay. Does not participate in flex layout — always receiv
 |--------------------|----------|---------------------------|-------------------------------------------|
 | `key`              | string   | —                         | Required                                  |
 | `style`            | table    | —                         | Controls how children are positioned within the full-screen area |
-| `backdrop_color`   | ColorValue  | `"rgba(0, 0, 0, 0.7)"` | Backdrop fill colour                   |
+| `backdrop_color`   | ColorValue  | `"#000000b3"` | Backdrop fill colour                   |
 | `_visible`         | bool     | `true`                    | When `false`, no nodes are created        |
 | `on_backdrop_click`| function | —                         | Called when user taps the backdrop node   |
 | `children`         | table    | —                         | Dialog content                            |
@@ -306,7 +306,7 @@ Bottom sheets are hosted through `flow.bottom_sheet.*`, not `flow.ui.cp.*`.
 | `id`                        | string       | Required host identifier used in internal keys |
 | `sheet`                     | table        | Required sheet definition |
 | `sheet.view`                | function     | `function(params, api) -> Flow.Element`; must return the content box |
-| `sheet.backdrop_color`      | ColorValue   | Optional backdrop colour, defaults to `"rgba(0, 0, 0, 0.5)"` |
+| `sheet.backdrop_color`      | ColorValue   | Optional backdrop colour, defaults to `"#00000080"` |
 | `sheet.dismiss_on_backdrop` | bool         | Defaults to `true`; set `false` for a blocking sheet |
 | `sheet.on_dismiss`          | function     | Optional `function(params, result, api)` callback after the close animation finishes |
 | `open_message_id`           | hash/string  | Optional message id handled by the host to present a sheet |

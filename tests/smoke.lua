@@ -270,17 +270,38 @@ local function test_color_api_parses_public_formats()
   check(approx_eq(hex.x, 0x77 / 255) and approx_eq(hex.y, 0x88 / 255) and approx_eq(hex.z, 0x99 / 255) and approx_eq(hex.w, 1),
     "color api: hex strings should resolve to normalized rgba")
 
-  local rgba_text = color.resolve("rgba(119, 136, 153, 0.5)")
-  check(approx_eq(rgba_text.x, 119 / 255) and approx_eq(rgba_text.y, 136 / 255) and approx_eq(rgba_text.z, 153 / 255) and approx_eq(rgba_text.w, 0.5),
-    "color api: rgba() strings should resolve to normalized rgba")
+  local named = color.resolve("white")
+  check(approx_eq(named.x, 1) and approx_eq(named.y, 1) and approx_eq(named.z, 1) and approx_eq(named.w, 1),
+    "color api: named strings should resolve to normalized rgba")
+
+  local alias = color.resolve("cyan")
+  check(approx_eq(alias.x, 0) and approx_eq(alias.y, 1) and approx_eq(alias.z, 1) and approx_eq(alias.w, 1),
+    "color api: CSS aliases should resolve correctly")
+
+  local rebecca = color.resolve("rebeccapurple")
+  check(approx_eq(rebecca.x, 0x66 / 255) and approx_eq(rebecca.y, 0x33 / 255) and approx_eq(rebecca.z, 0x99 / 255) and approx_eq(rebecca.w, 1),
+    "color api: the full CSS named color set should include rebeccapurple")
+
+  local transparent = color.resolve("transparent")
+  check(approx_eq(transparent.x, 0) and approx_eq(transparent.y, 0) and approx_eq(transparent.z, 0) and approx_eq(transparent.w, 0),
+    "color api: transparent should resolve with zero alpha")
+
+  local ok_rgba_string, err_rgba_string = pcall(color.resolve, "rgba(119, 136, 153, 0.5)")
+  check(ok_rgba_string == false and tostring(err_rgba_string):match("unsupported color string"),
+    "color api: rgba() strings should be rejected from the public string API")
+
+  check(color.rgba(0.2, 0.4, 0.8, 1) == "#3366cc",
+    "color api: flow.color.rgba should return normalized hex strings when alpha is opaque")
+  check(color.rgba(0.2, 0.4, 0.8, 0.5) == "#3366cc80",
+    "color api: flow.color.rgba should include alpha in hex output when needed")
 
   local helper = color.resolve(color.rgba(0.2, 0.4, 0.8, 1))
   check(approx_eq(helper.x, 0.2) and approx_eq(helper.y, 0.4) and approx_eq(helper.z, 0.8) and approx_eq(helper.w, 1),
     "color api: flow.color.rgba should produce valid public color values")
 
-  local array = color.resolve({ 119, 136, 153, 255 })
-  check(approx_eq(array.x, 119 / 255) and approx_eq(array.y, 136 / 255) and approx_eq(array.z, 153 / 255) and approx_eq(array.w, 1),
-    "color api: array tables should resolve as rgba values")
+  local ok_table, err_table = pcall(color.resolve, { 119, 136, 153, 255 })
+  check(ok_table == false and tostring(err_table):match("colors must be strings"),
+    "color api: table values should be rejected from the public API")
 
   local ok, err = pcall(color.resolve, vmath.vector4(1, 1, 1, 1))
   check(ok == false and tostring(err):match("vector4"),
@@ -422,6 +443,7 @@ end
 local function test_button_visual_prefix_lookup()
   local clicked = 0
   local self = {}
+  local base_color = color.resolve(color.rgba(1, 0.5, 0.25, 1))
   ui.mount(self)
 
   local tree = Box({
@@ -431,7 +453,7 @@ local function test_button_visual_prefix_lookup()
       Button({
         key = "button",
         style = { width = 100, height = 50 },
-        color = rgba(1, 0.5, 0.25, 1),
+        color = color.rgba(1, 0.5, 0.25, 1),
         on_click = function()
           clicked = clicked + 1
         end,
@@ -448,11 +470,17 @@ local function test_button_visual_prefix_lookup()
   ui.on_input(self, hash("touch"), { x = 100, y = 100, pressed = true })
   local node = self.ui.nodes["screen_a_button"]
   check(node ~= nil, "button prefix lookup: rendered node should use prefixed cache key")
-  check(approx_eq(node.color.x, 0.7) and approx_eq(node.color.y, 0.35) and approx_eq(node.color.z, 0.175),
+  check(
+    approx_eq(node.color.x, base_color.x * 0.7) and
+    approx_eq(node.color.y, base_color.y * 0.7) and
+    approx_eq(node.color.z, base_color.z * 0.7),
     "button prefix lookup: pressed state should dim the prefixed node")
 
   ui.on_input(self, hash("touch"), { x = 100, y = 100, released = true })
-  check(approx_eq(node.color.x, 1) and approx_eq(node.color.y, 0.5) and approx_eq(node.color.z, 0.25),
+  check(
+    approx_eq(node.color.x, base_color.x) and
+    approx_eq(node.color.y, base_color.y) and
+    approx_eq(node.color.z, base_color.z),
     "button prefix lookup: release should restore original color on prefixed node")
   check(clicked == 1, "button prefix lookup: click callback should fire on release over same button")
 end
@@ -468,7 +496,7 @@ local function test_button_hover_visual()
       Button({
         key = "button",
         style = { width = 100, height = 50 },
-        color = rgba(0.5, 0.4, 0.3, 1),
+        color = color.rgba(0.5, 0.4, 0.3, 1),
         children = {
           Text({ key = "label", text = "Hover", style = { width = "100%", height = "100%" } })
         }
@@ -502,7 +530,7 @@ local function test_button_image_and_slice9()
         texture = "button_shapes",
         border = 18,
         style = { width = 120, height = 50 },
-        color = rgba(0.2, 0.4, 0.8, 1),
+        color = color.rgba(0.2, 0.4, 0.8, 1),
         children = {
           Text({ key = "rounded_label", text = "Rounded", style = { width = "100%", height = "100%" } })
         }

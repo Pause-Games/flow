@@ -92,7 +92,7 @@ ui.register("bottom_sheet", {
 local function BottomSheet(t)
 	t.type = "bottom_sheet"
 	t._is_overlay = true
-	t.backdrop_color = t.backdrop_color or "rgba(0, 0, 0, 0.5)"
+	t.backdrop_color = t.backdrop_color or "#00000080"
 	t.style = t.style or {}
 	t.style.width = t.style.width or "100%"
 	t.style.height = t.style.height or "100%"

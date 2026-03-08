@@ -48,7 +48,7 @@ local function Popup(t)
 	-- and lay it out at full parent bounds in a separate overlay pass.
 	t._is_overlay = true
 	t._visible = t._visible ~= false
-	t.backdrop_color = t.backdrop_color or "rgba(0, 0, 0, 0.7)"
+	t.backdrop_color = t.backdrop_color or "#000000b3"
 	return t
 end
 

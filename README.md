@@ -188,7 +188,7 @@ return Box({
 - Primitive constructors live under `flow.ui.cp.*`.
 - `flow.ui.components.*` is also available as a longer alias for the same constructors.
 - `Text` accepts `font = "name"` for any font registered in the owning `.gui`; it falls back to `"default"`.
-- Color props accept CSS-like strings such as `"#778899"` and `"rgba(119, 136, 153, 0.5)"`, plus helper values from `flow.color.rgb(...)` / `flow.color.rgba(...)`.
+- Color props should use strings such as `"#778899"`, `"#778899cc"`, `"white"`, `"rebeccapurple"`, or `"transparent"`. Flow supports the standard CSS named-color set, and `flow.color.rgb(...)` / `flow.color.rgba(...)` are convenience helpers that return normalized hex strings.
 - `Button` can use a texture/image background and slice-9 border via `image`, `texture`, and `border`.
 - `ButtonImage` is a convenience wrapper around `Button` for image-backed buttons.
 - Component behaviors are self-registered; simply requiring the component module is enough.

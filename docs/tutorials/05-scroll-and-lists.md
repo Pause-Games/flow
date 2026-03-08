@@ -127,7 +127,7 @@ view = function(params, nav)
   if first_render > 1 then
     table.insert(items, Box({
       key   = "top_spacer",
-      color = "rgba(0, 0, 0, 0)",
+      color = "transparent",
       style = { height = (first_render - 1) * ITEM_H, width = "100%" },
     }))
   end
@@ -146,7 +146,7 @@ view = function(params, nav)
   if last_render < TOTAL then
     table.insert(items, Box({
       key   = "bottom_spacer",
-      color = "rgba(0, 0, 0, 0)",
+      color = "transparent",
       style = { height = (TOTAL - last_render) * ITEM_H, width = "100%" },
     }))
   end

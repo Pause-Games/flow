@@ -9,7 +9,7 @@ local function build_handle(key)
 	return Box({
 		key = key .. "_handle_row",
 		style = { height = 28, align_items = "center", justify_content = "center" },
-		color = "rgba(0, 0, 0, 0)",
+		color = "transparent",
 		children = {
 			Box({
 				key = key .. "_handle",
@@ -63,7 +63,7 @@ return function(params, api)
 				Box({
 					key = "sheet_actions_title_box",
 					style = { height = 64, flex_direction = "column", gap = 4, padding_left = 20, justify_content = "center" },
-					color = "rgba(0, 0, 0, 0)",
+					color = "transparent",
 					children = {
 						Text({ key = "sheet_actions_title", text = "Actions", font = "heading", style = { height = 28 } }),
 						Text({ key = "sheet_actions_subtitle", text = "Compact action list with hosted dismissal", style = { height = 20 } }),
@@ -119,7 +119,7 @@ return function(params, api)
 				Box({
 					key = "sheet_menu_title_box",
 					style = { height = 56, padding_left = 20, justify_content = "center" },
-					color = "rgba(0, 0, 0, 0)",
+					color = "transparent",
 					children = {
 						Text({ key = "sheet_menu_title", text = "Menu", font = "heading", style = { height = 28 } }),
 					},
@@ -156,11 +156,11 @@ return function(params, api)
 			Box({
 				key = "sheet_options_title_row",
 				style = { height = 60, flex_direction = "row", align_items = "center", padding_left = 20, padding_right = 12 },
-				color = "rgba(0, 0, 0, 0)",
+				color = "transparent",
 				children = {
-					Box({ key = "sheet_options_title_spacer_l", style = { flex_grow = 1 }, color = "rgba(0, 0, 0, 0)" }),
+					Box({ key = "sheet_options_title_spacer_l", style = { flex_grow = 1 }, color = "transparent" }),
 					Text({ key = "sheet_options_title", text = "Quick Settings", font = "heading", style = { height = 28 } }),
-					Box({ key = "sheet_options_title_spacer_r", style = { flex_grow = 1 }, color = "rgba(0, 0, 0, 0)" }),
+					Box({ key = "sheet_options_title_spacer_r", style = { flex_grow = 1 }, color = "transparent" }),
 					Button({
 						key = "sheet_options_close_btn",
 						style = { width = 36, height = 36 },
@@ -177,7 +177,7 @@ return function(params, api)
 			Box({
 				key = "sheet_options_meta",
 				style = { height = 34, padding_left = 20, justify_content = "center" },
-				color = "rgba(0, 0, 0, 0)",
+				color = "transparent",
 				children = {
 					Text({
 						key = "sheet_options_meta_text",
@@ -189,12 +189,12 @@ return function(params, api)
 			Box({
 				key = "sheet_options_grid",
 				style = { flex_grow = 1, flex_direction = "column", gap = 10, padding = 15 },
-				color = "rgba(0, 0, 0, 0)",
+				color = "transparent",
 				children = {
 					Box({
 						key = "sheet_options_row1",
 						style = { height = 65, flex_direction = "row", gap = 10 },
-						color = "rgba(0, 0, 0, 0)",
+						color = "transparent",
 						children = {
 							Button({
 								key = "sheet_options_music_btn",
@@ -225,7 +225,7 @@ return function(params, api)
 					Box({
 						key = "sheet_options_row2",
 						style = { height = 65, flex_direction = "row", gap = 10 },
-						color = "rgba(0, 0, 0, 0)",
+						color = "transparent",
 						children = {
 							Button({
 								key = "sheet_options_rules_btn",

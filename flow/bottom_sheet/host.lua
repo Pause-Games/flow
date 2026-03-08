@@ -2,7 +2,7 @@ local BottomSheet = require "flow/bottom_sheet/component"
 local Box = require "flow/components/box"
 local ui = require "flow/ui"
 
-local TRANSPARENT = "rgba(0, 0, 0, 0)"
+local TRANSPARENT = "#00000000"
 
 local function get_window_size()
 	return window.get_size()
@@ -94,7 +94,7 @@ local function build_tree(self)
 		children = {
 			BottomSheet({
 				key = state.config.id .. "_sheet",
-				backdrop_color = sheet_def.backdrop_color or "rgba(0, 0, 0, 0.5)",
+				backdrop_color = sheet_def.backdrop_color or "#00000080",
 				_open = params._bottom_sheet_open,
 				_anim_y = params._bottom_sheet_anim_y,
 				_anim_velocity = params._bottom_sheet_anim_velocity,

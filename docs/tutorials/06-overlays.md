@@ -18,7 +18,7 @@ if params.show_confirm then
   table.insert(children, Popup({
     key            = "confirm",
     style          = { width = "100%", height = "100%", align_items = "center", justify_content = "center" },
-    backdrop_color = "rgba(0, 0, 0, 0.7)",
+    backdrop_color = "#000000b3",
     _visible       = true,
     on_backdrop_click = function()
       params.show_confirm = false
@@ -112,7 +112,7 @@ function init(self)
     open_message_id = hash("sample_bottom_sheet_open"),
     close_message_id = hash("sample_bottom_sheet_close"),
     sheet = {
-      backdrop_color = "rgba(0, 0, 0, 0.55)",
+      backdrop_color = "#0000008c",
       view = function(params, api)
         return Box({
           key = "sheet_content",

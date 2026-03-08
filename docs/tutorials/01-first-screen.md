@@ -63,7 +63,7 @@ A few things to note:
 
 ## Step 3 — Add Color
 
-Both `Box` and `Text` accept a `color` field. Use CSS-like strings or `flow.color` helpers:
+Both `Box` and `Text` accept a `color` field. Use strings such as hex, hex-with-alpha, or named colours:
 
 ```lua
 local WHITE  = "#ffffff"
@@ -176,7 +176,7 @@ Run the project. You should see a centered dark card with title and subtitle on 
 | `font` | Optional `Text` field; selects a font registered in the `.gui` |
 | `key` | Required on every element; must be stable and unique |
 | `style` | Flex layout properties |
-| `color` | CSS-like string or `flow.color.*` helper value |
+| `color` | String such as `"#778899"`, `"#778899cc"`, `"white"`, or `"transparent"` |
 | `children` | Ordered list of child elements |
 | `flex_direction` | Stack direction: `"column"` (default) or `"row"` |
 | `align_items` | Cross-axis alignment: `"center"`, `"start"`, `"end"`, `"stretch"` |

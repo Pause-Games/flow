@@ -43,7 +43,7 @@
 ---@field aspect_ratio? number
 ---@field direction? "inherit"|"ltr"|"rtl"
 
----@alias Flow.ColorValue string|table
+---@alias Flow.ColorValue string
 
 ---@class Flow.Element
 ---@field key string                     Stable unique identifier for node caching
@@ -301,7 +301,7 @@
 ---@class Flow.FlexNodeOptions
 ---@field key? string
 ---@field type? string
----@field color? vector4
+---@field color? Flow.ColorValue
 ---@field style? Flow.Style
 ---@field children? Flow.Element[]
 

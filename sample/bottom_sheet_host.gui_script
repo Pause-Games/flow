@@ -9,7 +9,7 @@ function init(self)
 		open_message_id = bottom_sheet_sample.OPEN_MESSAGE_ID,
 		close_message_id = bottom_sheet_sample.CLOSE_MESSAGE_ID,
 		sheet = {
-			backdrop_color = "rgba(0, 0, 0, 0.55)",
+			backdrop_color = "#0000008c",
 			view = bottom_sheet_host_view,
 			on_dismiss = function(params, result)
 				msg.post(bottom_sheet_sample.background_url(), bottom_sheet_sample.DISMISSED_MESSAGE_ID, {
