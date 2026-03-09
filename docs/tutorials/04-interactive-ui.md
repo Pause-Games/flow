@@ -272,13 +272,13 @@ Button({
     flow.nav.push("settings", {})
   end,
   children = {
-    Icon({ key = "icon",  image = "icon_settings", style = { width = 24, height = 24 } }),
+    Icon({ key = "icon",  image = "icon_settings", style = { width = 24, height = 24 }, scale = 0.9 }),
     Text({ key = "label", text = "Settings",       style = { height = 24 } }),
   }
 })
 ```
 
-The `icon` primitive requires the atlas to be registered in your `.gui` file. The default texture name is `"icons"`.
+The `icon` primitive requires the atlas to be registered in your `.gui` file. The default texture name is `"icons"`. `scale` is optional and applies a GUI-node scale after the icon has been sized.
 
 ---
 

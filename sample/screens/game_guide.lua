@@ -242,8 +242,11 @@ Good luck, adventurer!
 						})
 					}
 				}),
-				-- Markdown viewer with game guide content
-				Markdown.viewer(guide_content, "guide_viewer")
+				-- Markdown viewer for a long static guide document
+				Markdown({
+					key = "guide_viewer",
+					text = guide_content,
+				})
 			}
 		})
 	end

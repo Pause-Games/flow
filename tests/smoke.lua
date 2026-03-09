@@ -814,6 +814,25 @@ local function test_markdown_image_modifiers_and_scaling()
     "markdown image modifiers: stretch should keep the frame size")
 end
 
+local function test_markdown_auto_wrap_uses_compact_single_line_layout()
+  local parsed = Markdown.parse("Short line", "guide", {
+    auto_wrap = true,
+    wrap_width = 600,
+  })
+
+  local content = parsed[1] and parsed[1].children and parsed[1].children[1]
+  check(content and content.type == "text",
+    "markdown auto wrap: single-line paragraphs should stay on the compact text path")
+
+  local bullet = Markdown.parse("- Short bullet", "guide", {
+    auto_wrap = true,
+    wrap_width = 600,
+  })
+  local bullet_content = bullet[1] and bullet[1].children and bullet[1].children[1]
+  check(bullet_content and bullet_content.type == "box" and bullet_content.key == "guide_line_1_single_row",
+    "markdown auto wrap: single-line bullets should avoid wrapped-group containers")
+end
+
 local function test_debug_is_instance_local()
   local a = {}
   local b = {}
@@ -1238,6 +1257,7 @@ local tests = {
   test_markdown_style_isolation_and_blank_lines,
   test_markdown_atlas_images,
   test_markdown_image_modifiers_and_scaling,
+  test_markdown_auto_wrap_uses_compact_single_line_layout,
   test_debug_is_instance_local,
   test_bottom_sheet_closed_not_hittable,
   test_navigation_global_router_flow,

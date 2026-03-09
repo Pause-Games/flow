@@ -88,7 +88,12 @@ function M.compute(node, x, y, w, h)
 		if not is_overlay_child(c) then
 			regular_count = regular_count + 1
 			local s = c.style or {}
-			local size = (dir == "column") and s.height or s.width
+			local size
+			if dir == "column" then
+				size = s.height
+			else
+				size = s.width
+			end
 			if size then
 				fixed = fixed + resolve(size, dir == "column" and ih or iw)
 			else

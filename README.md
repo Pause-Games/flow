@@ -188,9 +188,11 @@ return Box({
 - Primitive constructors live under `flow.ui.cp.*`.
 - `flow.ui.components.*` is also available as a longer alias for the same constructors.
 - `Text` accepts `font = "name"` for any font registered in the owning `.gui`; it falls back to `"default"`.
+- `Text` also supports `scale` and `line_break = true`; `Icon` supports `scale` in the same shape.
 - Color props should use strings such as `"#778899"`, `"#778899cc"`, `"white"`, `"rebeccapurple"`, or `"transparent"`. Flow supports the standard CSS named-color set, and `flow.color.rgb(...)` / `flow.color.rgba(...)` are convenience helpers that return normalized hex strings.
 - `Button` can use a texture/image background and slice-9 border via `image`, `texture`, and `border`.
 - `ButtonImage` is a convenience wrapper around `Button` for image-backed buttons.
+- `Markdown` can auto-wrap generated text with `auto_wrap = true` and `wrap_width = ...`; `flatten_formatting = true` is optional when you want plain wrapped output. Hosted bottom sheets can run nested `sheet.screens` flows.
 - Component behaviors are self-registered; simply requiring the component module is enough.
 - Layout is GUI-space only. Window-space mode is intentionally internal.
 

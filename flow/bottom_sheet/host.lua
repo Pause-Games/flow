@@ -1,11 +1,24 @@
 local BottomSheet = require "flow/bottom_sheet/component"
 local Box = require "flow/components/box"
+local navigation_core = require "flow/navigation/core"
+local navigation_gui = require "flow/navigation/gui"
 local ui = require "flow/ui"
 
 local TRANSPARENT = "#00000000"
 
 local function get_window_size()
 	return window.get_size()
+end
+
+local function clamp_render_order(value)
+	value = tonumber(value) or 15
+	if value < 0 then
+		return 0
+	end
+	if value > 15 then
+		return 15
+	end
+	return math.floor(value)
 end
 
 local function sync_window_baseline(self)
@@ -39,6 +52,92 @@ local function build_idle_tree()
 	})
 end
 
+local function register_screens(router, screens)
+	for id, screen in pairs(screens or {}) do
+		router:register(id, screen)
+	end
+end
+
+local function build_navigation_facade(router)
+	return {
+		on = function(event, fn)
+			return router:on(event, fn)
+		end,
+		off = function(event, fn)
+			return router:off(event, fn)
+		end,
+		invalidate = function()
+			return router:invalidate()
+		end,
+		push = function(id, params, options)
+			return router:push(id, params, options)
+		end,
+		pop = function(result_or_transition, options)
+			return router:pop(result_or_transition, options)
+		end,
+		back = function(result_or_transition, options)
+			return router:back(result_or_transition, options)
+		end,
+		reset = function(id, params, options)
+			return router:reset(id, params, options)
+		end,
+		current = function()
+			return router:current()
+		end,
+		get_data = function(key, options)
+			return router:get_data(key, options)
+		end,
+		clear_invalidation = function()
+			return router:clear_invalidation()
+		end,
+		is_invalidated = function()
+			return router:is_invalidated()
+		end,
+		complete_transition = function()
+			return router:complete_transition()
+		end,
+	}
+end
+
+local function ensure_navigation_runtime(self)
+	local state = self.bottom_sheet_state
+	if state.navigation_runtime then
+		return state.navigation_runtime
+	end
+
+	local router = navigation_core.new()
+	register_screens(router, state.config.sheet.screens)
+
+	local navigation = build_navigation_facade(router)
+	local adapter = navigation_gui.new(navigation)
+	state.navigation_runtime = {
+		router = router,
+		navigation = navigation,
+		adapter = adapter,
+	}
+	return state.navigation_runtime
+end
+
+local build_sheet_api
+
+local function reset_navigation_runtime(self)
+	local state = self.bottom_sheet_state
+	local sheet_def = state.config.sheet
+	local runtime = ensure_navigation_runtime(self)
+
+	local initial_params = sheet_def.initial_params
+	if type(initial_params) == "function" then
+		initial_params = initial_params(state.params, build_sheet_api(self))
+	elseif type(initial_params) == "table" then
+		initial_params = copy_params(initial_params)
+	else
+		initial_params = {}
+	end
+
+	runtime.router:reset(sheet_def.initial_screen, initial_params, "none")
+	return runtime
+end
+
 local function set_tree(self, tree)
 	local state = self.bottom_sheet_state
 	state.tree = tree
@@ -47,7 +146,7 @@ local function set_tree(self, tree)
 	return tree
 end
 
-local function build_sheet_api(self)
+build_sheet_api = function(self)
 	return {
 		dismiss = function(result)
 			local state = self.bottom_sheet_state
@@ -81,10 +180,22 @@ local function build_tree(self)
 
 	local sheet_def = state.config.sheet
 	local params = state.params
-	local content = sheet_def.view and sheet_def.view(params, build_sheet_api(self)) or nil
+	local content
+	local background_screen
+	if sheet_def.screens then
+		local runtime = ensure_navigation_runtime(self)
+		content = runtime.adapter:build_tree()
+		runtime.navigation.clear_invalidation()
+		if content and content._background_screen then
+			background_screen = content._background_screen
+			content._background_screen = nil
+		end
+	else
+		content = sheet_def.view and sheet_def.view(params, build_sheet_api(self)) or nil
+	end
 	assert(content, "bottom_sheet host sheet must return content")
 
-	return Box({
+	local root = Box({
 		key = state.config.id .. "_bottom_sheet_root",
 		color = TRANSPARENT,
 		style = {
@@ -111,6 +222,12 @@ local function build_tree(self)
 			}),
 		},
 	})
+
+	if background_screen then
+		root._background_screen = background_screen
+	end
+
+	return root
 end
 
 local function finalize_close(self)
@@ -158,7 +275,7 @@ function M.init(self, config)
 		return build_tree(self)
 	end
 
-	gui.set_render_order(config.render_order or 15)
+	gui.set_render_order(clamp_render_order(config.render_order))
 	sync_window_baseline(self)
 	set_tree(self, build_idle_tree())
 end
@@ -167,6 +284,9 @@ function M.final(self)
 	local state = self.bottom_sheet_state
 	if state then
 		set_background_input_enabled(state.config, true)
+		if state.navigation_runtime and state.navigation_runtime.adapter then
+			state.navigation_runtime.adapter:destroy()
+		end
 	end
 	msg.post(".", "release_input_focus")
 end
@@ -178,24 +298,34 @@ function M.update(self, dt)
 	end
 
 	local animating = ui.update_animations(self, dt)
+	local navigation_requested_rebuild = false
+	if state.navigation_runtime then
+		local runtime = state.navigation_runtime
+		local transition_complete = runtime.adapter:update(dt)
+		navigation_requested_rebuild = runtime.adapter:needs_rebuild() or transition_complete or runtime.navigation.is_invalidated()
+	end
 	local hook_requested_rebuild = state.config.on_update and state.config.on_update(self, dt, build_sheet_api(self)) == true or false
 	local closed = finalize_close(self)
-	if hook_requested_rebuild then
+	if hook_requested_rebuild or navigation_requested_rebuild then
 		set_tree(self, state.build_tree())
 	end
 
 	local redrew = ui.update(self, self.tree)
-	return animating or closed or hook_requested_rebuild or redrew
+	return animating or closed or hook_requested_rebuild or navigation_requested_rebuild or redrew
 end
 
 function M.present(self, params)
 	local state = self.bottom_sheet_state
+	msg.post(".", "acquire_input_focus")
 	state.params = copy_params(params)
 	state.params._bottom_sheet_open = true
 	state.params._bottom_sheet_closing = false
 	state.params._bottom_sheet_result = nil
 	state.params._bottom_sheet_anim_y = nil
 	state.params._bottom_sheet_anim_velocity = nil
+	if state.config.sheet.screens then
+		reset_navigation_runtime(self)
+	end
 	set_background_input_enabled(state.config, false)
 	set_tree(self, state.build_tree())
 end

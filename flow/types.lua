@@ -52,9 +52,11 @@
 ---@field children? Flow.Element[]
 ---@field layout? Flow.LayoutRect        Computed layout (written by layout engine)
 ---@field color? Flow.ColorValue
+---@field scale? number|{x?: number, y?: number, z?: number}
 ---@field text? string
 ---@field align? "left"|"center"|"right"
 ---@field font? string
+---@field line_break? boolean
 ---@field image? string
 ---@field texture? string
 ---@field scale_mode? "stretch"|"fit"
@@ -112,6 +114,8 @@
 ---@field text string
 ---@field align? "left"|"center"|"right"
 ---@field font? string
+---@field scale? number|{x?: number, y?: number, z?: number}
+---@field line_break? boolean
 
 ---@class Flow.ButtonProps : Flow.Element
 ---@field pressed_color? Flow.ColorValue
@@ -126,6 +130,7 @@
 ---@class Flow.IconProps : Flow.Element
 ---@field image string
 ---@field texture? string
+---@field scale? number|{x?: number, y?: number, z?: number}
 ---@field scale_mode? "stretch"|"fit"
 ---@field image_aspect? number
 
@@ -155,7 +160,10 @@
 ---@field invalidate fun(): boolean
 
 ---@class Flow.BottomSheetSheetDef
----@field view fun(params: table, api: Flow.BottomSheetApi): Flow.Element
+---@field view? fun(params: table, api: Flow.BottomSheetApi): Flow.Element
+---@field screens? table<string, Flow.ScreenDef>
+---@field initial_screen? string
+---@field initial_params? table|fun(params: table, api: Flow.BottomSheetApi): table
 ---@field backdrop_color? Flow.ColorValue
 ---@field dismiss_on_backdrop? boolean
 ---@field on_dismiss? fun(params: table, result: any, api: Flow.BottomSheetApi)
@@ -294,9 +302,14 @@
 ---@field text? string
 ---@field key? string
 ---@field style? Flow.Style
+---@field font? string
+---@field scale? number|{x?: number, y?: number, z?: number}
 ---@field _scrollbar? boolean
 ---@field _bounce? boolean
 ---@field _momentum? boolean
+---@field auto_wrap? boolean
+---@field wrap_width? number
+---@field flatten_formatting? boolean
 
 ---@class Flow.FlexNodeOptions
 ---@field key? string

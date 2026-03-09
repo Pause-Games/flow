@@ -145,6 +145,8 @@ end
 
 Call `flow.update`, `flow.on_input`, `flow.on_message`, and `flow.final` from that gui script normally. Once the host is initialized, the top-level flow facade delegates automatically.
 
+`render_order` is optional; when omitted, the host uses `15`, and custom values are clamped into Defold's valid GUI render-order range.
+
 ### Presenting and dismissing
 
 Open the hosted sheet by posting the configured open message:
@@ -175,6 +177,61 @@ msg.post(msg.url("main:/bottom_sheet_host#bottom_sheet_host"), hash("sample_bott
 - `api.invalidate()`: rebuild the hosted sheet after mutating `params`
 
 This lets the hosted sheet manage internal transitions. The sample menu sheet uses `api.invalidate()` to switch into its merged settings/options sheet without dismissing first.
+
+### Nested bottom-sheet navigation
+
+For multi-step sheets, provide `sheet.screens` and `sheet.initial_screen` instead of a single `sheet.view`. The host will run a private Flow navigation stack inside the sheet.
+
+```lua
+flow.bottom_sheet.init(self, {
+  id = "wizard_sheet",
+  sheet = {
+    screens = {
+      step_one = {
+        view = function(params, nav)
+          return Box({
+            key = "step_one",
+            color = "#262b38",
+            style = { width = "100%", height = 220, padding = 20 },
+            children = {
+              Button({
+                key = "next",
+                style = { width = 140, height = 44 },
+                color = "#4d8c4d",
+                on_click = function()
+                  nav.push("step_two", { accepted = true })
+                end,
+                children = { Text({ key = "next_label", text = "Next", style = { width = "100%", height = "100%" } }) }
+              }),
+            },
+          })
+        end,
+      },
+      step_two = {
+        view = function(params, nav)
+          return Box({
+            key = "step_two",
+            color = "#262b38",
+            style = { width = "100%", height = 220, padding = 20 },
+            children = {
+              Button({
+                key = "done",
+                style = { width = 140, height = 44 },
+                color = "#4d8c4d",
+                on_click = function()
+                  nav.pop("done")
+                end,
+                children = { Text({ key = "done_label", text = "Done", style = { width = "100%", height = "100%" } }) }
+              }),
+            },
+          })
+        end,
+      },
+    },
+    initial_screen = "step_one",
+  },
+})
+```
 
 ### Blocking sheets
 
@@ -217,6 +274,7 @@ end
 | Hosted sheet content has no `height` | Always set explicit `height` on the sheet content box |
 | Treating bottom sheet like a primitive child | Use `flow.bottom_sheet.init(...)` in a dedicated gui script |
 | Mutating hosted sheet params without rebuilding | Call `api.invalidate()` after changing hosted params |
+| Need multi-step flow inside the sheet | Use `sheet.screens` + `sheet.initial_screen` instead of packing state into one `sheet.view` |
 | Forgetting to handle results | Use `sheet.on_dismiss(params, result)` to notify the background screen |
 
 ---

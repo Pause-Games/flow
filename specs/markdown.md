@@ -27,17 +27,26 @@ Fields:
 - `key`: root key for the scroll container
 - `text`: markdown source
 - `style`: scroll container style override
+- `font`: optional GUI font name used for generated `Text` nodes
+- `scale`: optional text scale applied to generated `Text` nodes
+- `auto_wrap`: wraps paragraphs and list content to `wrap_width`
+- `wrap_width`: target content width for wrapping (default internal width is `520`)
+- `flatten_formatting`: collapses inline formatting to plain text before rendering
 - `_scrollbar`: defaults to `true`
 - `_bounce`: defaults to `true`
 - `_momentum`: defaults to `true`
 
-### `Markdown.parse(text, key_prefix)`
+### `Markdown.parse(text, key_prefix, options?)`
 
 Returns an array of rendered element subtrees.
 
 ```lua
 local Markdown = require "flow/components/markdown"
-local elements = Markdown.parse(my_text, "guide")
+local elements = Markdown.parse(my_text, "guide", {
+  font = "default",
+  auto_wrap = true,
+  wrap_width = 560,
+})
 ```
 
 ### `Markdown.viewer(text, key, style_override)`
@@ -76,6 +85,12 @@ Behavior details:
 - blank lines are preserved and emitted as transparent spacer rows
 - fenced code blocks accumulate raw inner lines and emit a single dark code box on closing fence
 - bold is rendered as a highlighted background span; it does not switch Defold font weight
+- text measurement prefers `gui.get_text_metrics(...)` and falls back to a simple width estimate when metrics are unavailable
+- headings derive their row height from the active font metrics and optional `scale`
+- `auto_wrap = true` wraps paragraphs, quotes, and list content into multiple generated rows
+- wrapped bullets and numbered lists keep their prefix aligned on the first line and indent continuation lines automatically
+- `flatten_formatting = true` converts bold/code spans to plain text before rendering, which is useful when you want simpler wrapped output
+- `flatten_formatting = true` is optional when you prefer plain wrapped output over inline-format segment boxes
 - `![alt](icon:icon_star)` renders a real image using the default `icons` GUI texture
 - `![alt](atlas:texture_name:image_name)` renders a real image using an explicit GUI texture
 - atlas images accept inline modifiers after `|`, for example:
@@ -104,9 +119,6 @@ Style overrides are copied into a fresh table per viewer call, so one markdown i
 
 ## Limitations
 
-- Fixed-height rows; no intrinsic text measurement
-- No wrapping for long lines
-- Width estimation uses `8 * #text`
 - No nested formatting parser
 - No tables
 - No file-path or remote image loading; real images must come from a GUI texture/atlas already registered in the `.gui`

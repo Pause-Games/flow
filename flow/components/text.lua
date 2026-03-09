@@ -6,6 +6,7 @@
 --   "center"         → PIVOT_CENTER
 --   "right"          → PIVOT_E  (text anchored to right edge of layout box)
 local ui = require "flow/ui"
+local TEXT_SCALE = vmath.vector3(1, 1, 1)
 
 --- Apply a text alignment to a Defold text node by setting its pivot.
 --- Called both on node creation and on every render update so that
@@ -32,6 +33,36 @@ local function apply_text_font(node, font)
 	gui.set_font(node, font or "default")
 end
 
+---@param node userdata
+---@param line_break boolean|nil
+local function apply_text_line_break(node, line_break)
+	if gui.set_line_break then
+		gui.set_line_break(node, line_break == true)
+	end
+end
+
+---@param node userdata
+---@param scale number|table|nil
+local function apply_text_scale(node, scale)
+	if type(scale) == "number" then
+		TEXT_SCALE.x = scale
+		TEXT_SCALE.y = scale
+		TEXT_SCALE.z = 1
+	elseif type(scale) == "table" then
+		TEXT_SCALE.x = scale.x or 1
+		TEXT_SCALE.y = scale.y or TEXT_SCALE.x
+		TEXT_SCALE.z = scale.z or 1
+	else
+		TEXT_SCALE.x = 1
+		TEXT_SCALE.y = 1
+		TEXT_SCALE.z = 1
+	end
+
+	if gui.set_scale then
+		gui.set_scale(node, TEXT_SCALE)
+	end
+end
+
 --- Register the "text" element type with the renderer.
 ui.register("text", {
 	--- Create a new Defold text GUI node for a text element.
@@ -43,6 +74,7 @@ ui.register("text", {
 		local node = gui.new_text_node(vmath.vector3(), el.text or "")
 		apply_text_alignment(node, el.align)
 		apply_text_font(node, el.font)
+		apply_text_line_break(node, el.line_break)
 		return node
 	end,
 
@@ -54,6 +86,8 @@ ui.register("text", {
 	apply = function(_, el, node)
 		apply_text_alignment(node, el.align)
 		apply_text_font(node, el.font)
+		apply_text_line_break(node, el.line_break)
+		apply_text_scale(node, el.scale)
 		gui.set_text(node, el.text or "")
 	end,
 

@@ -5,6 +5,7 @@
 -- Default atlas name is "icons"; override with el.texture.
 local ui = require "flow/ui"
 local SCRATCH_SIZE = vmath.vector3()
+local ICON_SCALE = vmath.vector3(1, 1, 1)
 
 ---@param node userdata
 ---@param w number
@@ -49,6 +50,28 @@ local function apply_scale_mode(el, node)
 	set_node_size(node, render_w, render_h)
 end
 
+---@param node userdata
+---@param scale number|table|nil
+local function apply_icon_scale(node, scale)
+	if type(scale) == "number" then
+		ICON_SCALE.x = scale
+		ICON_SCALE.y = scale
+		ICON_SCALE.z = 1
+	elseif type(scale) == "table" then
+		ICON_SCALE.x = scale.x or 1
+		ICON_SCALE.y = scale.y or ICON_SCALE.x
+		ICON_SCALE.z = scale.z or 1
+	else
+		ICON_SCALE.x = 1
+		ICON_SCALE.y = 1
+		ICON_SCALE.z = 1
+	end
+
+	if gui.set_scale then
+		gui.set_scale(node, ICON_SCALE)
+	end
+end
+
 --- Register the "icon" element type with the renderer.
 ui.register("icon", {
 	--- Create a new Defold box GUI node for an icon element.
@@ -74,6 +97,7 @@ ui.register("icon", {
 			gui.set_texture(node, el.texture or "icons")
 			gui.play_flipbook(node, hash(el.image))
 			apply_scale_mode(el, node)
+			apply_icon_scale(node, el.scale)
 		end
 	end,
 })

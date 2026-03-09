@@ -180,6 +180,8 @@ Text label. Renders as a Defold text node using the `.gui` font named by `font`,
 | `color` | ColorValue | Text colour                                           |
 | `align` | string  | `"left"` (default), `"center"`, `"right"`               |
 | `font`  | string  | GUI font name registered in the `.gui` file. Defaults to `"default"` |
+| `scale` | number or table | Optional GUI node scale. Number applies uniformly; table supports `x`, `y`, `z` |
+| `line_break` | bool | Enables Defold line breaking when `gui.set_line_break(...)` is available |
 
 **Important**: Text nodes have 0 layout width unless you provide `width` or `flex_grow`. Center/end alignment on a text node only works when it is the sole child of an explicit-width parent, or when the text itself has a width.
 
@@ -193,6 +195,9 @@ Box node with a texture atlas animation. The atlas must be registered in the `.g
 | `image`   | string | Animation ID within the atlas (e.g. `"icon_star"`) |
 | `texture` | string | Atlas name as declared in `.gui` (default `"icons"`) |
 | `style`   | table  | `width`, `height`                                   |
+| `scale`   | number or table | Optional GUI node scale applied after sizing |
+| `scale_mode` | string | `"stretch"` (default) or `"fit"` to preserve `image_aspect` |
+| `image_aspect` | number | Optional width/height ratio used by `scale_mode = "fit"` |
 
 ### `button` primitive
 
@@ -305,14 +310,17 @@ Bottom sheets are hosted through `flow.bottom_sheet.*`, not `flow.ui.cp.*`.
 |-----------------------------|--------------|-------------|
 | `id`                        | string       | Required host identifier used in internal keys |
 | `sheet`                     | table        | Required sheet definition |
-| `sheet.view`                | function     | `function(params, api) -> Flow.Element`; must return the content box |
+| `sheet.view`                | function     | Optional direct sheet renderer: `function(params, api) -> Flow.Element` |
+| `sheet.screens`             | table        | Optional nested screen registry for bottom-sheet-local navigation |
+| `sheet.initial_screen`      | string       | Required when `sheet.screens` is set; initial nested screen id |
+| `sheet.initial_params`      | table/function | Optional initial params for the nested screen runtime |
 | `sheet.backdrop_color`      | ColorValue   | Optional backdrop colour, defaults to `"#00000080"` |
 | `sheet.dismiss_on_backdrop` | bool         | Defaults to `true`; set `false` for a blocking sheet |
 | `sheet.on_dismiss`          | function     | Optional `function(params, result, api)` callback after the close animation finishes |
 | `open_message_id`           | hash/string  | Optional message id handled by the host to present a sheet |
 | `close_message_id`          | hash/string  | Optional message id handled by the host to dismiss a sheet |
 | `background_focus_url`      | url          | Optional url that should release/acquire input focus while the sheet is open |
-| `render_order`              | number       | Optional gui render order (defaults to `20`) |
+| `render_order`              | number       | Optional gui render order (defaults to `15`, clamped to `0..15`) |
 | `on_update`                 | function     | Optional host-specific update hook |
 | `on_message`                | function     | Optional host-specific message hook |
 
@@ -326,6 +334,8 @@ Inside `sheet.view(params, api)`:
 
 - `api.dismiss(result)` closes the current sheet
 - `api.invalidate()` rebuilds the hosted sheet after mutating `params`
+
+When `sheet.screens` is provided, the host creates an internal navigation runtime instead of calling `sheet.view(...)` directly. Nested screen `view(params, navigation)` functions receive the same navigation facade used by normal Flow screens.
 
 The visual sheet still uses the internal `bottom_sheet` component and keeps the same spring animation behavior, but that component is no longer part of the public constructor surface.
 

@@ -56,6 +56,7 @@ return Box({
 A few things to note:
 - `Text` always needs a `height` (Flow doesn't measure text intrinsically).
 - `Text` can also take `font = "name"` to use a font registered in the `.gui`.
+- `Text` also supports `scale` and `line_break = true` when you need a scaled label or Defold-managed line breaks inside a fixed box.
 - Children stack **top-to-bottom** by default (`flex_direction = "column"`).
 - `width = "100%"` on a child stretches it to the parent's inner width.
 

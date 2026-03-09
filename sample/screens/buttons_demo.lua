@@ -127,7 +127,7 @@ return {
 										style = { flex_direction = "row", align_items = "center", gap = 8, width = 140, height = 28 },
 										color = rgba(0, 0, 0, 0),
 										children = {
-											Icon({ key = "fav_icon", image = "icon_favorite", style = { width = 28, height = 28 } }),
+											Icon({ key = "fav_icon", image = "icon_favorite", style = { width = 28, height = 28 }, scale = 0.9 }),
 											Text({ key = "fav_lbl", text = "Favorito", style = { flex_grow = 1, height = 28 }, align = "center" })
 										}
 									})
