@@ -1,3 +1,5 @@
+![Flow logo](docs/resources/flow.jpg)
+
 # Flow — Flex UI Library for Defold
 
 Flow is a Defold library that implements a CSS Flexbox-inspired UI system in pure Lua.
