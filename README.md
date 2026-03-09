@@ -216,3 +216,5 @@ return Box({
 | [Debugging](docs/guides/debugging.md) | Debug mode, log levels, context overrides |
 | **API Reference** | |
 | [specs/](specs/README.md) | Module-level API specs |
+| **AI** | |
+| [AI Reference Sheet](docs/ai-sheet.md) | Comprehensive single-file reference for AI agents and LLMs |

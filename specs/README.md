@@ -13,6 +13,8 @@ These files are the authoritative public contract for shipped behavior.
 | [markdown.md](markdown.md) | `flow/components/markdown.lua` | Composite markdown component |
 | [log.md](log.md) | `flow/log.lua` | Centralized logging and observability API |
 
+> **For AI agents:** See [`docs/ai-sheet.md`](../docs/ai-sheet.md) for a single-file reference covering every API, type, constant, and pattern.
+
 ## Architecture
 
 ```text

@@ -39,6 +39,14 @@ Deep-dives on specific topics.
 
 ---
 
+## AI Reference
+
+| Doc | Description |
+|-----|-------------|
+| [AI Reference Sheet](ai-sheet.md) | Comprehensive single-file reference for AI agents and LLMs — covers every public API, type, constant, and usage pattern in one place |
+
+---
+
 ## API Reference
 
 Module-level contracts in [`specs/`](../specs/README.md).
